@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\MaXiMAA\\Projects\\Java\\OOP_University\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance.csproj": {}
+    "C:\\MaXiMAA\\Projects\\Java\\PALATA_MinecraftSpigotPlugins\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance.csproj": {}
   },
   "projects": {
-    "C:\\MaXiMAA\\Projects\\Java\\OOP_University\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance.csproj": {
+    "C:\\MaXiMAA\\Projects\\Java\\PALATA_MinecraftSpigotPlugins\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\MaXiMAA\\Projects\\Java\\OOP_University\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance.csproj",
+        "projectUniqueName": "C:\\MaXiMAA\\Projects\\Java\\PALATA_MinecraftSpigotPlugins\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance.csproj",
         "projectName": "PALATA_C#_DoTeamBalance",
-        "projectPath": "C:\\MaXiMAA\\Projects\\Java\\OOP_University\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance.csproj",
+        "projectPath": "C:\\MaXiMAA\\Projects\\Java\\PALATA_MinecraftSpigotPlugins\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance.csproj",
         "packagesPath": "C:\\Users\\maxim\\.nuget\\packages\\",
-        "outputPath": "C:\\MaXiMAA\\Projects\\Java\\OOP_University\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance\\obj\\",
+        "outputPath": "C:\\MaXiMAA\\Projects\\Java\\PALATA_MinecraftSpigotPlugins\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\maxim\\AppData\\Roaming\\NuGet\\NuGet.Config",

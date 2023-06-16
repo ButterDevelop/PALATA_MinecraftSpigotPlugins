@@ -36,7 +36,19 @@ public class SetRaidBaseCommand implements CommandExecutor {
             return true;
         }
 
+        if (!player.getWorld().getName().equals("world")) {
+            player.sendMessage(ChatColor.RED + "Базу можно установить только в обычном мире.");
+            return true;
+        }
+
+        if (plugin.getGame().isRaidActive()) {
+            player.sendMessage(ChatColor.RED + "Нельзя сменить базу во время рейда.");
+            return true;
+        }
+
         Location playerLocation = player.getLocation();
+
+        Location nexusLocationFirst = plugin.getGame().getNexusLocation(team);
 
         // Записываем координаты игрока в файл конфигурации для указанной команды
         plugin.getConfig().set(team + ".raidbase.x", playerLocation.getBlockX());
@@ -50,9 +62,6 @@ public class SetRaidBaseCommand implements CommandExecutor {
         plugin.saveConfig();
 
         plugin.getGame().loadBases();
-
-        player.sendMessage(ChatColor.GREEN + "Местоположение базы для рейда вашей команды '" + team + "' было установлено как Ваша текущая локация.");
-        player.sendMessage(ChatColor.GREEN + "Её координаты: " + playerLocation.getBlockX() + " " + (playerLocation.getBlockY() + 1) + " " + playerLocation.getBlockZ());
 
         // Размещаем структуру нексуса
         World world = playerLocation.getWorld();
@@ -76,18 +85,31 @@ public class SetRaidBaseCommand implements CommandExecutor {
         }
 
         if (canPlaceNexus) {
+            if (nexusLocationFirst != null) {
+                plugin.getGame().removeFullNexus(nexusLocationFirst);
+            }
             plugin.getGame().buildFullNexus(plugin.getGame().getPlayerTeam(player.getName()));
 
+            player.sendMessage(ChatColor.GREEN + "Местоположение базы для рейда вашей команды '" + team + "' было установлено как Ваша текущая локация.");
+            player.sendMessage(ChatColor.GREEN + "Её координаты: " + playerLocation.getBlockX() + " " + (playerLocation.getBlockY() + 1) + " " + playerLocation.getBlockZ());
             player.sendMessage(ChatColor.GREEN + "Нексус был расположен.");
-        } else {
-            player.sendMessage(ChatColor.RED + "Невозможно разместить Нексус. Проверьте место для размещения.");
-        }
 
-        // Перемещаем игрока, если нужно
-        Location safeLocation = plugin.getGame().getSafeLocation(playerLocation);
-        if (safeLocation != null) {
-            player.teleport(safeLocation);
-            player.sendMessage(ChatColor.YELLOW + "Вас переместили в безопасное место для постройки Нексуса.");
+            // Перемещаем игрока, если нужно
+            plugin.getGame().teleportPlayerToSafePosition(player);
+        } else {
+            if (nexusLocationFirst != null) {
+                plugin.getConfig().set(team + ".raidbase.x", nexusLocationFirst.getBlockX());
+                plugin.getConfig().set(team + ".raidbase.y", nexusLocationFirst.getBlockY());
+                plugin.getConfig().set(team + ".raidbase.z", nexusLocationFirst.getBlockZ());
+                plugin.getConfig().set(team + ".raidbase.world", nexusLocationFirst.getWorld().getName());
+                plugin.getConfig().set(team + ".nexus.x", nexusLocationFirst.getBlockX());
+                plugin.getConfig().set(team + ".nexus.y", nexusLocationFirst.getBlockY());
+                plugin.getConfig().set(team + ".nexus.z", nexusLocationFirst.getBlockZ());
+                plugin.getConfig().set(team + ".nexus.world", nexusLocationFirst.getWorld().getName());
+                plugin.saveConfig();
+            }
+
+            player.sendMessage(ChatColor.RED + "Невозможно разместить Нексус. Проверьте место для размещения.");
         }
 
         return true;

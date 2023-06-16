@@ -6,4 +6,5 @@ org\palata_raidplugin\palata_raidplugin\Game$1.class
 org\palata_raidplugin\palata_raidplugin\StartRaidCommand.class
 org\palata_raidplugin\palata_raidplugin\MyTeam.class
 org\palata_raidplugin\palata_raidplugin\PALATA_RaidPlugin.class
+org\palata_raidplugin\palata_raidplugin\PlayerJoinListener.class
 org\palata_raidplugin\palata_raidplugin\BlockBreakListener.class

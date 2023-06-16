@@ -5,4 +5,4 @@ api-version: 1.19
 commands:
   deathban:
     description: Включает или выключает бан за смерть
-    usage: /<command> [on|off]
+    usage: /<command> [on|off|info]

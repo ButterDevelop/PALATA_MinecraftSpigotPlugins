@@ -15,6 +15,7 @@ public final class PALATA_RaidPlugin extends JavaPlugin {
         this.getCommand("joinraid").setExecutor(new JoinRaidCommand(game));
         this.getCommand("startraid").setExecutor(new StartRaidCommand(game));
         getServer().getPluginManager().registerEvents(new BlockBreakListener(game), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(game), this);
     }
 
     @Override

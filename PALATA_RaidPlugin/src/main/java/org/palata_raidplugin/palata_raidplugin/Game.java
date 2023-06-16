@@ -186,6 +186,20 @@ public class Game {
         }
     }
 
+    public void removeFullNexus(Location nexusLocation) {
+        World world = nexusLocation.getWorld();
+        int baseRadius = 1; // Радиус базы для нексуса (без обсидиана)
+        // Размещаем структуру нексуса
+        for (int x = -baseRadius; x <= baseRadius; x++) {
+            for (int y = -baseRadius; y <= baseRadius; y++) {
+                for (int z = -baseRadius; z <= baseRadius; z++) {
+                    Block block = world.getBlockAt(nexusLocation.getBlockX() + x, nexusLocation.getBlockY() + y, nexusLocation.getBlockZ() + z);
+                    block.setType(Material.AIR);
+                }
+            }
+        }
+    }
+
     public String getDefendingTeam(String attackingTeam) {
         // Возвращает название команды-защитника в зависимости от команды-атакующего.
         // Допустим, у вас есть две команды: "RED" и "BLUE". Если "RED" атакует, то "BLUE" защищает.
@@ -372,7 +386,7 @@ public class Game {
     }
 
     public Location getSafeLocation(Location playerLocation) {
-        int searchRadius = 5; // Радиус поиска свободного места
+        int searchRadius = 10; // Радиус поиска свободного места
         World world = playerLocation.getWorld();
 
         if (isLocationSafe(playerLocation)) return playerLocation;
@@ -408,6 +422,15 @@ public class Game {
         // Дополнительные проверки, если необходимо
 
         return true; // Место считается безопасным
+    }
+
+    public void teleportPlayerToSafePosition(Player player) {
+        Location playerLocation = player.getLocation();
+        Location safeLocation = getSafeLocation(playerLocation);
+        if (safeLocation != null) {
+            player.teleport(safeLocation);
+            player.sendMessage(ChatColor.YELLOW + "Вас переместили в безопасное место для постройки Нексуса.");
+        }
     }
 
     // Устанавливает игрока как капитана для указанной команды

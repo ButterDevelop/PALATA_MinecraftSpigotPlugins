@@ -18,17 +18,19 @@ import java.io.File;
 import java.io.IOException;
 
 public class PALATA_BanPlayerOnDeath extends JavaPlugin implements Listener {
-    private boolean isEnabled = true;
+    private boolean isEnabled;
     private File configFile;
     private FileConfiguration config;
     private int _minutesToBan;
 
     @Override
     public void onEnable() {
+        this.saveDefaultConfig();  // Сохраняет конфигурационный файл по умолчанию, если он еще не существует
+
         Bukkit.getPluginManager().registerEvents(this, this);
 
-        saveDefaultConfig();  // Сохраняет конфигурационный файл по умолчанию, если он еще не существует
         _minutesToBan = getConfig().getInt("minutesToBan");  // Читаем значение banTime из файла config.yml
+        isEnabled = getConfig().getBoolean("isEnabled"); // Читаем значение isEnabled из файла config.yml
 
         configFile = new File(getDataFolder(), "banned_players.yml");
         if (!configFile.exists()) {
@@ -49,11 +51,22 @@ public class PALATA_BanPlayerOnDeath extends JavaPlugin implements Listener {
             if (args.length == 1) {
                 if (args[0].equalsIgnoreCase("on")) {
                     isEnabled = true;
+                    getConfig().set("isEnabled", isEnabled);
+                    saveConfig();
                     sender.sendMessage(ChatColor.GREEN + "DeathBan включен.");
                     return true;
                 } else if (args[0].equalsIgnoreCase("off")) {
                     isEnabled = false;
+                    getConfig().set("isEnabled", isEnabled);
+                    saveConfig();
                     sender.sendMessage(ChatColor.RED + "DeathBan выключен.");
+                    return true;
+                } else if (args[0].equalsIgnoreCase("info")) {
+                    if (isEnabled) {
+                        sender.sendMessage(ChatColor.GREEN + "DeathBan в данный момент включен.");
+                    } else {
+                        sender.sendMessage(ChatColor.RED + "DeathBan в данный момент выключен.");
+                    }
                     return true;
                 }
             }
@@ -67,7 +80,7 @@ public class PALATA_BanPlayerOnDeath extends JavaPlugin implements Listener {
         if (isEnabled) {
             Player player = event.getEntity();
             config.set(player.getUniqueId().toString(), System.currentTimeMillis() + ((long) _minutesToBan * 60 * 1000));
-            saveConfig();
+             saveConfigPlayers();
             player.sendMessage(ChatColor.RED + "Вы умерли. Вас выкинет с сервера через 3 секунды.");
 
             int x = player.getLocation().getBlockX();
@@ -95,11 +108,11 @@ public class PALATA_BanPlayerOnDeath extends JavaPlugin implements Listener {
             player.kickPlayer(ChatColor.RED + "Вы заблокированы ещё на " + ((timeRemaining - System.currentTimeMillis()) / 1000 / 60) + " минут.");
         } else {
             config.set(player.getUniqueId().toString(), null);
-            saveConfig();
+             saveConfigPlayers();
         }
     }
 
-    public void saveConfig() {
+    public void saveConfigPlayers() {
         try {
             config.save(configFile);
         } catch (IOException e) {
