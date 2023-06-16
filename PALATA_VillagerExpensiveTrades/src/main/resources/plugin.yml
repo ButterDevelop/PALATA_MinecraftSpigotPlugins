@@ -1,0 +1,4 @@
+name: PALATA_VillagerExpensiveTrades
+version: '${project.version}'
+main: org.palata_villagerexpensivetrades.palata_villagerexpensivetrades.PALATA_VillagerExpensiveTrades
+api-version: 1.19

@@ -1,0 +1,15 @@
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\bin\Debug\net6.0\PALATA_C#_DoTeamBalance.exe
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\bin\Debug\net6.0\PALATA_C#_DoTeamBalance.deps.json
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\bin\Debug\net6.0\PALATA_C#_DoTeamBalance.runtimeconfig.json
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\bin\Debug\net6.0\PALATA_C#_DoTeamBalance.dll
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\bin\Debug\net6.0\PALATA_C#_DoTeamBalance.pdb
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\obj\Debug\net6.0\PALATA_C#_DoTeamBalance.csproj.AssemblyReference.cache
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\obj\Debug\net6.0\PALATA_C#_DoTeamBalance.GeneratedMSBuildEditorConfig.editorconfig
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\obj\Debug\net6.0\PALATA_C#_DoTeamBalance.AssemblyInfoInputs.cache
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\obj\Debug\net6.0\PALATA_C#_DoTeamBalance.AssemblyInfo.cs
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\obj\Debug\net6.0\PALATA_C#_DoTeamBalance.csproj.CoreCompileInputs.cache
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\obj\Debug\net6.0\PALATA_C#_DoTeamBalance.dll
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\obj\Debug\net6.0\refint\PALATA_C#_DoTeamBalance.dll
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\obj\Debug\net6.0\PALATA_C#_DoTeamBalance.pdb
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\obj\Debug\net6.0\PALATA_C#_DoTeamBalance.genruntimeconfig.cache
+C:\MaXiMAA\Projects\Java\OOP_University\PALATA_C#_DoTeamBalance\PALATA_C#_DoTeamBalance\obj\Debug\net6.0\ref\PALATA_C#_DoTeamBalance.dll

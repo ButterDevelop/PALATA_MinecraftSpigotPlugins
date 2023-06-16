@@ -1,0 +1,8 @@
+name: PALATA_BanPlayerOnDeath
+version: '1.0-SNAPSHOT'
+main: org.palata_banplayerondeath.palata_banplayerondeath.PALATA_BanPlayerOnDeath
+api-version: 1.19
+commands:
+  deathban:
+    description: Включает или выключает бан за смерть
+    usage: /<command> [on|off]

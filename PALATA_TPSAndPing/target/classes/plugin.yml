@@ -1,0 +1,8 @@
+name: PALATA_TPSAndPing
+version: '1.0-SNAPSHOT'
+main: org.palata_tpsandping.palata_tpsandping.PALATA_TPSAndPing
+api-version: 1.19
+commands:
+  ping:
+    description: Получает TPS и ping
+    usage: /<command>

@@ -1,0 +1,17 @@
+name: PALATA_RaidPlugin
+version: '${project.version}'
+main: org.palata_raidplugin.palata_raidplugin.PALATA_RaidPlugin
+api-version: 1.19
+commands:
+  setraidbase:
+    description: Ставим центр базы.
+    usage: /<command> <team>
+  openraid:
+    description: Открывает возможность рейда.
+    usage: /<command>
+  joinraid:
+    description: Присоединяемся к рейду.
+    usage: /<command>
+  startraid:
+    description: Начинаем рейд.
+    usage: /<command>

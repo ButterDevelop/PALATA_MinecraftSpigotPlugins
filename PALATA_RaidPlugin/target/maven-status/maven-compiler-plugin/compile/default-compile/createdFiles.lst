@@ -1,0 +1,9 @@
+org\palata_raidplugin\palata_raidplugin\JoinRaidCommand.class
+org\palata_raidplugin\palata_raidplugin\Game.class
+org\palata_raidplugin\palata_raidplugin\OpenRaidCommand.class
+org\palata_raidplugin\palata_raidplugin\SetRaidBaseCommand.class
+org\palata_raidplugin\palata_raidplugin\Game$1.class
+org\palata_raidplugin\palata_raidplugin\StartRaidCommand.class
+org\palata_raidplugin\palata_raidplugin\MyTeam.class
+org\palata_raidplugin\palata_raidplugin\PALATA_RaidPlugin.class
+org\palata_raidplugin\palata_raidplugin\BlockBreakListener.class
