@@ -9,9 +9,15 @@ commands:
   openraid:
     description: Открывает возможность рейда.
     usage: /<command>
+  cancelraid:
+    description: Отменяет рейд.
+    usage: /<command>
   joinraid:
     description: Присоединяемся к рейду.
     usage: /<command>
   startraid:
     description: Начинаем рейд.
     usage: /<command>
+  raid:
+    description: Включение и выключение рейдов.
+    usage: /<command> [on|off|info]

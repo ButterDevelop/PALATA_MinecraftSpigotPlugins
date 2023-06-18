@@ -7,6 +7,20 @@ plugin:
     requiredDestroyCount: 10
     # Длительность рейда
     durationMinutes: 1
+    # Длительность ожидания игроков для присоединения к рейду
+    openDurationMinutes: 10
+    # Разница в количестве игроков для начала рейдов
+    differencePlayersCount: 2
+    # Минимальное количество игроков в команде для начала
+    minPlayers: 2
+    # Количество минут щита после рейда
+    shieldMinutes: 10
+    # Количество минут щита атакующей команды после рейда
+    shieldMinutesDefending: 1
+    # Включена ли система рейдов или нет
+    isEnabled: false
+    # Перезарядка команды /setraidbase
+    setRaidBaseCooldown: 1
 
 # Настройки команд и командных блоков
 commands:

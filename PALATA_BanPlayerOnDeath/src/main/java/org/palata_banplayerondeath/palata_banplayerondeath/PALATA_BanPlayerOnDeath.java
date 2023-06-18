@@ -50,12 +50,20 @@ public class PALATA_BanPlayerOnDeath extends JavaPlugin implements Listener {
         if (cmd.getName().equalsIgnoreCase("deathban")) {
             if (args.length == 1) {
                 if (args[0].equalsIgnoreCase("on")) {
+                    if (!sender.isOp()) {
+                        sender.sendMessage(ChatColor.RED + "Только администратор может это сделать.");
+                        return true;
+                    }
                     isEnabled = true;
                     getConfig().set("isEnabled", isEnabled);
                     saveConfig();
                     sender.sendMessage(ChatColor.GREEN + "DeathBan включен.");
                     return true;
                 } else if (args[0].equalsIgnoreCase("off")) {
+                    if (!sender.isOp()) {
+                        sender.sendMessage(ChatColor.RED + "Только администратор может это сделать.");
+                        return true;
+                    }
                     isEnabled = false;
                     getConfig().set("isEnabled", isEnabled);
                     saveConfig();

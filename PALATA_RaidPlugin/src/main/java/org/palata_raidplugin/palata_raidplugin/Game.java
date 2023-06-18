@@ -22,13 +22,15 @@ public class Game {
     private HashMap<String, Integer> teamScores = new HashMap<>(); // Счет команд
     private Scoreboard scoreboard; // Scoreboard для отображения результатов
     public String raidingTeam = null; // Команда, которая в настоящее время проводит рейд
+    public String lastRaidOpenedTheTeam = null; // Последняя команда, которая начала рейд
     private Plugin plugin;
     private Map<String, MyTeam> teams = new HashMap<>();
-    private final int minPlayers = 2; // Допустим, минимальное число игроков для начала рейда - 2.
 
     // Булевые значения, отслеживающие состояние игры
     private boolean isRaidOpen = false;
     private boolean isRaidActive = false;
+    private boolean isEnabled = true;
+    private boolean isRaidStarted = false;
     private HashMap<String, String> teamCaptains = new HashMap<>(); // Капитаны команд
     private int obsidianDestroyed = 0;
 
@@ -40,7 +42,18 @@ public class Game {
         plugin = _plugin;
         initializeTeams();
         ScoreboardManager manager = Bukkit.getScoreboardManager();
+        isEnabled = plugin.getConfig().getBoolean("plugin.raid.isEnabled");
         scoreboard = manager.getNewScoreboard();
+    }
+
+    public boolean getIsEnabled() {
+        return isEnabled;
+    }
+
+    public void setIsEnabled(boolean value) {
+        isEnabled = value;
+        plugin.getConfig().set("plugin.raid.isEnabled", isEnabled);
+        plugin.saveConfig();
     }
 
     // Проверка, есть ли у команды база
@@ -62,6 +75,8 @@ public class Game {
         // Получите время задержки из файла конфигурации
         int delayMinutes = getRaidDelayMinutes();
 
+        isRaidStarted = true;
+
         // Запустите асинхронную задачу через указанное количество минут
         BukkitScheduler scheduler = Bukkit.getScheduler();
         scheduler.runTaskLater(plugin, () -> {
@@ -78,6 +93,8 @@ public class Game {
             } else {
                 // Рейд не может быть начат
                 isRaidActive = false;
+                isRaidOpen = false;
+                isRaidStarted = false;
                 for (Player player : raidPlayers) {
                     player.sendMessage(ChatColor.RED + "Рейд не может быть начат из-за недостаточного количества игроков другой команды.");
                 }
@@ -117,6 +134,7 @@ public class Game {
                 if (obsidianDestroyed >= requiredDestroyCount || System.currentTimeMillis() >= raidEndTime) {
                     // Если время рейда истекло, но нексус не был уничтожен необходимое количество раз
                     if (obsidianDestroyed < requiredDestroyCount) {
+                        endRaid();
                         Bukkit.broadcastMessage(ChatColor.RED + "Время рейда истекло! Команде '" + attackingTeam + "' не удалось завершить рейд. Нексус команды '" + defendingTeam + "' был уничтожен только " + obsidianDestroyed + " раз.");
                         addScore(defendingTeam, 1);
                     } else {
@@ -250,12 +268,20 @@ public class Game {
             throw new IllegalArgumentException("Team " + teamName + " does not exist.");
         }
 
+        int minPlayers = plugin.getConfig().getInt("plugin.raid.minPlayers");
+        int differencePlayersCount = plugin.getConfig().getInt("plugin.raid.differencePlayersCount");
+
         // проверяем, есть ли другие команды и достаточно ли игроков
-        for (MyTeam otherTeam : teams.values()) {
+        if (getTeamPlayers(teamName).size() >= minPlayers && getTeamPlayers(getDefendingTeam(teamName)).size() >= minPlayers &&
+                getTeamPlayers(teamName).size() - getTeamPlayers(getDefendingTeam(teamName)).size() <= differencePlayersCount) {
+            return true;
+        }
+
+        /*for (MyTeam otherTeam : teams.values()) {
             if (!otherTeam.equals(team) && otherTeam.getMembers().size() >= minPlayers) {
                 return true;
             }
-        }
+        }*/
 
         return false;
     }
@@ -318,6 +344,11 @@ public class Game {
         return isRaidActive;
     }
 
+    // Проверяет, пошёл ли отсчёт до начала рейда
+    public boolean isRaidStarted() {
+        return isRaidStarted;
+    }
+
     // Увеличивает количество уничтоженного обсидиана на 1
     public void incrementObsidianDestroyed() {
         obsidianDestroyed++;
@@ -338,8 +369,11 @@ public class Game {
     public void endRaid() {
         isRaidOpen = false;
         isRaidActive = false;
-        obsidianDestroyed = 0;
+        isRaidStarted = false;
         buildFullNexus(getPlayerTeam(raidPlayers.get(0).getName()));
+        long currentTimestamp = System.currentTimeMillis();
+        plugin.getConfig().set(getPlayerTeam(raidPlayers.get(0).getName()) + ".lastRaid", currentTimestamp);
+        plugin.saveConfig();
         for (Player player : raidPlayers) {
             player.sendMessage(ChatColor.YELLOW + "Рейд был закончен.");
         }
@@ -353,15 +387,41 @@ public class Game {
         }
     }
 
+    public String getLastRaidOpenedTheTeam() {
+        return lastRaidOpenedTheTeam;
+    }
+
     // Открывает рейд
     public void openRaid(String team) {
         isRaidOpen = true;
+        lastRaidOpenedTheTeam = team;
         obsidianDestroyed = 0;
         raidPlayers.clear();
 
         for (Player player : getTeamPlayers(team)) {
             player.sendMessage(ChatColor.GREEN + "Рейд был открыт! Присоединяйтесь к нему с помощью /joinraid");
+            int openDurationMinutes = getOpenRaidDurationMinutes();
+            player.sendMessage(ChatColor.YELLOW + "Осталось времени для присоединения: " + openDurationMinutes + " минут.");
+            player.sendMessage(ChatColor.YELLOW + "Если капитан команды за это время не напишет /startraid, то рейд будет автоматически отменён.");
         }
+    }
+
+    // Отменяет рейд
+    public void cancelRaid(String team, boolean wasCancelledByPlayer) {
+        if (!isRaidStarted && !isRaidActive && isRaidOpen) {
+            isRaidOpen = false;
+            for (Player player : getTeamPlayers(team)) {
+                if (wasCancelledByPlayer) {
+                    player.sendMessage(ChatColor.RED + "Рейд команды был отменён её капитаном!");
+                } else {
+                    player.sendMessage(ChatColor.RED + "Рейд команды был отменён! Истекло время!");
+                }
+            }
+        }
+    }
+
+    public int getOpenRaidDurationMinutes() {
+        return plugin.getConfig().getInt("plugin.raid.openDurationMinutes");
     }
 
     public List<Player> getTeamPlayers(String team) {

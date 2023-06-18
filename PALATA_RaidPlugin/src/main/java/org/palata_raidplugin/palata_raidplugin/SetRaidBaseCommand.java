@@ -46,6 +46,16 @@ public class SetRaidBaseCommand implements CommandExecutor {
             return true;
         }
 
+        // Чтение времени последней команды /setraidbase из файла конфигурации
+        long lastSetRaidBaseMillis = plugin.getConfig().getLong(team + ".setraidbase", -1L);
+        // Проверка, прошло ли достаточно времени с последней команды
+        long requiredWaitTime = plugin.getConfig().getInt("plugin.raid.setRaidBaseCooldown");
+        if (lastSetRaidBaseMillis != -1L && (System.currentTimeMillis() - lastSetRaidBaseMillis) / 1000 / 60 < requiredWaitTime) {
+            // Если не прошло достаточно времени, показываем сообщение
+            player.sendMessage(ChatColor.RED + "Подождите несколько минут перед использованием данной команды, а именно: " + requiredWaitTime + ".");
+            return true;
+        }
+
         Location playerLocation = player.getLocation();
 
         Location nexusLocationFirst = plugin.getGame().getNexusLocation(team);
@@ -93,6 +103,9 @@ public class SetRaidBaseCommand implements CommandExecutor {
             player.sendMessage(ChatColor.GREEN + "Местоположение базы для рейда вашей команды '" + team + "' было установлено как Ваша текущая локация.");
             player.sendMessage(ChatColor.GREEN + "Её координаты: " + playerLocation.getBlockX() + " " + (playerLocation.getBlockY() + 1) + " " + playerLocation.getBlockZ());
             player.sendMessage(ChatColor.GREEN + "Нексус был расположен.");
+
+            plugin.getConfig().set(team + ".setraidbase", System.currentTimeMillis());
+            plugin.saveConfig();
 
             // Перемещаем игрока, если нужно
             plugin.getGame().teleportPlayerToSafePosition(player);
