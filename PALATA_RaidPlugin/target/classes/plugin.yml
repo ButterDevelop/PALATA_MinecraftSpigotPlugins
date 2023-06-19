@@ -5,7 +5,10 @@ api-version: 1.19
 commands:
   setraidbase:
     description: Ставим центр базы.
-    usage: /<command> <team>
+    usage: /<command>
+  sethomebase:
+    description: Ставим центр дома.
+    usage: /<command>
   openraid:
     description: Открывает возможность рейда.
     usage: /<command>

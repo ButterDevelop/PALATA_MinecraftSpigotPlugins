@@ -21,6 +21,12 @@ plugin:
     isEnabled: false
     # Перезарядка команды /setraidbase
     setRaidBaseCooldown: 1
+    # Перезарядка команды /sethomebase
+    setHomeBaseCooldown: 1
+    # Радиус региона привата базы для рейда
+    privateRadiusRaid: 10
+    # Радиус региона привата дома
+    privateRadiusHome: 10
 
 # Настройки команд и командных блоков
 commands:

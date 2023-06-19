@@ -18,6 +18,7 @@ import org.bukkit.scoreboard.*;
 public class Game {
 
     private HashMap<String, Location> teamBases = new HashMap<>(); // Местоположения баз команд
+    private HashMap<String, Location> teamHomes = new HashMap<>(); // Местоположения домой команд
     private HashMap<String, ArrayList<String>> teamMembers = new HashMap<>(); // Члены команд
     private HashMap<String, Integer> teamScores = new HashMap<>(); // Счет команд
     private Scoreboard scoreboard; // Scoreboard для отображения результатов
@@ -33,6 +34,8 @@ public class Game {
     private boolean isRaidStarted = false;
     private HashMap<String, String> teamCaptains = new HashMap<>(); // Капитаны команд
     private int obsidianDestroyed = 0;
+    private double privateRadiusRaid = 10;
+    private double privateRadiusHome = 10;
 
     // Список игроков, присоединившихся к рейду
     public final List<Player> raidPlayers = new ArrayList<>();
@@ -43,6 +46,8 @@ public class Game {
         initializeTeams();
         ScoreboardManager manager = Bukkit.getScoreboardManager();
         isEnabled = plugin.getConfig().getBoolean("plugin.raid.isEnabled");
+        privateRadiusRaid = plugin.getConfig().getDouble("plugin.raid.privateRadiusRaid");
+        privateRadiusHome = plugin.getConfig().getDouble("plugin.raid.privateRadiusHome");
         scoreboard = manager.getNewScoreboard();
     }
 
@@ -218,6 +223,35 @@ public class Game {
         }
     }
 
+    public void buildFullHome(String team) {
+        World world = getHomeLocation(team).getWorld();
+        int baseRadius = 1; // Радиус базы для дома
+        Location homeLocation = getHomeLocation(team);
+        // Размещаем структуру центра дома
+        for (int x = -baseRadius; x <= baseRadius; x++) {
+            for (int y = -baseRadius; y <= baseRadius; y++) {
+                for (int z = -baseRadius; z <= baseRadius; z++) {
+                    Block block = world.getBlockAt(homeLocation.getBlockX() + x, homeLocation.getBlockY() + y, homeLocation.getBlockZ() + z);
+                    block.setType(Material.BEDROCK);
+                }
+            }
+        }
+    }
+
+    public void removeFullHome(Location homeLocation) {
+        World world = homeLocation.getWorld();
+        int baseRadius = 1; // Радиус базы для нексуса (без обсидиана)
+        // Размещаем структуру нексуса
+        for (int x = -baseRadius; x <= baseRadius; x++) {
+            for (int y = -baseRadius; y <= baseRadius; y++) {
+                for (int z = -baseRadius; z <= baseRadius; z++) {
+                    Block block = world.getBlockAt(homeLocation.getBlockX() + x, homeLocation.getBlockY() + y, homeLocation.getBlockZ() + z);
+                    block.setType(Material.AIR);
+                }
+            }
+        }
+    }
+
     public String getDefendingTeam(String attackingTeam) {
         // Возвращает название команды-защитника в зависимости от команды-атакующего.
         // Допустим, у вас есть две команды: "RED" и "BLUE". Если "RED" атакует, то "BLUE" защищает.
@@ -250,10 +284,34 @@ public class Game {
         return new Location(Bukkit.getWorld(worldName), x, y, z);
     }
 
-
     public boolean isBlockInNexus(Location blockLocation, String team) {
         Location nexusLocation = getNexusLocation(team);
         return nexusLocation != null && nexusLocation.equals(blockLocation);
+    }
+
+    public Location getHomeLocation(String team) {
+        String worldName = plugin.getConfig().getString(team + ".home.world");
+        if (worldName == null) {
+            return null;
+        }
+
+        World world = Bukkit.getWorld(worldName);
+        if (world == null) {
+            return null;
+        }
+
+        // Получаем местоположение нексуса из файла конфигурации
+        double x = plugin.getConfig().getDouble(team + ".home.x");
+        double y = plugin.getConfig().getDouble(team + ".home.y");
+        double z = plugin.getConfig().getDouble(team + ".home.z");
+
+        // Возвращает местоположение нексуса для данной команды
+        return new Location(Bukkit.getWorld(worldName), x, y, z);
+    }
+
+    public boolean isBlockInHome(Location blockLocation, String team) {
+        Location homeLocation = getHomeLocation(team);
+        return homeLocation != null && homeLocation.equals(blockLocation);
     }
 
     // Проверка, можно ли начать рейд
@@ -509,6 +567,30 @@ public class Game {
         return teamCaptains.get(team);
     }
 
+    public boolean isWithinNexusRadius(Location actionLocation, String team) {
+        Location nexusLocation = getNexusLocation(team);
+        if (nexusLocation == null || actionLocation == null) {
+            return false;
+        }
+
+        Location actionLocation2D = new Location(actionLocation.getWorld(), actionLocation.getX(), 0, actionLocation.getZ());
+        Location nexusLocation2D = new Location(nexusLocation.getWorld(), nexusLocation.getX(), 0, nexusLocation.getZ());
+
+        return Math.abs(actionLocation2D.distanceSquared(nexusLocation2D)) <= privateRadiusRaid * privateRadiusRaid;
+    }
+
+    public boolean isWithinHomeRadius(Location actionLocation, String team) {
+        Location homeLocation = getHomeLocation(team);
+        if (homeLocation == null || actionLocation == null) {
+            return false;
+        }
+
+        Location actionLocation2D = new Location(actionLocation.getWorld(), actionLocation.getX(), 0, actionLocation.getZ());
+        Location homeLocation2D = new Location(homeLocation.getWorld(), homeLocation.getX(), 0, homeLocation.getZ());
+
+        return Math.abs(actionLocation2D.distanceSquared(homeLocation2D)) <= privateRadiusHome * privateRadiusHome;
+    }
+
     // Загружает состав команд и имена капитанов из файла конфигурации
     private void loadTeamCaptains() {
         // Загрузка составов команд и имен капитанов из файла конфигурации
@@ -573,6 +655,13 @@ public class Game {
         teamBases.put("BLUE", getNexusLocation("BLUE")); // Замените на реальные координаты базы команды "BLUE"
     }
 
+    public void loadHomes()
+    {
+        teamHomes.clear();
+        teamHomes.put("RED", getHomeLocation("RED")); // Замените на реальные координаты базы команды "RED"
+        teamHomes.put("BLUE", getHomeLocation("BLUE")); // Замените на реальные координаты базы команды "BLUE"
+    }
+
     public Player getPlayerByName(String playerName) {
         for (ArrayList<String> members : teamMembers.values()) {
             for (String member : members) {
@@ -591,6 +680,8 @@ public class Game {
 
         // Инициализация баз команд
         loadBases();
+        // Инициализация домов команд
+        loadHomes();
         // Создание команды "RED" и добавление ее в teams
         MyTeam redTeam = new MyTeam("RED", getPlayerByName(getCaptainName("RED")));
         teams.put("RED", redTeam);
