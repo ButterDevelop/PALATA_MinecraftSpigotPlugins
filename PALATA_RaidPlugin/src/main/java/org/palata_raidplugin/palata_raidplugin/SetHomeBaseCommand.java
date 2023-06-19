@@ -41,6 +41,16 @@ public class SetHomeBaseCommand implements CommandExecutor {
             return true;
         }
 
+        if (plugin.getGame().isWithinNexusRadius(player.getLocation(), plugin.getGame().getDefendingTeam(team))) {
+            player.sendMessage(ChatColor.RED + "Невозможно установить Нексус! Вы сейчас на территории чужой базы для рейда.");
+            return true;
+        }
+
+        if (plugin.getGame().isWithinHomeRadius(player.getLocation(), plugin.getGame().getDefendingTeam(team))) {
+            player.sendMessage(ChatColor.RED + "Невозможно установить Нексус! Вы сейчас на территории чужого дома.");
+            return true;
+        }
+
         // Чтение времени последней команды /sethomebase из файла конфигурации
         long lastSetHomeBaseMillis = plugin.getConfig().getLong(team + ".sethomebase", -1L);
         // Проверка, прошло ли достаточно времени с последней команды

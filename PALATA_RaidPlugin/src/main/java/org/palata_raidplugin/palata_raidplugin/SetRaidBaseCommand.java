@@ -46,6 +46,16 @@ public class SetRaidBaseCommand implements CommandExecutor {
             return true;
         }
 
+        if (plugin.getGame().isWithinNexusRadius(player.getLocation(), plugin.getGame().getDefendingTeam(team))) {
+            player.sendMessage(ChatColor.RED + "Невозможно установить Нексус! Вы сейчас на территории чужой базы для рейда.");
+            return true;
+        }
+
+        if (plugin.getGame().isWithinHomeRadius(player.getLocation(), plugin.getGame().getDefendingTeam(team))) {
+            player.sendMessage(ChatColor.RED + "Невозможно установить Нексус! Вы сейчас на территории чужого дома.");
+            return true;
+        }
+
         // Чтение времени последней команды /setraidbase из файла конфигурации
         long lastSetRaidBaseMillis = plugin.getConfig().getLong(team + ".setraidbase", -1L);
         // Проверка, прошло ли достаточно времени с последней команды

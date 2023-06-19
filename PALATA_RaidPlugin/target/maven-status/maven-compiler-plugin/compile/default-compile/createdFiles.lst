@@ -1,4 +1,5 @@
 org\palata_raidplugin\palata_raidplugin\PrivateListener.class
+org\palata_raidplugin\palata_raidplugin\PrivateCheck.class
 org\palata_raidplugin\palata_raidplugin\OpenRaidCommand.class
 org\palata_raidplugin\palata_raidplugin\SetRaidBaseCommand.class
 org\palata_raidplugin\palata_raidplugin\StartRaidCommand.class

@@ -36,7 +36,7 @@ public class PrivateListener implements Listener {
 
         // Проверяем, является ли блок в пределах дистанции от Нексуса, указанной в конфигурации
         if (plugin.getGame().isWithinNexusRadius(block.getLocation(), plugin.getGame().getDefendingTeam(playerTeam))) {
-            if (plugin.getGame().isRaidActive()) {
+            if (plugin.getGame().isRaidActive() || plugin.getGame().isDelayBegunAfterRaid()) {
                 return;
             }
             event.setCancelled(true);
@@ -60,7 +60,7 @@ public class PrivateListener implements Listener {
 
         // Проверяем, является ли блок в пределах дистанции от Нексуса, указанной в конфигурации
         if (plugin.getGame().isWithinNexusRadius(block.getLocation(), plugin.getGame().getDefendingTeam(playerTeam))) {
-            if (plugin.getGame().isRaidActive()) {
+            if (plugin.getGame().isRaidActive() || plugin.getGame().isDelayBegunAfterRaid()) {
                 return;
             }
             event.setCancelled(true);
@@ -84,7 +84,7 @@ public class PrivateListener implements Listener {
 
         // Проверяем, является ли блок в пределах дистанции от Нексуса, указанной в конфигурации
         if (plugin.getGame().isWithinNexusRadius(block.getLocation(), plugin.getGame().getDefendingTeam(playerTeam))) {
-            if (plugin.getGame().isRaidActive()) {
+            if (plugin.getGame().isRaidActive() || plugin.getGame().isDelayBegunAfterRaid()) {
                 return;
             }
             event.setCancelled(true);

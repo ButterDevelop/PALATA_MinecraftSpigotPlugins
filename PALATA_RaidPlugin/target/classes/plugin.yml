@@ -9,6 +9,9 @@ commands:
   sethomebase:
     description: Ставим центр дома.
     usage: /<command>
+  privatecheck:
+    description: Проверка на то, в каком регионе вы находитесь.
+    usage: /<command>
   openraid:
     description: Открывает возможность рейда.
     usage: /<command>

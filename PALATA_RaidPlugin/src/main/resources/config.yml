@@ -27,6 +27,8 @@ plugin:
     privateRadiusRaid: 10
     # Радиус региона привата дома
     privateRadiusHome: 10
+    # После рейда разрешено PvP и взаимодействия ещё N минут
+    minutesPrivateDelayAfterRaid: 5
 
 # Настройки команд и командных блоков
 commands:

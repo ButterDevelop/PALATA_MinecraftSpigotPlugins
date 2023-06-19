@@ -1,5 +1,6 @@
 package org.palata_raidplugin.palata_raidplugin;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -47,7 +48,7 @@ public class StartRaidCommand implements CommandExecutor {
         String currentDateTimeString = currentDateTime.format(formatter);
 
         game.startRaid(game.getPlayerTeam(player.getName()));
-        player.sendMessage(ChatColor.GREEN + "Рейд начнется через " + game.getRaidDelayMinutes() + " минут. Сейчас на часах " + currentDateTimeString + ".");
+        Bukkit.broadcastMessage(ChatColor.GREEN + "Рейд начнется через " + game.getRaidDelayMinutes() + " минут. Сейчас на часах " + currentDateTimeString + ".");
         return true;
     }
 }

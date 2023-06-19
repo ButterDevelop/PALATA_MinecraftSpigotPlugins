@@ -32,6 +32,7 @@ public class Game {
     private boolean isRaidActive = false;
     private boolean isEnabled = true;
     private boolean isRaidStarted = false;
+    private boolean isDelayBegunAfterRaid = false;
     private HashMap<String, String> teamCaptains = new HashMap<>(); // Капитаны команд
     private int obsidianDestroyed = 0;
     private double privateRadiusRaid = 10;
@@ -335,12 +336,6 @@ public class Game {
             return true;
         }
 
-        /*for (MyTeam otherTeam : teams.values()) {
-            if (!otherTeam.equals(team) && otherTeam.getMembers().size() >= minPlayers) {
-                return true;
-            }
-        }*/
-
         return false;
     }
 
@@ -378,6 +373,15 @@ public class Game {
             teamScores.put(team, 0);
         }
         teamScores.put(team, teamScores.get(team) + points);
+
+        isDelayBegunAfterRaid = true;
+        int minutesPrivateDelayAfterRaid = plugin.getConfig().getInt("plugin.raid.minutesPrivateDelayAfterRaid");
+        // Запустите асинхронную задачу через указанное количество минут
+        BukkitScheduler scheduler = Bukkit.getScheduler();
+        scheduler.runTaskLater(plugin, () -> {
+            isDelayBegunAfterRaid = false;
+        }, (long) minutesPrivateDelayAfterRaid * 60 * 20); // Конвертируйте минуты в тики (20 тиков = 1 секунда)
+
         saveTeamScores();
         updateScoreboard();
     }
@@ -405,6 +409,10 @@ public class Game {
     // Проверяет, пошёл ли отсчёт до начала рейда
     public boolean isRaidStarted() {
         return isRaidStarted;
+    }
+
+    public boolean isDelayBegunAfterRaid() {
+        return isDelayBegunAfterRaid;
     }
 
     // Увеличивает количество уничтоженного обсидиана на 1

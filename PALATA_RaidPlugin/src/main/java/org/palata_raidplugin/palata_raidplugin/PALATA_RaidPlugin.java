@@ -12,6 +12,7 @@ public final class PALATA_RaidPlugin extends JavaPlugin {
         game = new Game(this);
         this.getCommand("setraidbase").setExecutor(new SetRaidBaseCommand(this));
         this.getCommand("sethomebase").setExecutor(new SetHomeBaseCommand(this));
+        this.getCommand("privatecheck").setExecutor(new PrivateCheck(this));
         this.getCommand("openraid").setExecutor(new OpenRaidCommand(this));
         this.getCommand("cancelraid").setExecutor(new CancelRaidCommand(game));
         this.getCommand("joinraid").setExecutor(new JoinRaidCommand(game));
