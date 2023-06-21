@@ -36,10 +36,11 @@ public class SetHomeBaseCommand implements CommandExecutor {
             return true;
         }
 
-        if (!player.getWorld().getName().equals("world")) {
+        String worldName = player.getWorld().getName();
+        /*if (!worldName.equals("world")) {
             player.sendMessage(ChatColor.RED + "Дом можно установить только в обычном мире.");
             return true;
-        }
+        }*/
 
         if (plugin.getGame().isWithinNexusRadius(player.getLocation(), plugin.getGame().getDefendingTeam(team))) {
             player.sendMessage(ChatColor.RED + "Невозможно установить Нексус! Вы сейчас на территории чужой базы для рейда.");
@@ -63,22 +64,20 @@ public class SetHomeBaseCommand implements CommandExecutor {
 
         Location playerLocation = player.getLocation();
 
-        Location homeLocationFirst = plugin.getGame().getHomeLocation(team);
+        Location homeLocationFirst = plugin.getGame().getHomeLocation(team, worldName);
 
         // Записываем координаты игрока в файл конфигурации для указанной команды
-        plugin.getConfig().set(team + ".home.x", playerLocation.getBlockX());
-        plugin.getConfig().set(team + ".home.y", playerLocation.getBlockY() + 1);
-        plugin.getConfig().set(team + ".home.z", playerLocation.getBlockZ());
-        plugin.getConfig().set(team + ".home.world", playerLocation.getWorld().getName());
+        plugin.getConfig().set(team + "." + worldName + ".home.x", playerLocation.getBlockX());
+        plugin.getConfig().set(team + "." + worldName + ".home.y", playerLocation.getBlockY() + 1);
+        plugin.getConfig().set(team + "." + worldName + ".home.z", playerLocation.getBlockZ());
+        plugin.getConfig().set(team + "." + worldName + ".home.world", playerLocation.getWorld().getName());
         plugin.saveConfig();
-
-        plugin.getGame().loadHomes();
 
         // Размещаем структуру нексуса
         World world = playerLocation.getWorld();
         int baseRadius = 1; // Радиус базы для нексуса (без обсидиана)
 
-        Location homeLocation = plugin.getGame().getHomeLocation(team);
+        Location homeLocation = plugin.getGame().getHomeLocation(team, worldName);
         boolean canPlaceHome = true;
 
         // Проверяем, возможно ли разместить структуру нексуса
@@ -99,7 +98,7 @@ public class SetHomeBaseCommand implements CommandExecutor {
             if (homeLocationFirst != null) {
                 plugin.getGame().removeFullHome(homeLocationFirst);
             }
-            plugin.getGame().buildFullHome(plugin.getGame().getPlayerTeam(player.getName()));
+            plugin.getGame().buildFullHome(plugin.getGame().getPlayerTeam(player.getName()), worldName);
 
             player.sendMessage(ChatColor.GREEN + "Местоположение базы для рейда вашей команды '" + team + "' было установлено как Ваша текущая локация.");
             player.sendMessage(ChatColor.GREEN + "Её координаты: " + playerLocation.getBlockX() + " " + (playerLocation.getBlockY() + 1) + " " + playerLocation.getBlockZ());
@@ -112,10 +111,10 @@ public class SetHomeBaseCommand implements CommandExecutor {
             plugin.getGame().teleportPlayerToSafePosition(player);
         } else {
             if (homeLocationFirst != null) {
-                plugin.getConfig().set(team + ".home.x", homeLocationFirst.getBlockX());
-                plugin.getConfig().set(team + ".home.y", homeLocationFirst.getBlockY());
-                plugin.getConfig().set(team + ".home.z", homeLocationFirst.getBlockZ());
-                plugin.getConfig().set(team + ".home.world", homeLocationFirst.getWorld().getName());
+                plugin.getConfig().set(team + "." + worldName + ".home.x", homeLocationFirst.getBlockX());
+                plugin.getConfig().set(team + "." + worldName + ".home.y", homeLocationFirst.getBlockY());
+                plugin.getConfig().set(team + "." + worldName + ".home.z", homeLocationFirst.getBlockZ());
+                plugin.getConfig().set(team + "." + worldName + ".home.world", homeLocationFirst.getWorld().getName());
                 plugin.saveConfig();
             }
 
