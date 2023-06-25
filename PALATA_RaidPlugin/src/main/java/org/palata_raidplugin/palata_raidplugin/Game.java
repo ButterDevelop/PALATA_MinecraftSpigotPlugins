@@ -4,6 +4,8 @@ import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.EnderDragon;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import java.util.HashMap;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ public class Game {
     private Scoreboard scoreboard; // Scoreboard для отображения результатов
     public String raidingTeam = null; // Команда, которая в настоящее время проводит рейд
     public String lastRaidOpenedTheTeam = null; // Последняя команда, которая начала рейд
-    public List<String> abandonedToPrivateWorlds = new ArrayList<>();
+    public List<String> alwaysAllowedPvPWorlds = new ArrayList<>();
     private Plugin plugin;
     private Map<String, MyTeam> teams = new HashMap<>();
 
@@ -37,6 +39,7 @@ public class Game {
     private int obsidianDestroyed = 0;
     private double privateRadiusRaid = 10;
     private double privateRadiusHome = 10;
+    private double endWorldMainIslandRadius = 10;
 
     // Список игроков, присоединившихся к рейду
     public final List<Player> raidPlayers = new ArrayList<>();
@@ -49,6 +52,7 @@ public class Game {
         isEnabled = plugin.getConfig().getBoolean("plugin.raid.isEnabled");
         privateRadiusRaid = plugin.getConfig().getDouble("plugin.raid.privateRadiusRaid");
         privateRadiusHome = plugin.getConfig().getDouble("plugin.raid.privateRadiusHome");
+        endWorldMainIslandRadius = plugin.getConfig().getDouble("plugin.raid.endWorldMainIslandRadius");
         scoreboard = manager.getNewScoreboard();
     }
 
@@ -300,6 +304,10 @@ public class Game {
             return null;
         }
 
+        if (!plugin.getConfig().isSet(team + "." + worldName + ".home.x")) {
+            return null;
+        }
+
         // Получаем местоположение нексуса из файла конфигурации
         double x = plugin.getConfig().getDouble(team + "." + worldName + ".home.x");
         double y = plugin.getConfig().getDouble(team + "." + worldName + ".home.y");
@@ -489,6 +497,10 @@ public class Game {
         return plugin.getConfig().getInt("plugin.raid.openDurationMinutes");
     }
 
+    public double getEndWorldMainIslandRadius() {
+        return endWorldMainIslandRadius;
+    }
+
     public List<Player> getTeamPlayers(String team) {
         List<String> playerNames = teamMembers.getOrDefault(team, new ArrayList<>());
         List<Player> players = new ArrayList<>();
@@ -583,15 +595,15 @@ public class Game {
             return false;
         }
 
-        Location actionLocation2D = new Location(actionLocation.getWorld(), actionLocation.getX(), 0, actionLocation.getZ());
-        Location nexusLocation2D = new Location(nexusLocation.getWorld(), nexusLocation.getX(), 0, nexusLocation.getZ());
-
-        return Math.abs(actionLocation2D.distanceSquared(nexusLocation2D)) <= privateRadiusRaid * privateRadiusRaid;
+        return isWithin2DRadius(actionLocation, nexusLocation, privateRadiusRaid);
     }
 
     public boolean isWithinHomeRadius(Location actionLocation, String team) {
+        if (actionLocation == null) {
+            return false;
+        }
         Location homeLocation = getHomeLocation(team, actionLocation.getWorld().getName());
-        if (homeLocation == null || actionLocation == null) {
+        if (homeLocation == null) {
             return false;
         }
 
@@ -599,10 +611,44 @@ public class Game {
             return false;
         }
 
-        Location actionLocation2D = new Location(actionLocation.getWorld(), actionLocation.getX(), 0, actionLocation.getZ());
-        Location homeLocation2D = new Location(homeLocation.getWorld(), homeLocation.getX(), 0, homeLocation.getZ());
+        return isWithin2DRadius(actionLocation, homeLocation, privateRadiusHome);
+    }
 
-        return Math.abs(actionLocation2D.distanceSquared(homeLocation2D)) <= privateRadiusHome * privateRadiusHome;
+    public boolean isWithin2DRadius(Location loc1, Location loc2, double distance) {
+        Location actionLocation2D = new Location(loc1.getWorld(), loc1.getX(), 0, loc1.getZ());
+        Location nexusLocation2D = new Location(loc2.getWorld(), loc2.getX(), 0, loc2.getZ());
+
+        return Math.abs(actionLocation2D.distanceSquared(nexusLocation2D)) <= distance * distance;
+    }
+
+    public boolean isWithinRadius(Location loc1, Location loc2, double distance) {
+        return Math.abs(loc1.distanceSquared(loc2)) <= distance * distance;
+    }
+
+    public boolean isThePvPIsAlwaysOnInThisWorld(String worldName) {
+        return alwaysAllowedPvPWorlds.contains(worldName);
+    }
+
+    public boolean areLocationsEqualByXYZAndWorld(Location loc1, Location loc2) {
+        if (loc1.getWorld().equals(loc2.getWorld()) &&
+                loc1.getBlockX() == loc2.getBlockX() &&
+                loc1.getBlockY() == loc2.getBlockY() &&
+                loc1.getBlockZ() == loc2.getBlockZ()) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isDragonAlive() {
+        World endWorld = Bukkit.getWorld("world_the_end");
+        if (endWorld != null) {
+            for (Entity entity : endWorld.getEntities()) {
+                if (entity instanceof EnderDragon) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     // Загружает состав команд и имена капитанов из файла конфигурации
@@ -669,10 +715,10 @@ public class Game {
         teamBases.put("BLUE", getNexusLocation("BLUE")); // Замените на реальные координаты базы команды "BLUE"
     }
 
-    public void loadDeniedToPrivateWorlds() {
+    public void loadAlwaysAllowedPvPWorld() {
         ConfigurationSection pluginSection = plugin.getConfig().getConfigurationSection("plugin");
         if (pluginSection != null) {
-            abandonedToPrivateWorlds = pluginSection.getStringList("worldsWherePvPIsAlwaysAllowed");
+            alwaysAllowedPvPWorlds = pluginSection.getStringList("pvpIsAlwaysAllowedInTheseWorlds");
         }
     }
 
@@ -706,7 +752,7 @@ public class Game {
 
         loadTeamScores();
 
-        loadDeniedToPrivateWorlds();
+        loadAlwaysAllowedPvPWorld();
     }
 
     public int getRaidDelayMinutes() {

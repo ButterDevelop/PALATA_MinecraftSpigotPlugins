@@ -1,5 +1,6 @@
 package org.palata_raidplugin.palata_raidplugin;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -126,15 +127,42 @@ public class PrivateListener implements Listener {
             Player damager = (Player) event.getDamager();
             String damagerTeam = plugin.getGame().getPlayerTeam(damager.getName());
 
-            if (damagedTeam.equals(damagerTeam)) {
+            if ((damagedTeam == null && damagerTeam == null) || damagedTeam.equals(damagerTeam)) {
                 // Игроки в одной команде, PvP разрешен
                 return;
             }
 
+            if (damagedTeam == null) {
+                damager.sendMessage(ChatColor.RED + "Вы не можете наносить урон аборигенам.");
+                event.setCancelled(true);
+                return;
+            }
+
+            if (damagerTeam == null) {
+                damager.sendMessage(ChatColor.RED + "Вы абориген. Вы не можете наносить урон другим.");
+                event.setCancelled(true);
+                return;
+            }
+
+            boolean homeRadiusFlag = plugin.getGame().isWithinHomeRadius(damaged.getLocation(), damagerTeam);
+
             // Здесь мы узнаем, находится ли игрок на территории базы враждебной команды
-            if (plugin.getGame().isWithinNexusRadius(damaged.getLocation(), damagerTeam) ||
-                    plugin.getGame().isWithinHomeRadius(damaged.getLocation(), damagerTeam)) {
+            if (plugin.getGame().isWithinNexusRadius(damaged.getLocation(), damagerTeam) || homeRadiusFlag) {
                 // Игрок на территории враждебной команды, PvP разрешен
+                return;
+            }
+
+            if (plugin.getGame().isThePvPIsAlwaysOnInThisWorld(damaged.getLocation().getWorld().getName()) && !homeRadiusFlag) {
+                // Мы находимся в мире, в котором PvP разрешено всегда, и при этом НЕ на территории чужого дома
+                return;
+            }
+
+            String damagedWorld = damaged.getLocation().getWorld().getName();
+            if (damagedWorld.equals("world_the_end") &&
+                !plugin.getGame().isThePvPIsAlwaysOnInThisWorld(damagedWorld) &&
+                    plugin.getGame().isDragonAlive() &&
+                        plugin.getGame().isWithin2DRadius(damaged.getLocation(), new Location(damaged.getLocation().getWorld(), 0, 0, 0), plugin.getGame().getEndWorldMainIslandRadius())) {
+                // PvP в Энде не всегда включено. Сейчас жив дракон, поэтому на главном острове PvP должно быть включено.
                 return;
             }
 

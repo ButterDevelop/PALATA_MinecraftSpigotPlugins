@@ -37,6 +37,11 @@ public class SetHomeBaseCommand implements CommandExecutor {
         }
 
         String worldName = player.getWorld().getName();
+        if (worldName.equals("world_the_end") && plugin.getGame().isWithin2DRadius(player.getLocation(), new Location(player.getWorld(), 0, 0, 0), plugin.getGame().getEndWorldMainIslandRadius())) {
+            player.sendMessage(ChatColor.RED + "Вы не можете установить свой дом на главном острове в Энде! Это территория Дракона.");
+            return true;
+        }
+
         /*if (!worldName.equals("world")) {
             player.sendMessage(ChatColor.RED + "Дом можно установить только в обычном мире.");
             return true;

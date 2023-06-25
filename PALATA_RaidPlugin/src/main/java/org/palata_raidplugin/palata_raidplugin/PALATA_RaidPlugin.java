@@ -21,6 +21,7 @@ public final class PALATA_RaidPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new BlockBreakListener(game), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(game), this);
         getServer().getPluginManager().registerEvents(new PrivateListener(this), this);
+        getServer().getPluginManager().registerEvents(new DragonManager(this), this);
     }
 
     @Override

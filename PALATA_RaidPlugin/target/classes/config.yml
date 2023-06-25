@@ -1,9 +1,6 @@
 # Настройки плагина
 plugin:
-  # Миры, где PvP всегда активен, вне зависимости от правил, зависимых от рейда
-  # Например, вне рейда в обычном мире между командами PvP запрещено. Но в этих мирах - разрешено.
-  worldsWherePvPIsAlwaysAllowed:
-    - world_nether
+  pvpIsAlwaysAllowedInTheseWorlds:
     - world_the_end
   raid:
     # Задержка перед началом рейда (в минутах)
@@ -32,17 +29,13 @@ plugin:
     privateRadiusRaid: 10
     # Радиус региона привата дома
     privateRadiusHome: 10
+    # Радиус главного острова в Энде
+    endWorldMainIslandRadius: 150
     # После рейда разрешено PvP и взаимодействия ещё N минут
     minutesPrivateDelayAfterRaid: 5
 
-# Настройки команд и командных блоков
-commands:
-  # Команда для установки базы рейда
-  setraidbase:
-    # Необходимые аргументы команды
-    args: "<team>"
-    # Описание команды
-    description: "Устанавливает базу рейда для указанной команды"
+dragon:
+  respawnIntervalHours: 6
 
 # Настройки команд и командных блоков
 teams:
