@@ -27,3 +27,6 @@ commands:
   raid:
     description: Включение и выключение рейдов.
     usage: /<command> [on|off|info]
+  getenemyraidbasecoords:
+    description: Получение координат вражеского Нексуса.
+    usage: /<command>

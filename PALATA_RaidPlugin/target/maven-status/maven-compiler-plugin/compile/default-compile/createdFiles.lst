@@ -10,6 +10,7 @@ org\palata_raidplugin\palata_raidplugin\PALATA_RaidPlugin.class
 org\palata_raidplugin\palata_raidplugin\PlayerJoinListener.class
 org\palata_raidplugin\palata_raidplugin\BlockBreakListener.class
 org\palata_raidplugin\palata_raidplugin\SetHomeBaseCommand.class
+org\palata_raidplugin\palata_raidplugin\GetEnemyRaidBaseCoordsCommand.class
 org\palata_raidplugin\palata_raidplugin\JoinRaidCommand.class
 org\palata_raidplugin\palata_raidplugin\Game.class
 org\palata_raidplugin\palata_raidplugin\Game$1.class

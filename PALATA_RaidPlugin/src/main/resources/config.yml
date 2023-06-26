@@ -1,6 +1,8 @@
 # Настройки плагина
 plugin:
   pvpIsAlwaysAllowedInTheseWorlds:
+    - world
+    - world_nether
     - world_the_end
   raid:
     # Задержка перед началом рейда (в минутах)
@@ -33,6 +35,33 @@ plugin:
     endWorldMainIslandRadius: 150
     # После рейда разрешено PvP и взаимодействия ещё N минут
     minutesPrivateDelayAfterRaid: 5
+
+players:
+  'player1': 'RealName1'
+  'player2': 'RealName2'
+  'MaXiMAA': 'Мой Создатель'
+  'TERESH': 'Тереш'
+  'Kahabrat4': 'Марат'
+  '_Tusovnik_': 'fn_aferist'
+  'Doresh': 'Петя'
+  'vanopog': 'Белоруски'
+  'vladqw': 'Владос'
+  'rqhappy': 'Чурка'
+  'KpoBbHe}|{eJle3 KpoBb_CyKa': 'Сын Шлюхи (Ваня)'
+  'JellyVoka': 'Глубокослав'
+  'joker91169': 'Капира'
+  'cucoldman': 'Тёмыч'
+  'TuscaidJFD': 'Саня'
+  'COJIOTA': 'Антонио'
+  'BIOS': 'Дьявол'
+  'aa1dre': 'Доминик Туррета'
+  'Totoka': 'Роман Четырёхглазый'
+  'Os1ass': 'Сладкопар Жижедуй'
+  'sal': 'Димон'
+  'siviavio4ka': 'Слаик'
+  'SDESAH': 'Антончик'
+  'gal.ksu': 'Ксюша'
+  'Vikchankch4': 'Вика'
 
 dragon:
   respawnIntervalHours: 6

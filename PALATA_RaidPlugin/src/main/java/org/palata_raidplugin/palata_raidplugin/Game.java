@@ -338,8 +338,8 @@ public class Game {
         int differencePlayersCount = plugin.getConfig().getInt("plugin.raid.differencePlayersCount");
 
         // проверяем, есть ли другие команды и достаточно ли игроков
-        if (getTeamPlayers(teamName).size() >= minPlayers && getTeamPlayers(getDefendingTeam(teamName)).size() >= minPlayers &&
-                getTeamPlayers(teamName).size() - getTeamPlayers(getDefendingTeam(teamName)).size() <= differencePlayersCount) {
+        if (raidPlayers.size() >= minPlayers && getOnlineTeamPlayers(getDefendingTeam(teamName)).size() >= minPlayers &&
+                raidPlayers.size() - getOnlineTeamPlayers(getDefendingTeam(teamName)).size() <= differencePlayersCount) {
             return true;
         }
 
@@ -471,9 +471,9 @@ public class Game {
         obsidianDestroyed = 0;
         raidPlayers.clear();
 
+        int openDurationMinutes = getOpenRaidDurationMinutes();
         for (Player player : getTeamPlayers(team)) {
             player.sendMessage(ChatColor.GREEN + "Рейд был открыт! Присоединяйтесь к нему с помощью /joinraid");
-            int openDurationMinutes = getOpenRaidDurationMinutes();
             player.sendMessage(ChatColor.YELLOW + "Осталось времени для присоединения: " + openDurationMinutes + " минут.");
             player.sendMessage(ChatColor.YELLOW + "Если капитан команды за это время не напишет /startraid, то рейд будет автоматически отменён.");
         }
@@ -507,6 +507,18 @@ public class Game {
         for (String playerName : playerNames) {
             Player player = Bukkit.getPlayer(playerName);
             if (player != null) {
+                players.add(player);
+            }
+        }
+        return players;
+    }
+
+    public List<Player> getOnlineTeamPlayers(String team) {
+        List<String> playerNames = teamMembers.getOrDefault(team, new ArrayList<>());
+        List<Player> players = new ArrayList<>();
+        for (String playerName : playerNames) {
+            Player player = Bukkit.getPlayer(playerName);
+            if (player != null && player.isOnline()) {
                 players.add(player);
             }
         }

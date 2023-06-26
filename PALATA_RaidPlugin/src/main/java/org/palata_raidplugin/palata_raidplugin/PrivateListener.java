@@ -34,6 +34,9 @@ public class PrivateListener implements Listener {
 
         // Получаем команду игрока
         String playerTeam = plugin.getGame().getPlayerTeam(player.getName());
+        if (playerTeam == null) {
+            return;
+        }
 
         // Проверяем, является ли блок в пределах дистанции от Нексуса, указанной в конфигурации
         if (plugin.getGame().isWithinNexusRadius(block.getLocation(), plugin.getGame().getDefendingTeam(playerTeam))) {
@@ -58,6 +61,9 @@ public class PrivateListener implements Listener {
 
         // Получаем команду игрока
         String playerTeam = plugin.getGame().getPlayerTeam(player.getName());
+        if (playerTeam == null) {
+            return;
+        }
 
         // Проверяем, является ли блок в пределах дистанции от Нексуса, указанной в конфигурации
         if (plugin.getGame().isWithinNexusRadius(block.getLocation(), plugin.getGame().getDefendingTeam(playerTeam))) {
@@ -82,6 +88,9 @@ public class PrivateListener implements Listener {
 
         // Получаем команду игрока
         String playerTeam = plugin.getGame().getPlayerTeam(player.getName());
+        if (playerTeam == null) {
+            return;
+        }
 
         // Проверяем, является ли блок в пределах дистанции от Нексуса, указанной в конфигурации
         if (plugin.getGame().isWithinNexusRadius(block.getLocation(), plugin.getGame().getDefendingTeam(playerTeam))) {
@@ -104,6 +113,9 @@ public class PrivateListener implements Listener {
         if (!(event.getEntity() instanceof Player) && event.getDamager() instanceof Player) {
             Player damager = (Player) event.getDamager();
             String damagerTeam = plugin.getGame().getPlayerTeam(damager.getName());
+            if (damagerTeam == null) {
+                return;
+            }
             if (plugin.getGame().isWithinNexusRadius(event.getEntity().getLocation(), plugin.getGame().getDefendingTeam(damagerTeam)) && plugin.getGame().isRaidActive()) {
                 //Рейд активен, можно нанести урон рядом с Нексусом
                 return;
