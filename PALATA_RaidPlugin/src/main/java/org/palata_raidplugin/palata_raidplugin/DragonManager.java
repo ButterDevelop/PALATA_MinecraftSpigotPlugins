@@ -12,20 +12,23 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
+
 import java.util.HashSet;
 import java.util.UUID;
 
 public class DragonManager implements Listener {
     private final PALATA_RaidPlugin plugin;
     private final long respawnInterval;
-    private final Location crystalLocation1;
-    private final Location crystalLocation2;
-    private final Location crystalLocation3;
-    private final Location crystalLocation4;
-    private final Location endPortalLocation;
+    private Location crystalLocation1 = null;
+    private Location crystalLocation2 = null;
+    private Location crystalLocation3 = null;
+    private Location crystalLocation4 = null;
+    private Location endPortalLocation = null;
     private HashSet<UUID> killedDragons = new HashSet<>();  // Добавьте это поле
 
     public DragonManager(PALATA_RaidPlugin plugin) {
@@ -34,22 +37,40 @@ public class DragonManager implements Listener {
         this.respawnInterval = respawnIntervalInHours * 60 * 60 * 1000; // Convert hours to milliseconds
 
         World end = Bukkit.getWorld("world_the_end");
-        endPortalLocation = end.getEnderDragonBattle().getEndPortalLocation(); //3 62 0, 0 62 -3, -3 62 0, 0 62 3 - 0 61 0
-        crystalLocation1 = new Location(end, endPortalLocation.getBlockX() + 3, endPortalLocation.getBlockY(), endPortalLocation.getBlockZ());
-        crystalLocation2 = new Location(end, endPortalLocation.getBlockX() - 3, endPortalLocation.getBlockY(), endPortalLocation.getBlockZ());
-        crystalLocation3 = new Location(end, endPortalLocation.getBlockX(), endPortalLocation.getBlockY(), endPortalLocation.getBlockZ() + 3);
-        crystalLocation4 = new Location(end, endPortalLocation.getBlockX(), endPortalLocation.getBlockY(), endPortalLocation.getBlockZ() - 3);
+        setupPortalThings(end);
+    }
 
-        // Schedule dragon respawn if needed
-        long deathTime = plugin.getConfig().getLong("dragon.deathTime", 0);
-        long respawnTime = deathTime + respawnInterval;
-        long delay = respawnTime - System.currentTimeMillis();
-        if (!plugin.getGame().isDragonAlive()) {
-            if (delay > 0) {
-                scheduleDragonRespawn(delay / 50); // Convert milliseconds to ticks
-            } else {
-                scheduleDragonRespawn(20); // 20 ticks = 1 seconds
+    public void setupPortalThings(World end) {
+        if (end != null && end.getEnderDragonBattle() != null && end.getEnderDragonBattle().getEndPortalLocation() != null && endPortalLocation == null) {
+            endPortalLocation = end.getEnderDragonBattle().getEndPortalLocation(); //3 62 0, 0 62 -3, -3 62 0, 0 62 3 - 0 61 0
+            crystalLocation1 = new Location(end, endPortalLocation.getBlockX() + 3, endPortalLocation.getBlockY(), endPortalLocation.getBlockZ());
+            crystalLocation2 = new Location(end, endPortalLocation.getBlockX() - 3, endPortalLocation.getBlockY(), endPortalLocation.getBlockZ());
+            crystalLocation3 = new Location(end, endPortalLocation.getBlockX(), endPortalLocation.getBlockY(), endPortalLocation.getBlockZ() + 3);
+            crystalLocation4 = new Location(end, endPortalLocation.getBlockX(), endPortalLocation.getBlockY(), endPortalLocation.getBlockZ() - 3);
+
+            // Schedule dragon respawn if needed
+            long deathTime = plugin.getConfig().getLong("dragon.deathTime", 0);
+            long respawnTime = deathTime + respawnInterval;
+            long delay = respawnTime - System.currentTimeMillis();
+            if (!plugin.getGame().isDragonAlive()) {
+                if (delay > 0) {
+                    scheduleDragonRespawn(delay / 50); // Convert milliseconds to ticks
+                } else {
+                    scheduleDragonRespawn(20); // 20 ticks = 1 seconds
+                }
             }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
+        Player player = event.getPlayer();
+        if (player.getWorld().getEnvironment() == World.Environment.THE_END) {
+            // Игрок вошёл в Энд
+            BukkitScheduler scheduler = Bukkit.getScheduler();
+            scheduler.runTaskLater(plugin, () -> {
+                setupPortalThings(player.getWorld());
+            }, 20); // Конвертируйте минуты в тики (20 тиков = 1 секунда)
         }
     }
 

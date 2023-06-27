@@ -6,19 +6,19 @@ plugin:
     - world_the_end
   raid:
     # Задержка перед началом рейда (в минутах)
-    delay: 15
+    delay: 30
     # Требуемое количество сломанных блоков обсидиана в Нексусе
     requiredDestroyCount: 10
     # Длительность рейда
-    durationMinutes: 1
+    durationMinutes: 60
     # Длительность ожидания игроков для присоединения к рейду
-    openDurationMinutes: 10
+    openDurationMinutes: 5
     # Разница в количестве игроков для начала рейдов
     differencePlayersCount: 2
     # Минимальное количество игроков в команде для начала
     minPlayers: 2
     # Количество минут щита после рейда
-    shieldMinutes: 10
+    shieldMinutes: 360
     # Количество минут щита атакующей команды после рейда
     shieldMinutesDefending: 1
     # Включена ли система рейдов или нет
@@ -28,13 +28,13 @@ plugin:
     # Перезарядка команды /sethomebase
     setHomeBaseCooldown: 1
     # Радиус региона привата базы для рейда
-    privateRadiusRaid: 10
+    privateRadiusRaid: 80
     # Радиус региона привата дома
-    privateRadiusHome: 10
+    privateRadiusHome: 80
     # Радиус главного острова в Энде
     endWorldMainIslandRadius: 150
     # После рейда разрешено PvP и взаимодействия ещё N минут
-    minutesPrivateDelayAfterRaid: 5
+    minutesPrivateDelayAfterRaid: 10
 
 players:
   - "player1:RealName1"
@@ -64,7 +64,7 @@ players:
   - "Vikchankch4:Вика"
 
 dragon:
-  respawnIntervalHours: 6
+  respawnIntervalHours: 4
 
 # Настройки команд и командных блоков
 teams:
@@ -74,13 +74,13 @@ teams:
     captain: "RedCaptain"
     # Члены команды
     members:
+      - "RedCaptain"
       - "RedPlayer1"
-      - "RedPlayer2"
   # Команда "blue"
   BLUE:
     # Капитан команды
     captain: "BlueCaptain"
     # Члены команды
     members:
+      - "BlueCaptain"
       - "BluePlayer1"
-      - "BluePlayer2"

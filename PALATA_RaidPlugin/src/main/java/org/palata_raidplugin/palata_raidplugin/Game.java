@@ -106,7 +106,7 @@ public class Game {
                 isRaidOpen = false;
                 isRaidStarted = false;
                 for (Player player : raidPlayers) {
-                    player.sendMessage(ChatColor.RED + "Рейд не может быть начат из-за недостаточного количества игроков другой команды.");
+                    player.sendMessage(ChatColor.RED + "Рейд не может быть начат из-за недостаточного количества игроков другой команды или по причине отсутствия Нексуса у другой команды.");
                 }
             }
         }, (long) delayMinutes * 60 * 20); // Конвертируйте минуты в тики (20 тиков = 1 секунда)
@@ -339,7 +339,8 @@ public class Game {
 
         // проверяем, есть ли другие команды и достаточно ли игроков
         if (raidPlayers.size() >= minPlayers && getOnlineTeamPlayers(getDefendingTeam(teamName)).size() >= minPlayers &&
-                raidPlayers.size() - getOnlineTeamPlayers(getDefendingTeam(teamName)).size() <= differencePlayersCount) {
+                raidPlayers.size() - getOnlineTeamPlayers(getDefendingTeam(teamName)).size() <= differencePlayersCount &&
+                    getNexusLocation(getDefendingTeam(teamName)) != null) {
             return true;
         }
 
@@ -642,7 +643,7 @@ public class Game {
     }
 
     public boolean areLocationsEqualByXYZAndWorld(Location loc1, Location loc2) {
-        if (loc1.getWorld().equals(loc2.getWorld()) &&
+        if (loc1.getWorld().getName().equals(loc2.getWorld().getName()) &&
                 loc1.getBlockX() == loc2.getBlockX() &&
                 loc1.getBlockY() == loc2.getBlockY() &&
                 loc1.getBlockZ() == loc2.getBlockZ()) {

@@ -56,6 +56,18 @@ public class SetRaidBaseCommand implements CommandExecutor {
             return true;
         }
 
+        if (plugin.getGame().isWithinHomeRadius(player.getLocation(), team)) {
+            player.sendMessage(ChatColor.RED + "Невозможно установить Нексус! Вы сейчас на территории своего дома.");
+            return true;
+        }
+
+        int radiusHome = plugin.getConfig().getInt("plugin.raid.privateRadiusHome");
+        int radiusRaid = plugin.getConfig().getInt("plugin.raid.privateRadiusRaid");
+        if (plugin.getGame().isWithinRadius(player.getLocation(), plugin.getGame().getHomeLocation(team, player.getLocation().getWorld().getName()), radiusHome + radiusRaid)) {
+            player.sendMessage(ChatColor.RED + "Невозможно установить дом! Территория этого дома и территория вашей базы для рейда пересекаются.");
+            return true;
+        }
+
         // Чтение времени последней команды /setraidbase из файла конфигурации
         long lastSetRaidBaseMillis = plugin.getConfig().getLong(team + ".setraidbase", -1L);
         // Проверка, прошло ли достаточно времени с последней команды

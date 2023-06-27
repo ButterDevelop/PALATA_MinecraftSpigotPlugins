@@ -48,12 +48,24 @@ public class SetHomeBaseCommand implements CommandExecutor {
         }*/
 
         if (plugin.getGame().isWithinNexusRadius(player.getLocation(), plugin.getGame().getDefendingTeam(team))) {
-            player.sendMessage(ChatColor.RED + "Невозможно установить Нексус! Вы сейчас на территории чужой базы для рейда.");
+            player.sendMessage(ChatColor.RED + "Невозможно установить дом! Вы сейчас на территории чужой базы для рейда.");
             return true;
         }
 
         if (plugin.getGame().isWithinHomeRadius(player.getLocation(), plugin.getGame().getDefendingTeam(team))) {
-            player.sendMessage(ChatColor.RED + "Невозможно установить Нексус! Вы сейчас на территории чужого дома.");
+            player.sendMessage(ChatColor.RED + "Невозможно установить дом! Вы сейчас на территории чужого дома.");
+            return true;
+        }
+
+        if (plugin.getGame().isWithinNexusRadius(player.getLocation(), team)) {
+            player.sendMessage(ChatColor.RED + "Невозможно установить дом! Вы сейчас на территории своей базы для рейда.");
+            return true;
+        }
+
+        int radiusHome = plugin.getConfig().getInt("plugin.raid.privateRadiusHome");
+        int radiusRaid = plugin.getConfig().getInt("plugin.raid.privateRadiusRaid");
+        if (plugin.getGame().isWithinRadius(player.getLocation(), plugin.getGame().getNexusLocation(team), radiusHome + radiusRaid)) {
+            player.sendMessage(ChatColor.RED + "Невозможно установить дом! Территория этого дома и территория вашей базы для рейда пересекаются.");
             return true;
         }
 
