@@ -1,0 +1,102 @@
+# Настройки плагина
+plugin:
+  pvpIsAlwaysAllowedInTheseWorlds:
+    - world
+    - world_nether
+    - world_the_end
+  raid:
+    # Задержка перед началом рейда (в минутах)
+    delay: 30
+    # Требуемое количество сломанных блоков обсидиана в Нексусе
+    requiredDestroyCount: 10
+    # Длительность рейда
+    durationMinutes: 60
+    # Длительность ожидания игроков для присоединения к рейду
+    openDurationMinutes: 5
+    # Разница в количестве игроков для начала рейдов
+    differencePlayersCount: 2
+    # Минимальное количество игроков в команде для начала
+    minPlayers: 2
+    # Количество минут щита после рейда
+    shieldMinutes: 360
+    # Количество минут щита атакующей команды после рейда
+    shieldMinutesDefending: 1
+    # Включена ли система рейдов или нет
+    isEnabled: false
+    # Перезарядка команды /setraidbase
+    setRaidBaseCooldown: 1
+    # Перезарядка команды /sethomebase
+    setHomeBaseCooldown: 1
+    # Радиус региона привата базы для рейда
+    privateRadiusRaid: 80
+    # Радиус региона привата дома
+    privateRadiusHome: 80
+    # Радиус главного острова в Энде
+    endWorldMainIslandRadius: 150
+    # После рейда разрешено PvP и взаимодействия ещё N минут
+    minutesPrivateDelayAfterRaid: 10
+
+players:
+  - "player1:RealName1"
+  - "player2:RealName2"
+  - "MaXiMAA:Мой Создатель"
+  - "TERESH:Тереш"
+  - "niger:Марат"
+  - "_Tusovnik_:fn_aferist"
+  - "Doresh:Петя"
+  - "vanopog:Белоруски"
+  - "vladqw:Владос"
+  - "rqhappy:Чурка"
+  - "Mequru:Сын Шлюхи (Ваня)"
+  - "JellyVoka:Глубокослав"
+  - "joker91169:Капира"
+  - "cucoldman:Тёмыч"
+  - "TuscaidJFD:Саня"
+  - "COJIOTA:Антонио"
+  - "PODLIVA:Дьявол"
+  - "aa1dre:Доминик Туррета"
+  - "Totoka:Роман Четырёхглазый"
+  - "Os1ass:Сладкопар Жижедуй"
+  - "SaloManiac:Димон"
+  - "siviavio4ka:Слаик"
+  - "SDESAH:Антончик"
+  - "gal.ksu:Ксюша"
+  - "Vikchankch4:Вика"
+
+dragon:
+  respawnIntervalHours: 4
+
+# Настройки команд и командных блоков
+teams:
+  # Команда "red"
+  RED:
+    # Капитан команды
+    captain: "MaXiMAA"
+    # Члены команды
+    members:
+      - "MaXiMAA"
+      - "joker91169"
+      - "_Tusovnik_"
+      - "niger"
+      - "vladqw"
+      - "PODLIVA"
+      - "Doresh"
+      - "TuscaidJFD"
+      - "TERESH"
+      - "Totoka"
+  # Команда "blue"
+  BLUE:
+    # Капитан команды
+    captain: "JellyVoka"
+    # Члены команды
+    members:
+      - "JellyVoka"
+      - "vanopog"
+      - "rqhappy"
+      - "Mequru"
+      - "cucoldman"
+      - "COJIOTA"
+      - "aa1dre"
+      - "Os1ass"
+      - "SaloManiac"
+      - "siviavio4ka"

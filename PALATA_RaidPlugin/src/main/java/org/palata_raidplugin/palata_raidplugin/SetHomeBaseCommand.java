@@ -64,7 +64,7 @@ public class SetHomeBaseCommand implements CommandExecutor {
 
         int radiusHome = plugin.getConfig().getInt("plugin.raid.privateRadiusHome");
         int radiusRaid = plugin.getConfig().getInt("plugin.raid.privateRadiusRaid");
-        if (plugin.getGame().isWithinRadius(player.getLocation(), plugin.getGame().getNexusLocation(team), radiusHome + radiusRaid)) {
+        if (plugin.getGame().getNexusLocation(team) != null && plugin.getGame().isWithinRadius(player.getLocation(), plugin.getGame().getNexusLocation(team), radiusHome + radiusRaid)) {
             player.sendMessage(ChatColor.RED + "Невозможно установить дом! Территория этого дома и территория вашей базы для рейда пересекаются.");
             return true;
         }

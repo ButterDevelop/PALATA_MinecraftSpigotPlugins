@@ -635,6 +635,14 @@ public class Game {
     }
 
     public boolean isWithinRadius(Location loc1, Location loc2, double distance) {
+        if (loc1 == null || loc2 == null) {
+            return false;
+        }
+
+        if (!loc1.getWorld().equals(loc2.getWorld())) {
+            return false;
+        }
+
         return Math.abs(loc1.distanceSquared(loc2)) <= distance * distance;
     }
 
