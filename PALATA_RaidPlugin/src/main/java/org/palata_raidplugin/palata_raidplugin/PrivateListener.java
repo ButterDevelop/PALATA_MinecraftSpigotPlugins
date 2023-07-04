@@ -114,6 +114,14 @@ public class PrivateListener implements Listener {
             Player damager = (Player) event.getDamager();
             String damagerTeam = plugin.getGame().getPlayerTeam(damager.getName());
             if (damagerTeam == null) {
+                if (plugin.getGame().isWithinNexusRadius(event.getEntity().getLocation(), "RED")
+                        || plugin.getGame().isWithinHomeRadius(event.getEntity().getLocation(), "RED")
+                || plugin.getGame().isWithinNexusRadius(event.getEntity().getLocation(), "BLUE")
+                        || plugin.getGame().isWithinHomeRadius(event.getEntity().getLocation(), "BLUE")
+                   ) {
+                    event.setCancelled(true);
+                    damager.sendMessage(ChatColor.RED + "Аборигены не могут влиять на другие команды!");
+                }
                 return;
             }
             if (plugin.getGame().isWithinNexusRadius(event.getEntity().getLocation(), plugin.getGame().getDefendingTeam(damagerTeam)) && plugin.getGame().isRaidActive()) {
@@ -121,8 +129,9 @@ public class PrivateListener implements Listener {
                 return;
             } else
             // Здесь мы узнаем, находится ли сущность на территории базы враждебной команды
-            if (!(plugin.getGame().isWithinNexusRadius(event.getEntity().getLocation(), plugin.getGame().getDefendingTeam(damagerTeam)) ||
-                    plugin.getGame().isWithinHomeRadius(event.getEntity().getLocation(), plugin.getGame().getDefendingTeam(damagerTeam)))) {
+            if (!plugin.getGame().isWithinNexusRadius(event.getEntity().getLocation(), plugin.getGame().getDefendingTeam(damagerTeam))
+                    && !plugin.getGame().isWithinHomeRadius(event.getEntity().getLocation(), plugin.getGame().getDefendingTeam(damagerTeam))
+               ) {
                 // Сущность НЕ на территории враждебной команды, можно убить её
                 return;
             }
@@ -139,7 +148,7 @@ public class PrivateListener implements Listener {
             Player damager = (Player) event.getDamager();
             String damagerTeam = plugin.getGame().getPlayerTeam(damager.getName());
 
-            if ((damagedTeam == null && damagerTeam == null) || damagedTeam.equals(damagerTeam)) {
+            if ((damagedTeam == null && damagerTeam == null) || (damagedTeam != null && damagedTeam.equals(damagerTeam))) {
                 // Игроки в одной команде, PvP разрешен
                 return;
             }
@@ -151,7 +160,7 @@ public class PrivateListener implements Listener {
             }
 
             if (damagerTeam == null) {
-                damager.sendMessage(ChatColor.RED + "Вы абориген. Вы не можете наносить урон другим.");
+                damager.sendMessage(ChatColor.RED + "Вы абориген. Вы не можете наносить урон другим командам.");
                 event.setCancelled(true);
                 return;
             }
@@ -164,7 +173,14 @@ public class PrivateListener implements Listener {
                 return;
             }
 
-            if (plugin.getGame().isThePvPIsAlwaysOnInThisWorld(damaged.getLocation().getWorld().getName()) && !homeRadiusFlag) {
+            if (plugin.getGame().isWithinNexusRadius(damaged.getLocation(), damagedTeam) || plugin.getGame().isWithinHomeRadius(damaged.getLocation(), damagedTeam)) {
+                // Игрок под защитой своего привата
+                event.setCancelled(true);
+                damager.sendMessage(ChatColor.RED + "PvP разрешено только рядом с территорией вражеской команды или с членами своей команды.");
+                return;
+            }
+
+            if (plugin.getGame().isThePvPIsAlwaysOnInThisWorld(damaged.getLocation().getWorld().getName())) { // && !homeRadiusFlag
                 // Мы находимся в мире, в котором PvP разрешено всегда, и при этом НЕ на территории чужого дома
                 return;
             }
