@@ -19,10 +19,17 @@ public final class PALATA_RaidPlugin extends JavaPlugin {
         this.getCommand("startraid").setExecutor(new StartRaidCommand(game));
         this.getCommand("raid").setExecutor(new RaidCommand(game));
         this.getCommand("getenemyraidbasecoords").setExecutor(new GetEnemyRaidBaseCoordsCommand(game));
+
         getServer().getPluginManager().registerEvents(new BlockBreakListener(game), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new PrivateListener(this), this);
         getServer().getPluginManager().registerEvents(new DragonManager(this), this);
+        getServer().getPluginManager().registerEvents(new SoundKillManager(this), this);
+
+        ArenaManager arenaManager = new ArenaManager(this);
+        getServer().getPluginManager().registerEvents(arenaManager, this);
+        this.getCommand("joinarena").setExecutor(new JoinArenaCommand(this, arenaManager));
+        this.getCommand("schedulearenainseconds").setExecutor(new ScheduleArenaInSecondsCommand(arenaManager));
     }
 
     @Override

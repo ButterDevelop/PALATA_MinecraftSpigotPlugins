@@ -1,9 +1,7 @@
 package org.palata_raidplugin.palata_raidplugin;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -110,6 +108,11 @@ public class PrivateListener implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+        String arenaWorldName = plugin.getConfig().getString("arena.world", "world_arena");
+        if (event.getEntity().getWorld().getName().equals(arenaWorldName)) {
+            return;
+        }
+
         if (!(event.getEntity() instanceof Player) && event.getDamager() instanceof Player) {
             Player damager = (Player) event.getDamager();
             String damagerTeam = plugin.getGame().getPlayerTeam(damager.getName());

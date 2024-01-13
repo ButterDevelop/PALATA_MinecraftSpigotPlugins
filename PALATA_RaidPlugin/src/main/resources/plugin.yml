@@ -30,3 +30,9 @@ commands:
   getenemyraidbasecoords:
     description: Получение координат вражеского Нексуса.
     usage: /<command>
+  joinarena:
+    description: Присоединяемся к арене.
+    usage: /<command>
+  schedulearenainseconds:
+    description: Запланировать арену через фиксированное количество секунд.
+    usage: /<command> [seconds]

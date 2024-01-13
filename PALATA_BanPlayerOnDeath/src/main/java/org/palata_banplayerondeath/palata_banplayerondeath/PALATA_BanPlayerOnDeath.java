@@ -88,8 +88,8 @@ public class PALATA_BanPlayerOnDeath extends JavaPlugin implements Listener {
         if (isEnabled) {
             Player player = event.getEntity();
             config.set(player.getUniqueId().toString(), System.currentTimeMillis() + ((long) _minutesToBan * 60 * 1000));
-             saveConfigPlayers();
-            player.sendMessage(ChatColor.RED + "Вы умерли. Вас выкинет с сервера через 3 секунды.");
+            saveConfigPlayers();
+            player.sendMessage(ChatColor.RED + "Вы умерли. Вас выкинет с сервера через 10 секунд.");
 
             int x = player.getLocation().getBlockX();
             int y = player.getLocation().getBlockY();
@@ -103,7 +103,7 @@ public class PALATA_BanPlayerOnDeath extends JavaPlugin implements Listener {
                             y + " " +
                             z);
                 }
-            }.runTaskLater(this, 60L);
+            }.runTaskLater(this, 200L);
         }
     }
 

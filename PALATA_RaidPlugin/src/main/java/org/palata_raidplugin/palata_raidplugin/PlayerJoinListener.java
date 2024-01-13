@@ -1,7 +1,6 @@
 package org.palata_raidplugin.palata_raidplugin;
 
 import org.bukkit.ChatColor;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;

@@ -7,15 +7,15 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EnderDragon;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
-import java.util.HashMap;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Game {
 
@@ -40,6 +40,7 @@ public class Game {
     private double privateRadiusRaid = 10;
     private double privateRadiusHome = 10;
     private double endWorldMainIslandRadius = 10;
+    private int raidWinScore = 10;
 
     // Список игроков, присоединившихся к рейду
     public final List<Player> raidPlayers = new ArrayList<>();
@@ -53,6 +54,7 @@ public class Game {
         privateRadiusRaid = plugin.getConfig().getDouble("plugin.raid.privateRadiusRaid");
         privateRadiusHome = plugin.getConfig().getDouble("plugin.raid.privateRadiusHome");
         endWorldMainIslandRadius = plugin.getConfig().getDouble("plugin.raid.endWorldMainIslandRadius");
+        raidWinScore = plugin.getConfig().getInt("plugin.raid.winScore", 10);
         scoreboard = manager.getNewScoreboard();
     }
 
@@ -146,11 +148,19 @@ public class Game {
                     if (obsidianDestroyed < requiredDestroyCount) {
                         endRaid();
                         Bukkit.broadcastMessage(ChatColor.RED + "Время рейда истекло! Команде '" + attackingTeam + "' не удалось завершить рейд. Нексус команды '" + defendingTeam + "' был уничтожен только " + obsidianDestroyed + " раз.");
-                        addScore(defendingTeam, 1);
+                        addScore(defendingTeam, raidWinScore);
                     } else {
                         Bukkit.broadcastMessage(ChatColor.GREEN + "Команда '" + attackingTeam + "' успешно завершила рейд! Нексус команды '" + defendingTeam + "' уничтожен " + obsidianDestroyed + " раз.");
-                        addScore(attackingTeam, 1);
+                        addScore(attackingTeam, raidWinScore);
                     }
+
+                    isDelayBegunAfterRaid = true;
+                    int minutesPrivateDelayAfterRaid = plugin.getConfig().getInt("plugin.raid.minutesPrivateDelayAfterRaid");
+                    // Запускаем асинхронную задачу через указанное количество минут
+                    BukkitScheduler scheduler = Bukkit.getScheduler();
+                    scheduler.runTaskLater(plugin, () -> {
+                        isDelayBegunAfterRaid = false;
+                    }, (long) minutesPrivateDelayAfterRaid * 60 * 20); // Конвертируйте минуты в тики (20 тиков = 1 секунда)
 
                     this.cancel(); // Отменяем задачу
                     raidingTeam = null; // Заканчиваем рейд
@@ -382,14 +392,6 @@ public class Game {
         }
         teamScores.put(team, teamScores.get(team) + points);
 
-        isDelayBegunAfterRaid = true;
-        int minutesPrivateDelayAfterRaid = plugin.getConfig().getInt("plugin.raid.minutesPrivateDelayAfterRaid");
-        // Запустите асинхронную задачу через указанное количество минут
-        BukkitScheduler scheduler = Bukkit.getScheduler();
-        scheduler.runTaskLater(plugin, () -> {
-            isDelayBegunAfterRaid = false;
-        }, (long) minutesPrivateDelayAfterRaid * 60 * 20); // Конвертируйте минуты в тики (20 тиков = 1 секунда)
-
         saveTeamScores();
         updateScoreboard();
     }
@@ -533,6 +535,20 @@ public class Game {
             }
         }
         return null; // Если игрок не найден ни в одной команде, вернуть null
+    }
+
+    public boolean areTwoPlayersInTheSameTeam(String playerName1, String playerName2) {
+        String team1 = getPlayerTeam(playerName1);
+        String team2 = getPlayerTeam(playerName2);
+
+        if (team1 == null && team2 == null) {
+            return true;
+        }
+        if (team1 != null && team1.equals(team2)) {
+            return true;
+        }
+
+        return false;
     }
 
     public Location getSafeLocation(Location playerLocation) {

@@ -5,6 +5,7 @@ plugin:
     - world_nether
     - world_the_end
   raid:
+    winScore: 10
     # Задержка перед началом рейда (в минутах)
     delay: 30
     # Требуемое количество сломанных блоков обсидиана в Нексусе
@@ -37,50 +38,146 @@ plugin:
     minutesPrivateDelayAfterRaid: 10
 
 players:
-  - player1:RealName1
-  - player2:RealName2
   - MaXiMAA:Мой Создатель
-  - TERESH:Тереш
-  - niger:Марат
-  - _Tusovnik_:fn_aferist
-  - Doresh:Петя
-  - vanopog:Белоруски
-  - vladqw:Владос
-  - rqhappy:Чурка
-  - Mequru:Сын Шлюхи (Ваня)
-  - JellyVoka:Глубокослав
-  - joker91169:Капира
-  - cucoldman:Тёмыч
-  - TuscaidJFD:Саня
-  - COJIOTA:Антонио
-  - PODLIVA:Дьявол
-  - aa1dre:Доминик Туррета
-  - Totoka:Роман Четырёхглазый
-  - Os1ass:Сладкопар Жижедуй
+  - rqhappy:Отец
+  - kawaii_killer:дагон на антимага
   - SaloManiac:Димон
-  - siviavio4ka:Слаик
-  - SDESAH:Антончик
-  - gal.ksu:Ксюша
+  - monithaha:Пахан
+  - Os1ass:Сладкопар-жижеХуй Виктор Корнеплод
   - Vikchankch4:Вика
+  - SDESAH:Антончик
+  - COJIOTA:Антонио
+  - TERESH_PSIH:Тереш
+  - joker91169:мой раб
+  - gal.ksu:Ксюша
+  - padliva666:убийца биоса
+  - didori10:Даша
+  - aa1dre:Доминик Туррета
+  - vanopog:Вано
+  - Totoka1337:Романчик
+  - cucoldman:Артём сданная сессия
+  - vladqw:Владос
+  - TuscaidJFD:рабочая сила
 
 dragon:
   respawnIntervalHours: 4
+
+arena:
+  currentArenaIndex: 1
+  intervalHours: 24
+  durationSeconds: 1200
+  winScore: 5
+  killScore: 1
+
+arena_1:
+  world: "world_arena_1"
+  copyWorld: "world_arena_copy_1"
+  copyStart:
+    x: 0
+    y: 30
+    z: 0
+  copyEnd:
+    x: 158
+    y: 89
+    z: 73
+  spawnRed:
+    x: 38
+    y: 50
+    z: 29
+  spawnBlue:
+    x: 130
+    y: 46
+    z: 34
+
+arena_2:
+  world: "world_arena_2"
+  copyWorld: "world_arena_copy_2"
+  copyStart:
+    x: 0
+    y: 30
+    z: 0
+  copyEnd:
+    x: 180
+    y: 93
+    z: 74
+  spawnRed:
+    x: 121
+    y: 43
+    z: 37
+  spawnBlue:
+    x: 5
+    y: 43
+    z: 41
+
+arena_3:
+  world: "world_arena_3"
+  copyWorld: "world_arena_copy_3"
+  copyStart:
+    x: 0
+    y: 30
+    z: 0
+  copyEnd:
+    x: 180
+    y: 93
+    z: 74
+  spawnRed:
+    x: 5
+    y: 43
+    z: 41
+  spawnBlue:
+    x: 121
+    y: 43
+    z: 37
+
+arena_4:
+  world: "world_arena_4"
+  copyWorld: "world_arena_copy_4"
+  copyStart:
+    x: 0
+    y: 30
+    z: 0
+  copyEnd:
+    x: 56
+    y: 57
+    z: 56
+  spawnRed:
+    x: 28
+    y: 42
+    z: 52
+  spawnBlue:
+    x: 28
+    y: 42
+    z: 4
 
 # Настройки команд и командных блоков
 teams:
   # Команда "red"
   RED:
     # Капитан команды
-    captain: "RedCaptain"
+    captain: "MaXiMAA"
     # Члены команды
     members:
-      - "RedCaptain"
-      - "RedPlayer1"
+      - "MaXiMAA"
+      - "joker91169"
+      - "TERESH_PSIH"
+      - "monithaha"
+      - "aa1dre"
+      - "padliva666"
+      - "vladqw"
+      - "TuscaidJFD"
+
   # Команда "blue"
   BLUE:
     # Капитан команды
-    captain: "BlueCaptain"
+    captain: "COJIOTA"
     # Члены команды
     members:
-      - "BlueCaptain"
-      - "BluePlayer1"
+      - "COJIOTA"
+      - "kawaii_killer"
+      - "Os1ass"
+      - "SaloManiac"
+      - "rqhappy"
+      - "vanopog"
+      - "HEROBRINE"
+      - "cucoldman"
+      - "Totoka1337"

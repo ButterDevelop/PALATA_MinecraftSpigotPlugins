@@ -29,7 +29,7 @@ public class DragonManager implements Listener {
     private Location crystalLocation3 = null;
     private Location crystalLocation4 = null;
     private Location endPortalLocation = null;
-    private HashSet<UUID> killedDragons = new HashSet<>();  // Добавьте это поле
+    private HashSet<UUID> killedDragons = new HashSet<>();
 
     public DragonManager(PALATA_RaidPlugin plugin) {
         this.plugin = plugin;
