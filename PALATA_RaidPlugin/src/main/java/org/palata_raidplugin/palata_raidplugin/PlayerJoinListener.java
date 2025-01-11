@@ -51,6 +51,4 @@ public class PlayerJoinListener implements Listener {
         plugin.getGame().updateScoreboard();
         player.setScoreboard(plugin.getGame().getScoreboard());
     }
-
-
 }

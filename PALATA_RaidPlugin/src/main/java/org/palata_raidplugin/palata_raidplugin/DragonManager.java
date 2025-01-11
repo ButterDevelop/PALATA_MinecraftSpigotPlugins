@@ -3,10 +3,7 @@ package org.palata_raidplugin.palata_raidplugin;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.boss.DragonBattle;
-import org.bukkit.entity.EnderCrystal;
-import org.bukkit.entity.EnderDragon;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -22,41 +19,49 @@ import java.util.HashSet;
 import java.util.UUID;
 
 public class DragonManager implements Listener {
+    private static final String CRYSTAL_NAME = "CRYSTAL FROM MY PLUGIN TO YOUR HEART";
+
     private final PALATA_RaidPlugin plugin;
     private final long respawnInterval;
-    private Location crystalLocation1 = null;
-    private Location crystalLocation2 = null;
-    private Location crystalLocation3 = null;
-    private Location crystalLocation4 = null;
-    private Location endPortalLocation = null;
-    private HashSet<UUID> killedDragons = new HashSet<>();
+    private Location crystalLocation1;
+    private Location crystalLocation2;
+    private Location crystalLocation3;
+    private Location crystalLocation4;
+    private Location endPortalLocation;
+    private final HashSet<UUID> killedDragons = new HashSet<>();
 
     public DragonManager(PALATA_RaidPlugin plugin) {
         this.plugin = plugin;
         long respawnIntervalInHours = plugin.getConfig().getLong("dragon.respawnIntervalHours", 6);
-        this.respawnInterval = respawnIntervalInHours * 60 * 60 * 1000; // Convert hours to milliseconds
+        this.respawnInterval = respawnIntervalInHours * 60 * 60 * 1000L; // Перевод часов в миллисекунды
 
         World end = Bukkit.getWorld("world_the_end");
         setupPortalThings(end);
     }
 
     public void setupPortalThings(World end) {
-        if (end != null && end.getEnderDragonBattle() != null && end.getEnderDragonBattle().getEndPortalLocation() != null && endPortalLocation == null) {
-            endPortalLocation = end.getEnderDragonBattle().getEndPortalLocation(); //3 62 0, 0 62 -3, -3 62 0, 0 62 3 - 0 61 0
-            crystalLocation1 = new Location(end, endPortalLocation.getBlockX() + 3, endPortalLocation.getBlockY(), endPortalLocation.getBlockZ());
-            crystalLocation2 = new Location(end, endPortalLocation.getBlockX() - 3, endPortalLocation.getBlockY(), endPortalLocation.getBlockZ());
-            crystalLocation3 = new Location(end, endPortalLocation.getBlockX(), endPortalLocation.getBlockY(), endPortalLocation.getBlockZ() + 3);
-            crystalLocation4 = new Location(end, endPortalLocation.getBlockX(), endPortalLocation.getBlockY(), endPortalLocation.getBlockZ() - 3);
+        if (end == null) return;
 
-            // Schedule dragon respawn if needed
+        DragonBattle battle = end.getEnderDragonBattle();
+        if (battle == null) return;
+
+        if (battle.getEndPortalLocation() != null && endPortalLocation == null) {
+            endPortalLocation = battle.getEndPortalLocation();
+
+            crystalLocation1 = endPortalLocation.clone().add(3, 0, 0);
+            crystalLocation2 = endPortalLocation.clone().add(-3, 0, 0);
+            crystalLocation3 = endPortalLocation.clone().add(0, 0, 3);
+            crystalLocation4 = endPortalLocation.clone().add(0, 0, -3);
+
             long deathTime = plugin.getConfig().getLong("dragon.deathTime", 0);
             long respawnTime = deathTime + respawnInterval;
             long delay = respawnTime - System.currentTimeMillis();
+
             if (!plugin.getGame().isDragonAlive()) {
                 if (delay > 0) {
-                    scheduleDragonRespawn(delay / 50); // Convert milliseconds to ticks
+                    scheduleDragonRespawn(delay / 50L); // миллисекунды в тиках
                 } else {
-                    scheduleDragonRespawn(20); // 20 ticks = 1 seconds
+                    scheduleDragonRespawn(20L); // 20 тиков = 1 секунда
                 }
             }
         }
@@ -66,35 +71,27 @@ public class DragonManager implements Listener {
     public void onPlayerChangeWorld(PlayerChangedWorldEvent event) {
         Player player = event.getPlayer();
         if (player.getWorld().getEnvironment() == World.Environment.THE_END) {
-            // Игрок вошёл в Энд
             BukkitScheduler scheduler = Bukkit.getScheduler();
-            scheduler.runTaskLater(plugin, () -> {
-                setupPortalThings(player.getWorld());
-            }, 20); // Конвертируйте минуты в тики (20 тиков = 1 секунда)
+            scheduler.runTaskLater(plugin, () -> setupPortalThings(player.getWorld()), 20L);
         }
     }
 
     @EventHandler
     public void onEntityExplode(EntityExplodeEvent event) {
-        World end = event.getEntity().getLocation().getWorld();
+        if (!event.getEntityType().equals(EntityType.ENDER_CRYSTAL)) return;
 
-        if (!end.getEnvironment().equals(World.Environment.THE_END)) {
-            return;
-        }
+        World world = event.getEntity().getWorld();
+        if (world.getEnvironment() != World.Environment.THE_END) return;
 
-        if (!event.getEntityType().equals(EntityType.ENDER_CRYSTAL)) {
-            return;
-        }
+        EnderCrystal crystal = (EnderCrystal) event.getEntity();
+        if (crystal.getCustomName() == null || !crystal.getCustomName().equals(CRYSTAL_NAME)) return;
 
-        if (event.getEntity().getCustomName() != null && !event.getEntity().getCustomName().equals("CRYSTAL FROM MY PLUGIN TO YOUR HEART")) {
-            return;
-        }
-
-        if (plugin.getGame().isWithinRadius(event.getEntity().getLocation(), endPortalLocation, 4)) {
+        if (endPortalLocation != null && plugin.getGame().isWithinRadius(crystal.getLocation(), endPortalLocation, 4)) {
             if (!plugin.getGame().isDragonAlive()) {
-                Bukkit.broadcastMessage(ChatColor.RED + "Возрождение Дракона было отменено! Новый дракон появится через " + (respawnInterval / (60 * 60 * 1000)) + " часов.");
-                scheduleDragonRespawn(respawnInterval / 50);
-                for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                Bukkit.broadcastMessage(ChatColor.RED + "Возрождение Дракона было отменено! Новый дракон появится через "
+                        + (respawnInterval / (60 * 60 * 1000)) + " часов.");
+                scheduleDragonRespawn(respawnInterval / 50L);
+                for (Player player : Bukkit.getOnlinePlayers()) {
                     player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_GROWL, 1.0F, 1.0F);
                 }
             }
@@ -104,47 +101,37 @@ public class DragonManager implements Listener {
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+        World world = player.getWorld();
+        if (world.getEnvironment() != World.Environment.THE_END) return;
+
         Action action = event.getAction();
         ItemStack item = event.getItem();
+        Block block = event.getClickedBlock();
 
-        World world = player.getWorld();
-        if (world.getEnvironment() == World.Environment.THE_END) {
-            Block block = event.getClickedBlock();
-            if (action.equals(Action.RIGHT_CLICK_BLOCK) && item != null && item.getType() == Material.END_CRYSTAL &&
-                    block != null && block.getType() == Material.BEDROCK) {
-                if (plugin.getGame().isDragonAlive()) {
-                    return;
-                }
-                if (plugin.getGame().isWithinRadius(block.getLocation(), endPortalLocation, 4)) { // Если попытка поставить кристалл на запрещённое место
-                    event.setCancelled(true);
-                    player.sendMessage(ChatColor.RED + "Вы не можете возрождать Дракона Края.");
-                }
+        if (action == Action.RIGHT_CLICK_BLOCK && item != null && item.getType() == Material.END_CRYSTAL &&
+                block != null && block.getType() == Material.BEDROCK) {
+            if (plugin.getGame().isDragonAlive()) return;
+
+            if (endPortalLocation != null && plugin.getGame().isWithinRadius(block.getLocation(), endPortalLocation, 4)) {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.RED + "Вы не можете возрождать Дракона Края.");
             }
         }
     }
 
     @EventHandler
     public void onDragonDeath(EntityDeathEvent event) {
-        if (event.getEntityType() == EntityType.ENDER_DRAGON) {
-            EnderDragon dragon = (EnderDragon) event.getEntity();
-            UUID dragonId = dragon.getUniqueId();
+        if (event.getEntityType() != EntityType.ENDER_DRAGON) return;
 
-            // Если этот дракон уже был убит, то просто вернемся.
-            if (killedDragons.contains(dragonId)) {
-                return;
-            }
+        EnderDragon dragon = (EnderDragon) event.getEntity();
+        UUID dragonId = dragon.getUniqueId();
 
-            // Добавляем дракона в список убитых
-            killedDragons.add(dragonId);
+        if (!killedDragons.add(dragonId)) return;  // Если дракон уже в списке, выходим
 
-            if (event.getEntity() instanceof EnderDragon) {
-                event.setDroppedExp(12000); // Set dropped experience equivalent to 68 levels
-
-                Bukkit.broadcastMessage(ChatColor.RED + "Дракон Края был убит. Новый дракон появится через " + (respawnInterval / (60 * 60 * 1000)) + " часов.");
-
-                scheduleDragonRespawn(respawnInterval / 50); // Convert milliseconds to ticks
-            }
-        }
+        event.setDroppedExp(12000);
+        Bukkit.broadcastMessage(ChatColor.RED + "Дракон Края был убит. Новый дракон появится через "
+                + (respawnInterval / (60 * 60 * 1000)) + " часов.");
+        scheduleDragonRespawn(respawnInterval / 50L);
     }
 
     private void scheduleDragonRespawn(long delayInTicks) {
@@ -154,30 +141,34 @@ public class DragonManager implements Listener {
         new BukkitRunnable() {
             @Override
             public void run() {
-                World end = Bukkit.getWorld("world_the_end"); // The End world
-                if (end != null) {
-                    EnderCrystal crystal1 = end.spawn(new Location(end, crystalLocation1.getX() + 0.5, crystalLocation1.getY() + 1, crystalLocation1.getZ() + 0.5), EnderCrystal.class);
-                    EnderCrystal crystal2 = end.spawn(new Location(end, crystalLocation2.getX() + 0.5, crystalLocation2.getY() + 1, crystalLocation2.getZ() + 0.5), EnderCrystal.class);
-                    EnderCrystal crystal3 = end.spawn(new Location(end, crystalLocation3.getX() + 0.5, crystalLocation3.getY() + 1, crystalLocation3.getZ() + 0.5), EnderCrystal.class);
-                    EnderCrystal crystal4 = end.spawn(new Location(end, crystalLocation4.getX() + 0.5, crystalLocation4.getY() + 1, crystalLocation4.getZ() + 0.5), EnderCrystal.class);
-                    crystal1.setCustomName("CRYSTAL FROM MY PLUGIN TO YOUR HEART");
-                    crystal2.setCustomName("CRYSTAL FROM MY PLUGIN TO YOUR HEART");
-                    crystal3.setCustomName("CRYSTAL FROM MY PLUGIN TO YOUR HEART");
-                    crystal4.setCustomName("CRYSTAL FROM MY PLUGIN TO YOUR HEART");
-                    crystal1.setCustomNameVisible(false);
-                    crystal2.setCustomNameVisible(false);
-                    crystal3.setCustomNameVisible(false);
-                    crystal4.setCustomNameVisible(false);
-                    end.getEnderDragonBattle().setRespawnPhase(DragonBattle.RespawnPhase.START);
-                    end.getEnderDragonBattle().initiateRespawn();
-                    Bukkit.broadcastMessage(ChatColor.GREEN + "Дракон Края возрождается!");
+                World end = Bukkit.getWorld("world_the_end");
+                if (end == null || endPortalLocation == null) return;
 
-                    for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                        player.playSound(player.getLocation(), Sound.BLOCK_END_PORTAL_SPAWN, 1.0F, 1.0F);
-                    }
+                // Создание и настройка кристаллов
+                spawnCrystal(end, crystalLocation1);
+                spawnCrystal(end, crystalLocation2);
+                spawnCrystal(end, crystalLocation3);
+                spawnCrystal(end, crystalLocation4);
+
+                DragonBattle battle = end.getEnderDragonBattle();
+                if (battle != null) {
+                    battle.setRespawnPhase(DragonBattle.RespawnPhase.START);
+                    battle.initiateRespawn();
+                }
+
+                Bukkit.broadcastMessage(ChatColor.GREEN + "Дракон Края возрождается!");
+                for (Player player : Bukkit.getOnlinePlayers()) {
+                    player.playSound(player.getLocation(), Sound.BLOCK_END_PORTAL_SPAWN, 1.0F, 1.0F);
                 }
             }
         }.runTaskLater(plugin, delayInTicks);
     }
 
+    private void spawnCrystal(World world, Location baseLocation) {
+        if (baseLocation == null) return;
+        Location spawnLocation = baseLocation.clone().add(0.5, 1, 0.5);
+        EnderCrystal crystal = world.spawn(spawnLocation, EnderCrystal.class);
+        crystal.setCustomName(CRYSTAL_NAME);
+        crystal.setCustomNameVisible(false);
+    }
 }

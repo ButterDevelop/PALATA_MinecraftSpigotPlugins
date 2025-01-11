@@ -2,9 +2,6 @@ package org.palata_raidplugin.palata_raidplugin;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,27 +26,31 @@ public class PrivateCheck implements CommandExecutor {
         String team = plugin.getGame().getPlayerTeam(player.getName());
         Location playerLocation = player.getLocation();
 
-        // Здесь мы узнаем, на чьей территории находится игрок
+        // Если игрок на территории своей базы для рейда
         if (plugin.getGame().isWithinNexusRadius(playerLocation, team)) {
             player.sendMessage(ChatColor.BLUE + "Вы сейчас на территории своей базы для рейда.");
             return true;
         }
 
+        // Если человек на территории своего дома
         if (plugin.getGame().isWithinHomeRadius(playerLocation, team)) {
             player.sendMessage(ChatColor.BLUE + "Вы сейчас на территории своего дома.");
             return true;
         }
 
+        // Если игрок сейчас на территории чужой базы для рейда
         if (plugin.getGame().isWithinNexusRadius(playerLocation, plugin.getGame().getDefendingTeam(team))) {
             player.sendMessage(ChatColor.YELLOW + "Вы сейчас на территории чужой базы для рейда.");
             return true;
         }
 
+        // Если игрок на территории чужого дома
         if (plugin.getGame().isWithinHomeRadius(playerLocation, plugin.getGame().getDefendingTeam(team))) {
             player.sendMessage(ChatColor.YELLOW + "Вы сейчас на территории чужого дома.");
             return true;
         }
 
+        // Нет привата
         player.sendMessage(ChatColor.GREEN + "Вы сейчас не находитесь ни на чьей территории.");
 
         return true;

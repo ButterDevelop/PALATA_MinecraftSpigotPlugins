@@ -12,51 +12,70 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scoreboard.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Game {
 
-    private HashMap<String, Location> teamBases = new HashMap<>(); // Местоположения баз команд
-    private HashMap<String, ArrayList<String>> teamMembers = new HashMap<>(); // Члены команд
-    private HashMap<String, Integer> teamScores = new HashMap<>(); // Счет команд
-    private Scoreboard scoreboard; // Scoreboard для отображения результатов
-    public String raidingTeam = null; // Команда, которая в настоящее время проводит рейд
-    public String lastRaidOpenedTheTeam = null; // Последняя команда, которая начала рейд
-    public List<String> alwaysAllowedPvPWorlds = new ArrayList<>();
-    private Plugin plugin;
-    private Map<String, MyTeam> teams = new HashMap<>();
+    // ------------------------//
+    //       Поля класса       //
+    // ------------------------//
 
-    // Булевые значения, отслеживающие состояние игры
+    private final Map<String, Location> teamBases = new HashMap<>();
+    private final Map<String, ArrayList<String>> teamMembers = new HashMap<>();
+    private final Map<String, Integer> teamScores = new HashMap<>();
+    private final Map<String, MyTeam> teams = new HashMap<>();
+    private final List<Player> raidPlayers = new ArrayList<>(); // Игроки, присоединившиеся к рейду
+
+    private final Plugin plugin;
+    private final Scoreboard scoreboard;
+
     private boolean isRaidOpen = false;
     private boolean isRaidActive = false;
-    private boolean isEnabled = true;
     private boolean isRaidStarted = false;
+    private boolean isEnabled;
     private boolean isDelayBegunAfterRaid = false;
-    private HashMap<String, String> teamCaptains = new HashMap<>(); // Капитаны команд
+
+    public String raidingTeam = null;            // Команда, которая в настоящее время проводит рейд
+    public String lastRaidOpenedTheTeam = null;  // Последняя команда, которая начала рейд
+
+    private final Map<String, String> teamCaptains = new HashMap<>(); // Капитаны команд
+
     private int obsidianDestroyed = 0;
+    private final int raidWinScore;
+    private long raidStartTime = 0L;
+
     private double privateRadiusRaid = 10;
     private double privateRadiusHome = 10;
     private double endWorldMainIslandRadius = 10;
-    private int raidWinScore = 10;
 
-    // Список игроков, присоединившихся к рейду
-    public final List<Player> raidPlayers = new ArrayList<>();
-    private long raidStartTime;
+    // В каких мирах PvP всегда разрешён
+    public List<String> alwaysAllowedPvPWorlds = new ArrayList<>();
+
+    // ------------------------//
+    //       Конструктор       //
+    // ------------------------//
 
     public Game(Plugin _plugin) {
-        plugin = _plugin;
+        this.plugin = _plugin;
+
+        // Загружаем общие настройки
+        this.isEnabled = plugin.getConfig().getBoolean("plugin.raid.isEnabled");
+        this.privateRadiusRaid = plugin.getConfig().getDouble("plugin.raid.privateRadiusRaid");
+        this.privateRadiusHome = plugin.getConfig().getDouble("plugin.raid.privateRadiusHome");
+        this.endWorldMainIslandRadius = plugin.getConfig().getDouble("plugin.raid.endWorldMainIslandRadius");
+        this.raidWinScore = plugin.getConfig().getInt("plugin.raid.winScore", 10);
+
+        // Инициализируем Scoreboard
+        final ScoreboardManager manager = Bukkit.getScoreboardManager();
+        this.scoreboard = manager != null ? manager.getNewScoreboard() : Bukkit.getScoreboardManager().getNewScoreboard();
+
+        // Инициализируем команды, базы, капитанов и т.д.
         initializeTeams();
-        ScoreboardManager manager = Bukkit.getScoreboardManager();
-        isEnabled = plugin.getConfig().getBoolean("plugin.raid.isEnabled");
-        privateRadiusRaid = plugin.getConfig().getDouble("plugin.raid.privateRadiusRaid");
-        privateRadiusHome = plugin.getConfig().getDouble("plugin.raid.privateRadiusHome");
-        endWorldMainIslandRadius = plugin.getConfig().getDouble("plugin.raid.endWorldMainIslandRadius");
-        raidWinScore = plugin.getConfig().getInt("plugin.raid.winScore", 10);
-        scoreboard = manager.getNewScoreboard();
     }
+
+    // ------------------------//
+    //  Геттеры / Сеттеры и т.д.
+    // ------------------------//
 
     public boolean getIsEnabled() {
         return isEnabled;
@@ -64,359 +83,18 @@ public class Game {
 
     public void setIsEnabled(boolean value) {
         isEnabled = value;
-        plugin.getConfig().set("plugin.raid.isEnabled", isEnabled);
+        plugin.getConfig().set("plugin.raid.isEnabled", value);
         plugin.saveConfig();
     }
 
-    // Проверка, есть ли у команды база
-    public boolean hasBase(String team) {
-        return teamBases.containsKey(team);
-    }
-
-    // Получение базы команды
-    public Location getBase(String team) {
-        return teamBases.get(team);
-    }
-
-    // Установка базы команды
-    public void setBase(String team, Location loc) {
-        teamBases.put(team, loc);
-    }
-
-    public void startRaid(String attackingTeam) {
-        // Получите время задержки из файла конфигурации
-        int delayMinutes = getRaidDelayMinutes();
-
-        isRaidStarted = true;
-
-        // Запустите асинхронную задачу через указанное количество минут
-        BukkitScheduler scheduler = Bukkit.getScheduler();
-        scheduler.runTaskLater(plugin, () -> {
-            // Проверьте, есть ли достаточное количество игроков другой команды для начала рейда
-            if (canRaid(attackingTeam)) {
-                // Начать рейд
-                obsidianDestroyed = 0;
-                isRaidActive = true;
-                raidStartTime = System.currentTimeMillis();
-
-                buildNotFullNexus(getDefendingTeam(attackingTeam));
-
-                startRaidDelayed(attackingTeam);
-            } else {
-                // Рейд не может быть начат
-                isRaidActive = false;
-                isRaidOpen = false;
-                isRaidStarted = false;
-                for (Player player : raidPlayers) {
-                    player.sendMessage(ChatColor.RED + "Рейд не может быть начат из-за недостаточного количества игроков другой команды или по причине отсутствия Нексуса у другой команды.");
-                }
-            }
-        }, (long) delayMinutes * 60 * 20); // Конвертируйте минуты в тики (20 тиков = 1 секунда)
-    }
-
-    // Начало рейда
-    public void startRaidDelayed(String attackingTeam) {
-        Bukkit.broadcastMessage(ChatColor.GREEN + "Рейд начался! Команда '" + attackingTeam + "' является нападающей.");
-
-        raidingTeam = attackingTeam;
-        String defendingTeam = getDefendingTeam(attackingTeam); // Получите команду-защитника
-        Location nexusLocation = getNexusLocation(defendingTeam); // Получите местоположение нексуса защитников
-        Block nexusBlock = nexusLocation.getBlock();
-
-        // Запускаем задачу на слежение за уничтожением нексуса
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                int requiredDestroyCount = getRequiredDestroyCount();
-                // Загрузите продолжительность рейда из файла конфигурации
-                int raidDurationMinutes = getRaidDurationMinutes();
-                long raidEndTime = raidStartTime + ((long) raidDurationMinutes * 60 * 1000); // конвертируем минуты в миллисекунды
-                // Если нексус уничтожен, увеличиваем счетчик уничтожений и восстанавливаем нексус
-                if (nexusBlock.getType() == Material.AIR) {
-                    nexusBlock.setType(Material.OBSIDIAN);
-                    String message = "Часть нексуса команды '" + defendingTeam + "' уничтожен! Осталось уничтожить " + (requiredDestroyCount - obsidianDestroyed) + " раз!";
-                    for (Player player : getTeamPlayers(attackingTeam)) {
-                        player.sendMessage(ChatColor.GREEN + message);
-                    }
-                    for (Player player : getTeamPlayers(defendingTeam)) {
-                        player.sendMessage(ChatColor.RED + message);
-                    }
-                }
-                // Если нексус уничтожен требуемое количество раз или время рейда вышло, заканчиваем рейд
-                if (obsidianDestroyed >= requiredDestroyCount || System.currentTimeMillis() >= raidEndTime) {
-                    // Если время рейда истекло, но нексус не был уничтожен необходимое количество раз
-                    if (obsidianDestroyed < requiredDestroyCount) {
-                        endRaid();
-                        Bukkit.broadcastMessage(ChatColor.RED + "Время рейда истекло! Команде '" + attackingTeam + "' не удалось завершить рейд. Нексус команды '" + defendingTeam + "' был уничтожен только " + obsidianDestroyed + " раз.");
-                        addScore(defendingTeam, raidWinScore);
-                    } else {
-                        Bukkit.broadcastMessage(ChatColor.GREEN + "Команда '" + attackingTeam + "' успешно завершила рейд! Нексус команды '" + defendingTeam + "' уничтожен " + obsidianDestroyed + " раз.");
-                        addScore(attackingTeam, raidWinScore);
-                    }
-
-                    isDelayBegunAfterRaid = true;
-                    int minutesPrivateDelayAfterRaid = plugin.getConfig().getInt("plugin.raid.minutesPrivateDelayAfterRaid");
-                    // Запускаем асинхронную задачу через указанное количество минут
-                    BukkitScheduler scheduler = Bukkit.getScheduler();
-                    scheduler.runTaskLater(plugin, () -> {
-                        isDelayBegunAfterRaid = false;
-                    }, (long) minutesPrivateDelayAfterRaid * 60 * 20); // Конвертируйте минуты в тики (20 тиков = 1 секунда)
-
-                    this.cancel(); // Отменяем задачу
-                    raidingTeam = null; // Заканчиваем рейд
-
-                    isRaidActive = false;
-                    buildFullNexus(defendingTeam);
-                }
-            }
-        }.runTaskTimer(plugin, 0L, 20L); // Запускаем каждую секунду (20 тиков = 1 секунда)
-    }
-
-    public void buildFullNexus(String team) {
-        World world = getNexusLocation(team).getWorld();
-        int baseRadius = 1; // Радиус базы для нексуса (без обсидиана)
-        Location nexusLocation = getNexusLocation(team);
-        // Размещаем структуру нексуса
-        for (int x = -baseRadius; x <= baseRadius; x++) {
-            for (int y = -baseRadius; y <= baseRadius; y++) {
-                for (int z = -baseRadius; z <= baseRadius; z++) {
-                    Block block = world.getBlockAt(nexusLocation.getBlockX() + x, nexusLocation.getBlockY() + y, nexusLocation.getBlockZ() + z);
-                    if ((x == 0 && y == 0 && Math.abs(z) == baseRadius) ||
-                            (y == 0 && Math.abs(x) == baseRadius && z == 0) ||
-                            (z == 0 && x == 0 && Math.abs(y) == baseRadius)) {
-                        // Устанавливаем барьер в остальных блоках нексуса
-                        block.setType(Material.BARRIER);
-                    } else
-                    if (x == 0 && y == 0 && z == 0) {
-                        // Устанавливаем обсидиан в середине
-                        block.setType(Material.OBSIDIAN);
-                    } else
-                    if (!(Math.abs(x) == baseRadius && Math.abs(y) == baseRadius && Math.abs(z) == baseRadius)) {
-                        // Устанавливаем бедрок не на краях нексуса
-                        block.setType(Material.BEDROCK);
-                    }
-                }
-            }
-        }
-    }
-
-    public void buildNotFullNexus(String team) {
-        World world = getNexusLocation(team).getWorld();
-        int baseRadius = 1; // Радиус базы для нексуса (без обсидиана)
-        Location nexusLocation = getNexusLocation(team);
-        // Размещаем структуру нексуса
-        for (int x = -baseRadius; x <= baseRadius; x++) {
-            for (int y = -baseRadius; y <= baseRadius; y++) {
-                for (int z = -baseRadius; z <= baseRadius; z++) {
-                    Block block = world.getBlockAt(nexusLocation.getBlockX() + x, nexusLocation.getBlockY() + y, nexusLocation.getBlockZ() + z);
-                    if ((x == 0 && y == 0 && Math.abs(z) == baseRadius) ||
-                            (y == 0 && Math.abs(x) == baseRadius && z == 0) ||
-                            (z == 0 && x == 0 && Math.abs(y) == baseRadius)) {
-                        // Устанавливаем барьер в остальных блоках нексуса
-                        block.setType(Material.AIR);
-                    } else
-                    if (x == 0 && y == 0 && z == 0) {
-                        // Устанавливаем обсидиан в середине
-                        block.setType(Material.OBSIDIAN);
-                    }
-                }
-            }
-        }
-    }
-
-    public void removeFullNexus(Location nexusLocation) {
-        World world = nexusLocation.getWorld();
-        int baseRadius = 1; // Радиус базы для нексуса (без обсидиана)
-        // Размещаем структуру нексуса
-        for (int x = -baseRadius; x <= baseRadius; x++) {
-            for (int y = -baseRadius; y <= baseRadius; y++) {
-                for (int z = -baseRadius; z <= baseRadius; z++) {
-                    Block block = world.getBlockAt(nexusLocation.getBlockX() + x, nexusLocation.getBlockY() + y, nexusLocation.getBlockZ() + z);
-                    block.setType(Material.AIR);
-                }
-            }
-        }
-    }
-
-    public void buildFullHome(String team, String worldName) {
-        World world = getHomeLocation(team, worldName).getWorld();
-        int baseRadius = 1; // Радиус базы для дома
-        Location homeLocation = getHomeLocation(team, worldName);
-        // Размещаем структуру центра дома
-        for (int x = -baseRadius; x <= baseRadius; x++) {
-            for (int y = -baseRadius; y <= baseRadius; y++) {
-                for (int z = -baseRadius; z <= baseRadius; z++) {
-                    Block block = world.getBlockAt(homeLocation.getBlockX() + x, homeLocation.getBlockY() + y, homeLocation.getBlockZ() + z);
-                    block.setType(Material.BEDROCK);
-                }
-            }
-        }
-    }
-
-    public void removeFullHome(Location homeLocation) {
-        World world = homeLocation.getWorld();
-        int baseRadius = 1; // Радиус базы для нексуса (без обсидиана)
-        // Размещаем структуру нексуса
-        for (int x = -baseRadius; x <= baseRadius; x++) {
-            for (int y = -baseRadius; y <= baseRadius; y++) {
-                for (int z = -baseRadius; z <= baseRadius; z++) {
-                    Block block = world.getBlockAt(homeLocation.getBlockX() + x, homeLocation.getBlockY() + y, homeLocation.getBlockZ() + z);
-                    block.setType(Material.AIR);
-                }
-            }
-        }
-    }
-
-    public String getDefendingTeam(String attackingTeam) {
-        // Возвращает название команды-защитника в зависимости от команды-атакующего.
-        // Допустим, у вас есть две команды: "RED" и "BLUE". Если "RED" атакует, то "BLUE" защищает.
-        if (attackingTeam.equals("RED")) {
-            return "BLUE";
-        } else if (attackingTeam.equals("BLUE")) {
-            return "RED";
-        } else {
-            return null;
-        }
-    }
-
-    public Location getNexusLocation(String team) {
-        String worldName = plugin.getConfig().getString(team + ".nexus.world");
-        if (worldName == null) {
-            return null;
-        }
-
-        World world = Bukkit.getWorld(worldName);
-        if (world == null) {
-            return null;
-        }
-
-        // Получаем местоположение нексуса из файла конфигурации
-        double x = plugin.getConfig().getDouble(team + ".nexus.x");
-        double y = plugin.getConfig().getDouble(team + ".nexus.y");
-        double z = plugin.getConfig().getDouble(team + ".nexus.z");
-
-        // Возвращает местоположение нексуса для данной команды
-        return new Location(Bukkit.getWorld(worldName), x, y, z);
-    }
-
-    public boolean isBlockInNexus(Location blockLocation, String team) {
-        Location nexusLocation = getNexusLocation(team);
-        return nexusLocation != null && nexusLocation.equals(blockLocation);
-    }
-
-    public Location getHomeLocation(String team, String worldName) {
-        if (worldName == null) {
-            return null;
-        }
-
-        World world = Bukkit.getWorld(worldName);
-        if (world == null) {
-            return null;
-        }
-
-        if (!plugin.getConfig().isSet(team + "." + worldName + ".home.x")) {
-            return null;
-        }
-
-        // Получаем местоположение нексуса из файла конфигурации
-        double x = plugin.getConfig().getDouble(team + "." + worldName + ".home.x");
-        double y = plugin.getConfig().getDouble(team + "." + worldName + ".home.y");
-        double z = plugin.getConfig().getDouble(team + "." + worldName + ".home.z");
-
-        // Возвращает местоположение нексуса для данной команды
-        return new Location(Bukkit.getWorld(worldName), x, y, z);
-    }
-
-    public boolean isBlockInHome(Location blockLocation, String team) {
-        Location homeLocation = getHomeLocation(team, blockLocation.getWorld().getName());
-        return homeLocation != null && homeLocation.equals(blockLocation);
-    }
-
-    // Проверка, можно ли начать рейд
-    public boolean canRaid(String teamName) {
-        // проверяем, активен ли уже рейд
-        if (raidingTeam != null || isRaidActive()) {
-            return false;
-        }
-
-        MyTeam team = teams.get(teamName);
-        if (team == null) {
-            throw new IllegalArgumentException("Team " + teamName + " does not exist.");
-        }
-
-        int minPlayers = plugin.getConfig().getInt("plugin.raid.minPlayers");
-        int differencePlayersCount = plugin.getConfig().getInt("plugin.raid.differencePlayersCount");
-
-        // проверяем, есть ли другие команды и достаточно ли игроков
-        if (raidPlayers.size() >= minPlayers && getOnlineTeamPlayers(getDefendingTeam(teamName)).size() >= minPlayers &&
-                raidPlayers.size() - getOnlineTeamPlayers(getDefendingTeam(teamName)).size() <= differencePlayersCount &&
-                    getNexusLocation(getDefendingTeam(teamName)) != null) {
-            return true;
-        }
-
-        return false;
-    }
-
-    // Обновление счета команды на Scoreboard
-    public void updateScoreboard() {
-        Objective objective = scoreboard.getObjective(DisplaySlot.SIDEBAR);
-        if (objective == null) {
-            objective = scoreboard.registerNewObjective("teamscore", "dummy", "Очки команд");
-            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-        }
-
-        for (Map.Entry<String, Integer> entry : teamScores.entrySet()) {
-            String team = entry.getKey();
-            int score = entry.getValue();
-
-            // Задаем цвет команде в зависимости от ее имени
-            if (team.equalsIgnoreCase("red")) {
-                team = ChatColor.RED + team;
-            } else if (team.equalsIgnoreCase("blue")) {
-                team = ChatColor.BLUE + team;
-            }
-
-            Score teamScore = objective.getScore(team);
-            teamScore.setScore(score);
-        }
-
-        for (Player player : Bukkit.getOnlinePlayers()) {
-            player.setScoreboard(scoreboard);
-        }
-    }
-
-    // Добавление очков к счету команды
-    public void addScore(String team, int points) {
-        if (!teamScores.containsKey(team)) {
-            teamScores.put(team, 0);
-        }
-        teamScores.put(team, teamScores.get(team) + points);
-
-        saveTeamScores();
-        updateScoreboard();
-    }
-
-    // Получение очков команды
-    public int getScore(String team) {
-        return teamScores.getOrDefault(team, 0);
-    }
-
-    // Получение объекта Scoreboard
-    public Scoreboard getScoreboard() {
-        return scoreboard;
-    }
-
-    // Проверяет, открыт ли рейд
     public boolean isRaidOpen() {
         return isRaidOpen;
     }
 
-    // Проверяет, активен ли рейд
     public boolean isRaidActive() {
         return isRaidActive;
     }
 
-    // Проверяет, пошёл ли отсчёт до начала рейда
     public boolean isRaidStarted() {
         return isRaidStarted;
     }
@@ -425,56 +103,49 @@ public class Game {
         return isDelayBegunAfterRaid;
     }
 
-    // Увеличивает количество уничтоженного обсидиана на 1
-    public void incrementObsidianDestroyed() {
-        obsidianDestroyed++;
-    }
-
-    // Возвращает количество обсидиана, которое ещё необходимо уничтожить
-    public int getRequiredDestroyCount() {
-        // Здесь нужно прочитать данные из файла конфигурации, например:
-        return plugin.getConfig().getInt("plugin.raid.requiredDestroyCount");
-    }
-
-    // Возвращает количество уничтоженного на данный момент обсидиана
-    public int getObsidianDestroyed() {
-        return obsidianDestroyed;
-    }
-
-    // Завершает рейд
-    public void endRaid() {
-        isRaidOpen = false;
-        isRaidActive = false;
-        isRaidStarted = false;
-        buildFullNexus(getPlayerTeam(raidPlayers.get(0).getName()));
-        long currentTimestamp = System.currentTimeMillis();
-        plugin.getConfig().set(getPlayerTeam(raidPlayers.get(0).getName()) + ".lastRaid", currentTimestamp);
-        plugin.saveConfig();
-        for (Player player : raidPlayers) {
-            player.sendMessage(ChatColor.YELLOW + "Рейд был закончен.");
-        }
-        raidPlayers.clear();
-    }
-
-    // Добавляет игрока к рейду
-    public void addPlayerToRaid(Player player) {
-        if (!raidPlayers.contains(player)) {
-            raidPlayers.add(player);
-        }
-    }
-
     public String getLastRaidOpenedTheTeam() {
         return lastRaidOpenedTheTeam;
     }
 
-    // Открывает рейд
+    public List<Player> getRaidPlayers() {
+        return raidPlayers;
+    }
+
+    // ------------------------//
+    //         Методы          //
+    // ------------------------//
+
+    /**
+     * Проверяем, есть ли у команды база.
+     */
+    public boolean hasBase(String team) {
+        return teamBases.containsKey(team);
+    }
+
+    /**
+     * Получаем базу команды.
+     */
+    public Location getBase(String team) {
+        return teamBases.get(team);
+    }
+
+    /**
+     * Устанавливаем базу команды.
+     */
+    public void setBase(String team, Location loc) {
+        teamBases.put(team, loc);
+    }
+
+    /**
+     * Открываем рейд для команды.
+     */
     public void openRaid(String team) {
         isRaidOpen = true;
         lastRaidOpenedTheTeam = team;
         obsidianDestroyed = 0;
         raidPlayers.clear();
 
-        int openDurationMinutes = getOpenRaidDurationMinutes();
+        final int openDurationMinutes = getOpenRaidDurationMinutes();
         for (Player player : getTeamPlayers(team)) {
             player.sendMessage(ChatColor.GREEN + "Рейд был открыт! Присоединяйтесь к нему с помощью /joinraid");
             player.sendMessage(ChatColor.YELLOW + "Осталось времени для присоединения: " + openDurationMinutes + " минут.");
@@ -482,18 +153,486 @@ public class Game {
         }
     }
 
-    // Отменяет рейд
+    /**
+     * Начало процедуры старта рейда с задержкой.
+     */
+    public void startRaid(String attackingTeam) {
+        final int delayMinutes = getRaidDelayMinutes();
+        isRaidStarted = true;
+
+        final BukkitScheduler scheduler = Bukkit.getScheduler();
+        scheduler.runTaskLater(plugin, () -> {
+            // Проверяем, можем ли мы начать рейд
+            if (canRaid(attackingTeam)) {
+                obsidianDestroyed = 0;
+                isRaidActive = true;
+                raidStartTime = System.currentTimeMillis();
+
+                // Собираем не полностью готовый нексус у защищающейся команды
+                buildNotFullNexus(getDefendingTeam(attackingTeam));
+
+                // Фактический запуск рейда
+                startRaidDelayed(attackingTeam);
+
+            } else {
+                isRaidActive = false;
+                isRaidOpen = false;
+                isRaidStarted = false;
+                for (Player player : raidPlayers) {
+                    player.sendMessage(ChatColor.RED + "Рейд не может быть начат: " +
+                            "либо недостаточно игроков у другой команды, " +
+                            "либо у другой команды отсутствует Нексус.");
+                }
+            }
+        }, (long) delayMinutes * 60 * 20L);
+    }
+
+    /**
+     * Запуск рейда после задержки.
+     */
+    public void startRaidDelayed(String attackingTeam) {
+        Bukkit.broadcastMessage(ChatColor.GREEN + "Рейд начался! Команда '" + attackingTeam + "' является нападающей.");
+
+        raidingTeam = attackingTeam;
+        final String defendingTeam = getDefendingTeam(attackingTeam);
+        final Location nexusLocation = getNexusLocation(defendingTeam);
+        final Block nexusBlock = nexusLocation.getBlock();
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                final int requiredDestroyCount = getRequiredDestroyCount();
+                final int raidDurationMinutes = getRaidDurationMinutes();
+                final long raidEndTime = raidStartTime + ((long) raidDurationMinutes * 60 * 1000);
+
+                // Если блок нексуса сломан (AIR), восстанавливаем его
+                if (nexusBlock.getType() == Material.AIR) {
+                    nexusBlock.setType(Material.OBSIDIAN);
+                    final String message = "Часть нексуса команды '" + defendingTeam
+                            + "' уничтожена! Осталось уничтожить "
+                            + (requiredDestroyCount - obsidianDestroyed) + " раз!";
+                    for (Player p : getTeamPlayers(attackingTeam)) {
+                        p.sendMessage(ChatColor.GREEN + message);
+                    }
+                    for (Player p : getTeamPlayers(defendingTeam)) {
+                        p.sendMessage(ChatColor.RED + message);
+                    }
+                }
+
+                // Если нексус уничтожен нужное кол-во раз или время вышло — завершаем рейд
+                if (obsidianDestroyed >= requiredDestroyCount || System.currentTimeMillis() >= raidEndTime) {
+                    if (obsidianDestroyed < requiredDestroyCount) {
+                        endRaid();
+                        Bukkit.broadcastMessage(ChatColor.RED + "Время рейда истекло! Команде '"
+                                + attackingTeam + "' не удалось завершить рейд. Нексус команды '"
+                                + defendingTeam + "' уничтожен " + obsidianDestroyed + " раз.");
+                        addScore(defendingTeam, raidWinScore);
+                    } else {
+                        Bukkit.broadcastMessage(ChatColor.GREEN + "Команда '" + attackingTeam
+                                + "' успешно завершила рейд! Нексус команды '"
+                                + defendingTeam + "' уничтожен " + obsidianDestroyed + " раз.");
+                        addScore(attackingTeam, raidWinScore);
+                    }
+
+                    isDelayBegunAfterRaid = true;
+                    final int minutesPrivateDelayAfterRaid = plugin.getConfig().getInt("plugin.raid.minutesPrivateDelayAfterRaid");
+                    final BukkitScheduler scheduler = Bukkit.getScheduler();
+                    scheduler.runTaskLater(plugin, () -> isDelayBegunAfterRaid = false,
+                            (long) minutesPrivateDelayAfterRaid * 60 * 20L);
+
+                    this.cancel();
+
+                    raidingTeam = null;
+                    isRaidActive = false;
+                    buildFullNexus(defendingTeam);
+                }
+            }
+        }.runTaskTimer(plugin, 0L, 20L);
+    }
+
+    /**
+     * Завершает рейд (общая логика).
+     */
+    public void endRaid() {
+        isRaidOpen = false;
+        isRaidActive = false;
+        isRaidStarted = false;
+
+        // Безопасная проверка: если кто-то в рейде есть
+        if (!raidPlayers.isEmpty()) {
+            final String teamName = getPlayerTeam(raidPlayers.get(0).getName());
+            buildFullNexus(teamName);
+
+            final long currentTimestamp = System.currentTimeMillis();
+            plugin.getConfig().set(teamName + ".lastRaid", currentTimestamp);
+            plugin.saveConfig();
+        }
+
+        for (Player player : raidPlayers) {
+            player.sendMessage(ChatColor.YELLOW + "Рейд был закончен.");
+        }
+        raidPlayers.clear();
+    }
+
+    /**
+     * Добавляет игрока к рейду (если он ещё не в списке).
+     */
+    public void addPlayerToRaid(Player player) {
+        if (!raidPlayers.contains(player)) {
+            raidPlayers.add(player);
+        }
+    }
+
+    /**
+     * Отменяет рейд.
+     */
     public void cancelRaid(String team, boolean wasCancelledByPlayer) {
         if (!isRaidStarted && !isRaidActive && isRaidOpen) {
             isRaidOpen = false;
-            for (Player player : getTeamPlayers(team)) {
+            for (Player p : getTeamPlayers(team)) {
                 if (wasCancelledByPlayer) {
-                    player.sendMessage(ChatColor.RED + "Рейд команды был отменён её капитаном!");
+                    p.sendMessage(ChatColor.RED + "Рейд команды был отменён её капитаном!");
                 } else {
-                    player.sendMessage(ChatColor.RED + "Рейд команды был отменён! Истекло время!");
+                    p.sendMessage(ChatColor.RED + "Рейд команды был отменён! Истекло время!");
                 }
             }
         }
+    }
+
+    // ------------------------//
+    //   Построение / снос
+    //       структур
+    // ------------------------//
+
+    /**
+     * Построить полный (завершённый) нексус.
+     */
+    public void buildFullNexus(String team) {
+        final Location nexusLocation = getNexusLocation(team);
+        if (nexusLocation == null) return;
+
+        final World world = nexusLocation.getWorld();
+        final int baseRadius = 1;
+        for (int x = -baseRadius; x <= baseRadius; x++) {
+            for (int y = -baseRadius; y <= baseRadius; y++) {
+                for (int z = -baseRadius; z <= baseRadius; z++) {
+                    final Block block = world.getBlockAt(
+                            nexusLocation.getBlockX() + x,
+                            nexusLocation.getBlockY() + y,
+                            nexusLocation.getBlockZ() + z
+                    );
+                    // Барьер по осям (крест)
+                    if ((x == 0 && y == 0 && Math.abs(z) == baseRadius) ||
+                            (y == 0 && Math.abs(x) == baseRadius && z == 0) ||
+                            (z == 0 && x == 0 && Math.abs(y) == baseRadius)) {
+                        block.setType(Material.BARRIER);
+                    }
+                    // Центральный блок — обсидиан
+                    else if (x == 0 && y == 0 && z == 0) {
+                        block.setType(Material.OBSIDIAN);
+                    }
+                    // В остальных местах — бедрок, кроме углов (куб 3x3x3 без углов)
+                    else if (!(Math.abs(x) == baseRadius && Math.abs(y) == baseRadius && Math.abs(z) == baseRadius)) {
+                        block.setType(Material.BEDROCK);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Построить не полностью готовый нексус (без барьеров).
+     */
+    public void buildNotFullNexus(String team) {
+        final Location nexusLocation = getNexusLocation(team);
+        if (nexusLocation == null) return;
+
+        final World world = nexusLocation.getWorld();
+        final int baseRadius = 1;
+        for (int x = -baseRadius; x <= baseRadius; x++) {
+            for (int y = -baseRadius; y <= baseRadius; y++) {
+                for (int z = -baseRadius; z <= baseRadius; z++) {
+                    final Block block = world.getBlockAt(
+                            nexusLocation.getBlockX() + x,
+                            nexusLocation.getBlockY() + y,
+                            nexusLocation.getBlockZ() + z
+                    );
+                    // Убираем барьер — ставим воздух
+                    if ((x == 0 && y == 0 && Math.abs(z) == baseRadius) ||
+                            (y == 0 && Math.abs(x) == baseRadius && z == 0) ||
+                            (z == 0 && x == 0 && Math.abs(y) == baseRadius)) {
+                        block.setType(Material.AIR);
+                    }
+                    // Центральный блок — обсидиан
+                    else if (x == 0 && y == 0 && z == 0) {
+                        block.setType(Material.OBSIDIAN);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Удалить полностью (убрать) нексус.
+     */
+    public void removeFullNexus(Location nexusLocation) {
+        if (nexusLocation == null) return;
+        final World world = nexusLocation.getWorld();
+        final int baseRadius = 1;
+        for (int x = -baseRadius; x <= baseRadius; x++) {
+            for (int y = -baseRadius; y <= baseRadius; y++) {
+                for (int z = -baseRadius; z <= baseRadius; z++) {
+                    final Block block = world.getBlockAt(
+                            nexusLocation.getBlockX() + x,
+                            nexusLocation.getBlockY() + y,
+                            nexusLocation.getBlockZ() + z
+                    );
+                    block.setType(Material.AIR);
+                }
+            }
+        }
+    }
+
+    /**
+     * Построить полный дом (по аналогии с нексусом).
+     */
+    public void buildFullHome(String team, String worldName) {
+        final Location homeLocation = getHomeLocation(team, worldName);
+        if (homeLocation == null) return;
+
+        final World world = homeLocation.getWorld();
+        final int baseRadius = 1;
+        for (int x = -baseRadius; x <= baseRadius; x++) {
+            for (int y = -baseRadius; y <= baseRadius; y++) {
+                for (int z = -baseRadius; z <= baseRadius; z++) {
+                    final Block block = world.getBlockAt(
+                            homeLocation.getBlockX() + x,
+                            homeLocation.getBlockY() + y,
+                            homeLocation.getBlockZ() + z
+                    );
+                    block.setType(Material.BEDROCK);
+                }
+            }
+        }
+    }
+
+    /**
+     * Удалить полностью (убрать) дом.
+     */
+    public void removeFullHome(Location homeLocation) {
+        if (homeLocation == null) return;
+        final World world = homeLocation.getWorld();
+        final int baseRadius = 1;
+        for (int x = -baseRadius; x <= baseRadius; x++) {
+            for (int y = -baseRadius; y <= baseRadius; y++) {
+                for (int z = -baseRadius; z <= baseRadius; z++) {
+                    final Block block = world.getBlockAt(
+                            homeLocation.getBlockX() + x,
+                            homeLocation.getBlockY() + y,
+                            homeLocation.getBlockZ() + z
+                    );
+                    block.setType(Material.AIR);
+                }
+            }
+        }
+    }
+
+    // ------------------------//
+    //   Методы Nexus / Home   //
+    // ------------------------//
+
+    /**
+     * Получаем локацию нексуса по имени команды.
+     */
+    public Location getNexusLocation(String team) {
+        if (team == null) return null;
+
+        final String worldName = plugin.getConfig().getString(team + ".nexus.world");
+        if (worldName == null) return null;
+
+        final World world = Bukkit.getWorld(worldName);
+        if (world == null) return null;
+
+        final double x = plugin.getConfig().getDouble(team + ".nexus.x");
+        final double y = plugin.getConfig().getDouble(team + ".nexus.y");
+        final double z = plugin.getConfig().getDouble(team + ".nexus.z");
+
+        return new Location(world, x, y, z);
+    }
+
+    public Location getHomeLocation(String team, String worldName) {
+        if (team == null || worldName == null) return null;
+
+        final World world = Bukkit.getWorld(worldName);
+        if (world == null) return null;
+
+        if (!plugin.getConfig().isSet(team + "." + worldName + ".home.x")) {
+            return null;
+        }
+
+        final double x = plugin.getConfig().getDouble(team + "." + worldName + ".home.x");
+        final double y = plugin.getConfig().getDouble(team + "." + worldName + ".home.y");
+        final double z = plugin.getConfig().getDouble(team + "." + worldName + ".home.z");
+
+        return new Location(world, x, y, z);
+    }
+
+    public boolean isBlockInNexus(Location blockLocation, String team) {
+        final Location nexusLocation = getNexusLocation(team);
+        return nexusLocation != null && nexusLocation.equals(blockLocation);
+    }
+
+    public boolean isBlockInHome(Location blockLocation, String team) {
+        if (blockLocation == null) return false;
+        final Location homeLocation = getHomeLocation(team, blockLocation.getWorld().getName());
+        return homeLocation != null && homeLocation.equals(blockLocation);
+    }
+
+    // ------------------------//
+    //   Логика рейда / проверки
+    // ------------------------//
+
+    /**
+     * Проверяем, можно ли начать рейд.
+     */
+    public boolean canRaid(String teamName) {
+        if (raidingTeam != null || isRaidActive()) {
+            return false;
+        }
+        final MyTeam team = teams.get(teamName);
+        if (team == null) {
+            throw new IllegalArgumentException("Team " + teamName + " does not exist.");
+        }
+
+        final int minPlayers = plugin.getConfig().getInt("plugin.raid.minPlayers");
+        final int differencePlayersCount = plugin.getConfig().getInt("plugin.raid.differencePlayersCount");
+        final String defendingTeam = getDefendingTeam(teamName);
+
+        if (defendingTeam == null) {
+            return false;
+        }
+
+        final int attackersOnline = raidPlayers.size();
+        final int defendersOnline = getOnlineTeamPlayers(defendingTeam).size();
+
+        // Разница в игроках не должна превышать differencePlayersCount,
+        // у защиты тоже должно быть нужное кол-во игроков
+        return (attackersOnline >= minPlayers)
+                && (defendersOnline >= minPlayers)
+                && (attackersOnline - defendersOnline <= differencePlayersCount)
+                && (getNexusLocation(defendingTeam) != null);
+    }
+
+    /**
+     * Возвращает имя команды-защитника, если есть две команды: RED / BLUE.
+     */
+    public String getDefendingTeam(String attackingTeam) {
+        if ("RED".equals(attackingTeam)) {
+            return "BLUE";
+        } else if ("BLUE".equals(attackingTeam)) {
+            return "RED";
+        }
+        return null;
+    }
+
+    /**
+     * Проверяем, жив ли дракон в Энде.
+     */
+    public boolean isDragonAlive() {
+        final World endWorld = Bukkit.getWorld("world_the_end");
+        if (endWorld == null) return false;
+
+        for (Entity entity : endWorld.getEntities()) {
+            if (entity instanceof EnderDragon) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // ------------------------//
+    //   Работа с конфигом и Scoreboard
+    // ------------------------//
+
+    /**
+     * Обновляет счёт команд на Scoreboard.
+     */
+    public void updateScoreboard() {
+        Objective objective = scoreboard.getObjective(DisplaySlot.SIDEBAR);
+        if (objective == null) {
+            objective = scoreboard.registerNewObjective("teamscore", "dummy", "Очки команд");
+            objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+        }
+
+        for (Map.Entry<String, Integer> entry : teamScores.entrySet()) {
+            String teamName = entry.getKey();
+            final int score = entry.getValue();
+
+            if ("red".equalsIgnoreCase(teamName)) {
+                teamName = ChatColor.RED + teamName;
+            } else if ("blue".equalsIgnoreCase(teamName)) {
+                teamName = ChatColor.BLUE + teamName;
+            }
+
+            Score teamScore = objective.getScore(teamName);
+            teamScore.setScore(score);
+        }
+
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            player.setScoreboard(scoreboard);
+        }
+    }
+
+    /**
+     * Добавляет очки команде.
+     */
+    public void addScore(String team, int points) {
+        teamScores.putIfAbsent(team, 0);
+        teamScores.put(team, teamScores.get(team) + points);
+
+        saveTeamScores();
+        updateScoreboard();
+    }
+
+    /**
+     * Получаем очки команды.
+     */
+    public int getScore(String team) {
+        return teamScores.getOrDefault(team, 0);
+    }
+
+    /**
+     * Получаем сам scoreboard
+     */
+    public Scoreboard getScoreboard() {
+        return scoreboard;
+    }
+
+    // ------------------------//
+    //      Разные методы
+    // ------------------------//
+
+    /**
+     * Инкремент количества разрушенного обсидиана.
+     */
+    public void incrementObsidianDestroyed() {
+        obsidianDestroyed++;
+    }
+
+    public int getObsidianDestroyed() {
+        return obsidianDestroyed;
+    }
+
+    public int getRequiredDestroyCount() {
+        return plugin.getConfig().getInt("plugin.raid.requiredDestroyCount");
+    }
+
+    public int getRaidDelayMinutes() {
+        return plugin.getConfig().getInt("plugin.raid.delay");
+    }
+
+    public int getRaidDurationMinutes() {
+        return plugin.getConfig().getInt("plugin.raid.durationMinutes");
     }
 
     public int getOpenRaidDurationMinutes() {
@@ -504,216 +643,228 @@ public class Game {
         return endWorldMainIslandRadius;
     }
 
+    /**
+     * Получение списка игроков команды.
+     */
     public List<Player> getTeamPlayers(String team) {
-        List<String> playerNames = teamMembers.getOrDefault(team, new ArrayList<>());
-        List<Player> players = new ArrayList<>();
+        final List<String> playerNames = teamMembers.getOrDefault(team, new ArrayList<>());
+        final List<Player> players = new ArrayList<>();
         for (String playerName : playerNames) {
-            Player player = Bukkit.getPlayer(playerName);
-            if (player != null) {
-                players.add(player);
+            Player onlinePlayer = Bukkit.getPlayer(playerName);
+            if (onlinePlayer != null) {
+                players.add(onlinePlayer);
             }
         }
         return players;
     }
 
+    /**
+     * Получение списка онлайн-игроков команды.
+     */
     public List<Player> getOnlineTeamPlayers(String team) {
-        List<String> playerNames = teamMembers.getOrDefault(team, new ArrayList<>());
-        List<Player> players = new ArrayList<>();
+        final List<String> playerNames = teamMembers.getOrDefault(team, new ArrayList<>());
+        final List<Player> players = new ArrayList<>();
         for (String playerName : playerNames) {
-            Player player = Bukkit.getPlayer(playerName);
-            if (player != null && player.isOnline()) {
-                players.add(player);
+            Player onlinePlayer = Bukkit.getPlayer(playerName);
+            if (onlinePlayer != null && onlinePlayer.isOnline()) {
+                players.add(onlinePlayer);
             }
         }
         return players;
     }
 
+    /**
+     * Возвращает команду игрока по его имени.
+     */
     public String getPlayerTeam(String playerName) {
         for (Map.Entry<String, ArrayList<String>> entry : teamMembers.entrySet()) {
             if (entry.getValue().contains(playerName)) {
                 return entry.getKey();
             }
         }
-        return null; // Если игрок не найден ни в одной команде, вернуть null
+        return null;
     }
 
+    /**
+     * Проверка: оба игрока в одной команде?
+     */
     public boolean areTwoPlayersInTheSameTeam(String playerName1, String playerName2) {
-        String team1 = getPlayerTeam(playerName1);
-        String team2 = getPlayerTeam(playerName2);
+        final String team1 = getPlayerTeam(playerName1);
+        final String team2 = getPlayerTeam(playerName2);
 
+        // Если оба игрока не состоят в команде, считаем их "в одной команде" (обычно это не так, но логика может зависеть от вас)
         if (team1 == null && team2 == null) {
             return true;
         }
-        if (team1 != null && team1.equals(team2)) {
-            return true;
-        }
-
-        return false;
+        return team1 != null && team1.equals(team2);
     }
 
+    /**
+     * Ищем безопасную локацию поблизости.
+     */
     public Location getSafeLocation(Location playerLocation) {
-        int searchRadius = 10; // Радиус поиска свободного места
-
-        if (isLocationSafe(playerLocation)) return playerLocation;
+        final int searchRadius = 10;
+        if (isLocationSafe(playerLocation)) {
+            return playerLocation;
+        }
 
         for (int x = -searchRadius; x <= searchRadius; x++) {
             for (int y = -searchRadius; y <= searchRadius; y++) {
                 for (int z = -searchRadius; z <= searchRadius; z++) {
-                    Location location = playerLocation.clone().add(x, y, z);
-                    if (isLocationSafe(location)) {
-                        return location;
+                    final Location checkLoc = playerLocation.clone().add(x, y, z);
+                    if (isLocationSafe(checkLoc)) {
+                        return checkLoc;
                     }
                 }
             }
         }
-
-        return null; // Если свободное место не найдено, вернуть null
+        return null;
     }
 
-    private boolean isLocationSafe(Location location) {
-        // Проверяем, является ли данное место безопасным для перемещения
-        Block block = location.getBlock();
-
-        // Проверяем, что блок и его соседи - воздух
-        if (block.getType() != Material.AIR || !block.getRelative(BlockFace.UP).getType().equals(Material.AIR)) {
-            return false;
-        }
-
-        // Проверяем, что блок под ногами - не воздух и не лава
-        if (block.getRelative(BlockFace.DOWN).getType().equals(Material.AIR) || block.getRelative(BlockFace.DOWN).getType().equals(Material.LAVA)) {
-            return false;
-        }
-
-        // Дополнительные проверки, если необходимо
-
-        return true; // Место считается безопасным
-    }
-
+    /**
+     * Телепортирует игрока в безопасное место.
+     */
     public void teleportPlayerToSafePosition(Player player) {
-        Location playerLocation = player.getLocation();
-        Location safeLocation = getSafeLocation(playerLocation);
+        final Location playerLocation = player.getLocation();
+        final Location safeLocation = getSafeLocation(playerLocation);
         if (safeLocation != null) {
             player.teleport(safeLocation);
             player.sendMessage(ChatColor.YELLOW + "Вас переместили в безопасное место для постройки Нексуса.");
         }
     }
 
-    // Устанавливает игрока как капитана для указанной команды
+    /**
+     * Проверяет, является ли локация безопасной для перемещения.
+     */
+    private boolean isLocationSafe(Location location) {
+        final Block block = location.getBlock();
+
+        // Проверяем, что блок и блок над ним — воздух
+        if (block.getType() != Material.AIR ||
+                block.getRelative(BlockFace.UP).getType() != Material.AIR) {
+            return false;
+        }
+
+        // Проверяем, что блок под ногами — не воздух и не лава
+        final Material below = block.getRelative(BlockFace.DOWN).getType();
+        if (below == Material.AIR || below == Material.LAVA) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Устанавливает игрока как капитана для указанной команды.
+     */
     public void setCaptain(String team, Player player) {
         teamCaptains.put(team, player.getName());
     }
 
-    // Проверяет, является ли данный игрок капитаном указанной команды
+    /**
+     * Проверяет, является ли данный игрок капитаном указанной команды.
+     */
     public boolean isCaptain(String team, Player player) {
-        String captainName = teamCaptains.get(team);
+        final String captainName = teamCaptains.get(team);
         return captainName != null && captainName.equals(player.getName());
     }
 
-    // Получает имя капитана для указанной команды
+    /**
+     * Получаем имя капитана для команды.
+     */
     public String getCaptainName(String team) {
         return teamCaptains.get(team);
     }
 
+    /**
+     * Проверяем, находится ли локация в радиусе нексуса.
+     */
     public boolean isWithinNexusRadius(Location actionLocation, String team) {
-        Location nexusLocation = getNexusLocation(team);
-        if (nexusLocation == null || actionLocation == null) {
-            return false;
-        }
-
-        if (!actionLocation.getWorld().equals(nexusLocation.getWorld())) {
-            return false;
-        }
+        final Location nexusLocation = getNexusLocation(team);
+        if (nexusLocation == null || actionLocation == null) return false;
+        if (!actionLocation.getWorld().equals(nexusLocation.getWorld())) return false;
 
         return isWithin2DRadius(actionLocation, nexusLocation, privateRadiusRaid);
     }
 
+    /**
+     * Проверяем, находится ли локация в радиусе дома.
+     */
     public boolean isWithinHomeRadius(Location actionLocation, String team) {
-        if (actionLocation == null) {
-            return false;
-        }
-        Location homeLocation = getHomeLocation(team, actionLocation.getWorld().getName());
-        if (homeLocation == null) {
-            return false;
-        }
+        if (actionLocation == null) return false;
 
-        if (!actionLocation.getWorld().equals(homeLocation.getWorld())) {
-            return false;
-        }
+        final Location homeLocation = getHomeLocation(team, actionLocation.getWorld().getName());
+        if (homeLocation == null) return false;
+        if (!actionLocation.getWorld().equals(homeLocation.getWorld())) return false;
 
         return isWithin2DRadius(actionLocation, homeLocation, privateRadiusHome);
     }
 
+    /**
+     * Проверка: находится ли loc1 в 2D-радиусе от loc2.
+     */
     public boolean isWithin2DRadius(Location loc1, Location loc2, double distance) {
-        Location actionLocation2D = new Location(loc1.getWorld(), loc1.getX(), 0, loc1.getZ());
-        Location nexusLocation2D = new Location(loc2.getWorld(), loc2.getX(), 0, loc2.getZ());
+        final Location loc1_2D = new Location(loc1.getWorld(), loc1.getX(), 0, loc1.getZ());
+        final Location loc2_2D = new Location(loc2.getWorld(), loc2.getX(), 0, loc2.getZ());
 
-        return Math.abs(actionLocation2D.distanceSquared(nexusLocation2D)) <= distance * distance;
+        return loc1_2D.distanceSquared(loc2_2D) <= (distance * distance);
     }
 
+    /**
+     * Проверка: находится ли loc1 в радиусе distance от loc2 (3D).
+     */
     public boolean isWithinRadius(Location loc1, Location loc2, double distance) {
-        if (loc1 == null || loc2 == null) {
-            return false;
-        }
+        if (loc1 == null || loc2 == null) return false;
+        if (!loc1.getWorld().equals(loc2.getWorld())) return false;
 
-        if (!loc1.getWorld().equals(loc2.getWorld())) {
-            return false;
-        }
-
-        return Math.abs(loc1.distanceSquared(loc2)) <= distance * distance;
+        return loc1.distanceSquared(loc2) <= (distance * distance);
     }
 
+    /**
+     * Проверка, всегда ли в этом мире разрешен PvP.
+     */
     public boolean isThePvPIsAlwaysOnInThisWorld(String worldName) {
         return alwaysAllowedPvPWorlds.contains(worldName);
     }
 
+    /**
+     * Проверка идентичности локаций (мир, x, y, z).
+     */
     public boolean areLocationsEqualByXYZAndWorld(Location loc1, Location loc2) {
-        if (loc1.getWorld().getName().equals(loc2.getWorld().getName()) &&
-                loc1.getBlockX() == loc2.getBlockX() &&
-                loc1.getBlockY() == loc2.getBlockY() &&
-                loc1.getBlockZ() == loc2.getBlockZ()) {
-            return true;
-        }
-        return false;
+        return loc1.getWorld().getName().equals(loc2.getWorld().getName())
+                && loc1.getBlockX() == loc2.getBlockX()
+                && loc1.getBlockY() == loc2.getBlockY()
+                && loc1.getBlockZ() == loc2.getBlockZ();
     }
 
-    public boolean isDragonAlive() {
-        World endWorld = Bukkit.getWorld("world_the_end");
-        if (endWorld != null) {
-            for (Entity entity : endWorld.getEntities()) {
-                if (entity instanceof EnderDragon) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    // Загружает состав команд и имена капитанов из файла конфигурации
+    /**
+     * Загрузка / сохранение состава команд и их капитанов.
+     */
     private void loadTeamCaptains() {
-        // Загрузка составов команд и имен капитанов из файла конфигурации
-        ConfigurationSection teamsSection = plugin.getConfig().getConfigurationSection("teams");
-        if (teamsSection != null) {
-            for (String team : teamsSection.getKeys(false)) {
-                String captainName = teamsSection.getString(team + ".captain");
-                if (captainName != null) {
-                    teamCaptains.put(team, captainName);
-                }
+        final ConfigurationSection teamsSection = plugin.getConfig().getConfigurationSection("teams");
+        if (teamsSection == null) return;
+
+        for (String team : teamsSection.getKeys(false)) {
+            final String captainName = teamsSection.getString(team + ".captain");
+            if (captainName != null) {
+                teamCaptains.put(team, captainName);
             }
         }
     }
 
     private void loadTeamMembers() {
-        ConfigurationSection teamsSection = plugin.getConfig().getConfigurationSection("teams");
-        if (teamsSection != null) {
-            for (String team : teamsSection.getKeys(false)) {
-                List<String> memberList = teamsSection.getStringList(team + ".members");
-                if (memberList != null && !memberList.isEmpty()) {
-                    teamMembers.put(team, new ArrayList<>(memberList));
-                    MyTeam currentTeam = teams.get(team);
-                    if (currentTeam != null) {
-                        for (String member : memberList) {
-                            currentTeam.addMember(member);
-                        }
+        final ConfigurationSection teamsSection = plugin.getConfig().getConfigurationSection("teams");
+        if (teamsSection == null) return;
+
+        for (String team : teamsSection.getKeys(false)) {
+            List<String> memberList = teamsSection.getStringList(team + ".members");
+            if (!memberList.isEmpty()) {
+                teamMembers.put(team, new ArrayList<>(memberList));
+
+                final MyTeam currentTeam = teams.get(team);
+                if (currentTeam != null) {
+                    for (String member : memberList) {
+                        currentTeam.addMember(member);
                     }
                 }
             }
@@ -721,12 +872,12 @@ public class Game {
     }
 
     private void loadTeamScores() {
-        ConfigurationSection teamsSection = plugin.getConfig().getConfigurationSection("teams");
-        if (teamsSection != null) {
-            for (String team : teamsSection.getKeys(false)) {
-                int score = teamsSection.getInt(team + ".score");
-                teamScores.put(team, score);
-            }
+        final ConfigurationSection teamsSection = plugin.getConfig().getConfigurationSection("teams");
+        if (teamsSection == null) return;
+
+        for (String team : teamsSection.getKeys(false)) {
+            final int score = teamsSection.getInt(team + ".score");
+            teamScores.put(team, score);
         }
     }
 
@@ -737,28 +888,36 @@ public class Game {
         }
 
         for (Map.Entry<String, Integer> entry : teamScores.entrySet()) {
-            String team = entry.getKey();
-            int score = entry.getValue();
+            final String team = entry.getKey();
+            final int score = entry.getValue();
             teamsSection.set(team + ".score", score);
         }
 
         plugin.saveConfig();
     }
 
-    public void loadBases()
-    {
+    /**
+     * Загрузка начальных баз команд (Nexus).
+     */
+    public void loadBases() {
         teamBases.clear();
-        teamBases.put("RED", getNexusLocation("RED")); // Замените на реальные координаты базы команды "RED"
-        teamBases.put("BLUE", getNexusLocation("BLUE")); // Замените на реальные координаты базы команды "BLUE"
+        teamBases.put("RED", getNexusLocation("RED"));
+        teamBases.put("BLUE", getNexusLocation("BLUE"));
     }
 
+    /**
+     * Загрузка миров, где PvP всегда разрешён.
+     */
     public void loadAlwaysAllowedPvPWorld() {
-        ConfigurationSection pluginSection = plugin.getConfig().getConfigurationSection("plugin");
+        final ConfigurationSection pluginSection = plugin.getConfig().getConfigurationSection("plugin");
         if (pluginSection != null) {
             alwaysAllowedPvPWorlds = pluginSection.getStringList("pvpIsAlwaysAllowedInTheseWorlds");
         }
     }
 
+    /**
+     * Находим игрока по имени в составе всех команд.
+     */
     public Player getPlayerByName(String playerName) {
         for (ArrayList<String> members : teamMembers.values()) {
             for (String member : members) {
@@ -770,34 +929,22 @@ public class Game {
         return null;
     }
 
-    // Вызывается при инициализации плагина, чтобы загрузить состав команд, имена капитанов и т.д.
+    /**
+     * Основная инициализация команд, капитанов, членов, баз и т.д.
+     */
     private void initializeTeams() {
         loadTeamCaptains();
-        // Другие действия по инициализации команд
-
-        // Инициализация баз команд
         loadBases();
-        // Создание команды "RED" и добавление ее в teams
-        MyTeam redTeam = new MyTeam("RED", getPlayerByName(getCaptainName("RED")));
+
+        // Создаём/регистрируем команды RED, BLUE
+        final MyTeam redTeam = new MyTeam("RED", getPlayerByName(getCaptainName("RED")));
         teams.put("RED", redTeam);
-        // Создание команды "BLUE" и добавление ее в teams
-        MyTeam blueTeam = new MyTeam("BLUE", getPlayerByName(getCaptainName("RED")));
+
+        final MyTeam blueTeam = new MyTeam("BLUE", getPlayerByName(getCaptainName("BLUE")));
         teams.put("BLUE", blueTeam);
 
-        // Инициализация членов команд и счета команд
         loadTeamMembers();
-
         loadTeamScores();
-
         loadAlwaysAllowedPvPWorld();
     }
-
-    public int getRaidDelayMinutes() {
-        return plugin.getConfig().getInt("plugin.raid.delay");
-    }
-
-    public int getRaidDurationMinutes() {
-        return plugin.getConfig().getInt("plugin.raid.durationMinutes");
-    }
-
 }

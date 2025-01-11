@@ -18,19 +18,22 @@ public class OpenRaidCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // Проверка, что команду запускает игрок
         if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be run by a player.");
             return true;
         }
 
-        Player player = (Player) sender;
-        String team = plugin.getGame().getPlayerTeam(player.getName());
+        final Player player = (Player) sender;
+        final String team = plugin.getGame().getPlayerTeam(player.getName());
 
+        // Проверка включённости системы рейдов
         if (!plugin.getGame().getIsEnabled()) {
             player.sendMessage(ChatColor.RED + "Система рейдов сейчас выключена.");
             return true;
         }
 
+        // Проверка, открыт ли уже рейд
         if (plugin.getGame().isRaidOpen()) {
             if (plugin.getGame().getLastRaidOpenedTheTeam().equals(team)) {
                 player.sendMessage(ChatColor.RED + "Рейд уже открыт для присоединения!");
@@ -42,51 +45,54 @@ public class OpenRaidCommand implements CommandExecutor {
             return true;
         }
 
-        // Чтение времени последнего рейда из файла конфигурации
-        long lastRaidTimestamp = plugin.getConfig().getLong(team + ".lastRaid", -1L);
+        final long currentTime = System.currentTimeMillis();
 
-        // Проверка, прошло ли достаточно времени с последнего рейда
+        // Проверка времени последнего рейда для атакующей команды
+        long lastRaidTimestamp = plugin.getConfig().getLong(team + ".lastRaid", -1L);
         long requiredWaitTime = plugin.getConfig().getInt("plugin.raid.shieldMinutes");
-        if (lastRaidTimestamp != -1L && (System.currentTimeMillis() - lastRaidTimestamp) / 1000 / 60 < requiredWaitTime) {
-            // Если не прошло достаточно времени с последнего рейда, показываем сообщение
+        if (lastRaidTimestamp != -1L && (currentTime - lastRaidTimestamp) / 1000 / 60 < requiredWaitTime) {
             player.sendMessage(ChatColor.RED + "Вы не можете начать новый рейд, пока не прошло " + requiredWaitTime + " минут с последнего.");
             return true;
         }
 
-        long lastRaidTimestampDefendingTeam = plugin.getConfig().getLong(plugin.getGame().getDefendingTeam(team) + ".lastRaid", -1L);
-        long requiredWaitTimeDefendingTeam = plugin.getConfig().getInt("plugin.raid.shieldMinutesDefending");
-        if (lastRaidTimestampDefendingTeam != -1L && (System.currentTimeMillis() - lastRaidTimestampDefendingTeam) / 1000 / 60 < requiredWaitTimeDefendingTeam) {
-            // Если не прошло достаточно времени с последнего рейда, показываем сообщение
+        // Проверка времени последнего рейда для защищающейся команды
+        String defendingTeam = plugin.getGame().getDefendingTeam(team);
+        long lastRaidTimestampDefendingTeam = plugin.getConfig().getLong(defendingTeam + ".lastRaid", -1L);
+        long requiredWaitTimeDefending = plugin.getConfig().getInt("plugin.raid.shieldMinutesDefending");
+        if (lastRaidTimestampDefendingTeam != -1L && (currentTime - lastRaidTimestampDefendingTeam) / 1000 / 60 < requiredWaitTimeDefending) {
             player.sendMessage(ChatColor.RED + "Вы не можете сразу начать рейд после рейда на вас.");
-            player.sendMessage(ChatColor.RED + "Требуется небольшой перерыв в размере минут: " + requiredWaitTimeDefendingTeam + ".");
+            player.sendMessage(ChatColor.RED + "Требуется небольшой перерыв в размере минут: " + requiredWaitTimeDefending + ".");
             return true;
         }
 
-        if (!plugin.getGame().isCaptain(plugin.getGame().getPlayerTeam(player.getName()), player)) {
+        // Проверка, является ли игрок капитаном своей команды
+        if (!plugin.getGame().isCaptain(team, player)) {
             player.sendMessage(ChatColor.RED + "Только капитан команды может начать рейд.");
             return true;
         }
 
-        if (plugin.getGame().getNexusLocation(plugin.getGame().getDefendingTeam(team)) == null) {
+        // Проверка наличия нексуса у защищающейся команды
+        if (plugin.getGame().getNexusLocation(defendingTeam) == null) {
             player.sendMessage(ChatColor.RED + "У другой команды ещё нет Нексуса!");
             return true;
         }
 
+        // Открытие рейда
         plugin.getGame().openRaid(team);
         player.sendMessage(ChatColor.GREEN + "В рейд теперь можно присоединиться.");
 
-        int openRaidDurationMinutes = plugin.getGame().getOpenRaidDurationMinutes();
+        final int openRaidDurationMinutes = plugin.getGame().getOpenRaidDurationMinutes();
+        final BukkitScheduler scheduler = Bukkit.getScheduler();
 
-        // Запустите асинхронную задачу через указанное количество минут
-        BukkitScheduler scheduler = Bukkit.getScheduler();
+        // Планирование задачи отмены рейда после истечения времени
         scheduler.runTaskLater(plugin, () -> {
-            // Проверяем, не начала ли рейд другая команда, и эта команда всё ещё наша
             if (plugin.getGame().isRaidOpen() && !plugin.getGame().isRaidActive() && !plugin.getGame().isRaidStarted()) {
-                if (plugin.getGame().getLastRaidOpenedTheTeam() != null && plugin.getGame().getLastRaidOpenedTheTeam().equals(team)) {
+                String lastOpenedTeam = plugin.getGame().getLastRaidOpenedTheTeam();
+                if (lastOpenedTeam != null && lastOpenedTeam.equals(team)) {
                     plugin.getGame().cancelRaid(team, false);
                 }
             }
-        }, (long) openRaidDurationMinutes * 60 * 20); // Конвертируйте минуты в тики (20 тиков = 1 секунда)
+        }, (long) openRaidDurationMinutes * 60 * 20); // Перевод минут в тики
 
         return true;
     }

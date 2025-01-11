@@ -32,7 +32,5 @@ public class MyTeam {
     public void addMember(String playerName) {
         members.add(playerName);
     }
-
-    // Другие методы и логика команды
 }
 

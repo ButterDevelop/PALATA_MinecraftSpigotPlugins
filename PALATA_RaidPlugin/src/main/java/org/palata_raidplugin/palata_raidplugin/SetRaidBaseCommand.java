@@ -20,126 +20,124 @@ public class SetRaidBaseCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        // Проверка, что команду запускает игрок
         if (!(sender instanceof Player)) {
             sender.sendMessage("This command can only be run by a player.");
             return true;
         }
 
-        Player player = (Player) sender;
-        String playerName = player.getName();
-        String team = plugin.getGame().getPlayerTeam(playerName);
+        final Player player = (Player) sender;
+        final String playerName = player.getName();
+        final String team = plugin.getGame().getPlayerTeam(playerName);
 
-        // Проверяем, является ли игрок капитаном
-        String playerTeam = plugin.getGame().getPlayerTeam(playerName);
-        if (playerTeam == null || !playerTeam.equals(team)) {
+        // Проверка наличия команды у капитана (здесь логика может зависеть от вашей реализации)
+        if (team == null) {
             player.sendMessage(ChatColor.RED + "Только капитан может установить Нексус.");
             return true;
         }
 
-        if (!player.getWorld().getName().equals("world")) {
+        // Проверка мира
+        if (!"world".equals(player.getWorld().getName())) {
             player.sendMessage(ChatColor.RED + "Базу можно установить только в обычном мире.");
             return true;
         }
 
+        // Проверка активности рейда
         if (plugin.getGame().isRaidActive()) {
             player.sendMessage(ChatColor.RED + "Нельзя сменить базу во время рейда.");
             return true;
         }
 
+        // Проверки территории
         if (plugin.getGame().isWithinNexusRadius(player.getLocation(), plugin.getGame().getDefendingTeam(team))) {
             player.sendMessage(ChatColor.RED + "Невозможно установить Нексус! Вы сейчас на территории чужой базы для рейда.");
             return true;
         }
-
         if (plugin.getGame().isWithinHomeRadius(player.getLocation(), plugin.getGame().getDefendingTeam(team))) {
             player.sendMessage(ChatColor.RED + "Невозможно установить Нексус! Вы сейчас на территории чужого дома.");
             return true;
         }
-
         if (plugin.getGame().isWithinHomeRadius(player.getLocation(), team)) {
             player.sendMessage(ChatColor.RED + "Невозможно установить Нексус! Вы сейчас на территории своего дома.");
             return true;
         }
 
-        int radiusHome = plugin.getConfig().getInt("plugin.raid.privateRadiusHome");
-        int radiusRaid = plugin.getConfig().getInt("plugin.raid.privateRadiusRaid");
-        if (plugin.getGame().getHomeLocation(team, player.getLocation().getWorld().getName()) != null && plugin.getGame().isWithinRadius(player.getLocation(), plugin.getGame().getHomeLocation(team, player.getLocation().getWorld().getName()), radiusHome + radiusRaid)) {
+        final int radiusHome = plugin.getConfig().getInt("plugin.raid.privateRadiusHome");
+        final int radiusRaid = plugin.getConfig().getInt("plugin.raid.privateRadiusRaid");
+        Location homeLocation = plugin.getGame().getHomeLocation(team, player.getWorld().getName());
+        if (homeLocation != null && plugin.getGame().isWithinRadius(player.getLocation(), homeLocation, radiusHome + radiusRaid)) {
             player.sendMessage(ChatColor.RED + "Невозможно установить дом! Территория этого дома и территория вашей базы для рейда пересекаются.");
             return true;
         }
 
-        // Чтение времени последней команды /setraidbase из файла конфигурации
-        long lastSetRaidBaseMillis = plugin.getConfig().getLong(team + ".setraidbase", -1L);
-        // Проверка, прошло ли достаточно времени с последней команды
-        long requiredWaitTime = plugin.getConfig().getInt("plugin.raid.setRaidBaseCooldown");
+        // Проверка времени последнего использования команды
+        final long lastSetRaidBaseMillis = plugin.getConfig().getLong(team + ".setraidbase", -1L);
+        final int requiredWaitTime = plugin.getConfig().getInt("plugin.raid.setRaidBaseCooldown");
         if (lastSetRaidBaseMillis != -1L && (System.currentTimeMillis() - lastSetRaidBaseMillis) / 1000 / 60 < requiredWaitTime) {
-            // Если не прошло достаточно времени, показываем сообщение
             player.sendMessage(ChatColor.RED + "Подождите несколько минут перед использованием данной команды, а именно: " + requiredWaitTime + ".");
             return true;
         }
 
-        Location playerLocation = player.getLocation();
+        final Location playerLocation = player.getLocation();
+        final World world = playerLocation.getWorld();
+        final int baseRadius = 1;
 
-        Location nexusLocationFirst = plugin.getGame().getNexusLocation(team);
-
-        // Записываем координаты игрока в файл конфигурации для указанной команды
+        // Сохраняем координаты нексуса
         plugin.getConfig().set(team + ".nexus.x", playerLocation.getBlockX());
         plugin.getConfig().set(team + ".nexus.y", playerLocation.getBlockY() + 1);
         plugin.getConfig().set(team + ".nexus.z", playerLocation.getBlockZ());
-        plugin.getConfig().set(team + ".nexus.world", playerLocation.getWorld().getName());
+        plugin.getConfig().set(team + ".nexus.world", world.getName());
         plugin.saveConfig();
 
         plugin.getGame().loadBases();
 
-        // Размещаем структуру нексуса
-        World world = playerLocation.getWorld();
-        int baseRadius = 1; // Радиус базы для нексуса (без обсидиана)
-
-        Location nexusLocation = plugin.getGame().getNexusLocation(team);
+        // Проверяем возможность разместить нексус
+        final Location nexusLocation = plugin.getGame().getNexusLocation(team);
         boolean canPlaceNexus = true;
-
-        // Проверяем, возможно ли разместить структуру нексуса
-        for (int x = -baseRadius; x <= baseRadius; x++) {
-            for (int y = -baseRadius; y <= baseRadius; y++) {
-                for (int z = -baseRadius; z <= baseRadius; z++) {
-                    Block block = world.getBlockAt(nexusLocation.getBlockX() + x, nexusLocation.getBlockY() + y, nexusLocation.getBlockZ() + z);
-                    // Проверяем остальные блоки базы (воздух)
-                    if (block.getType() != Material.AIR) {
-                        canPlaceNexus = false;
-                        break;
+        if (nexusLocation != null) {
+            for (int x = -baseRadius; x <= baseRadius && canPlaceNexus; x++) {
+                for (int y = -baseRadius; y <= baseRadius && canPlaceNexus; y++) {
+                    for (int z = -baseRadius; z <= baseRadius; z++) {
+                        Block block = world.getBlockAt(nexusLocation.getBlockX() + x, nexusLocation.getBlockY() + y, nexusLocation.getBlockZ() + z);
+                        if (block.getType() != Material.AIR) {
+                            canPlaceNexus = false;
+                            break;
+                        }
                     }
                 }
             }
         }
 
         if (canPlaceNexus) {
-            if (nexusLocationFirst != null) {
-                plugin.getGame().removeFullNexus(nexusLocationFirst);
+            final Location existingNexusLocation = plugin.getGame().getNexusLocation(team);
+            if (existingNexusLocation != null) {
+                plugin.getGame().removeFullNexus(existingNexusLocation);
             }
-            plugin.getGame().buildFullNexus(plugin.getGame().getPlayerTeam(player.getName()));
+            plugin.getGame().buildFullNexus(team);
 
             player.sendMessage(ChatColor.GREEN + "Местоположение базы для рейда вашей команды '" + team + "' было установлено как Ваша текущая локация.");
-            player.sendMessage(ChatColor.GREEN + "Её координаты: " + playerLocation.getBlockX() + " " + (playerLocation.getBlockY() + 1) + " " + playerLocation.getBlockZ());
+            player.sendMessage(ChatColor.GREEN + "Её координаты: "
+                    + playerLocation.getBlockX() + " "
+                    + (playerLocation.getBlockY() + 1) + " "
+                    + playerLocation.getBlockZ());
             player.sendMessage(ChatColor.GREEN + "Нексус был расположен.");
 
             plugin.getConfig().set(team + ".setraidbase", System.currentTimeMillis());
             plugin.saveConfig();
 
-            // Перемещаем игрока, если нужно
             plugin.getGame().teleportPlayerToSafePosition(player);
         } else {
-            if (nexusLocationFirst != null) {
-                plugin.getConfig().set(team + ".nexus.x", nexusLocationFirst.getBlockX());
-                plugin.getConfig().set(team + ".nexus.y", nexusLocationFirst.getBlockY());
-                plugin.getConfig().set(team + ".nexus.z", nexusLocationFirst.getBlockZ());
-                plugin.getConfig().set(team + ".nexus.world", nexusLocationFirst.getWorld().getName());
+            final Location previousNexus = plugin.getGame().getNexusLocation(team);
+            if (previousNexus != null) {
+                plugin.getConfig().set(team + ".nexus.x", previousNexus.getBlockX());
+                plugin.getConfig().set(team + ".nexus.y", previousNexus.getBlockY());
+                plugin.getConfig().set(team + ".nexus.z", previousNexus.getBlockZ());
+                plugin.getConfig().set(team + ".nexus.world", previousNexus.getWorld().getName());
                 plugin.saveConfig();
             }
-
             player.sendMessage(ChatColor.RED + "Невозможно разместить Нексус. Проверьте место для размещения.");
         }
 
         return true;
     }
-
 }

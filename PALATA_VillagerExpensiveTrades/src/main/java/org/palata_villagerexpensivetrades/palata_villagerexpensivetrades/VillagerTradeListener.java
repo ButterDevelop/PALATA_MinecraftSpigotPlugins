@@ -23,14 +23,17 @@ public class VillagerTradeListener implements Listener {
         List<MerchantRecipe> newRecipes = new ArrayList<>();
 
         for (MerchantRecipe recipe : merchant.getRecipes()) {
-            if (recipe.getIngredients().get(0).getType() == Material.EMERALD) {
-                List<ItemStack> ingredients = recipe.getIngredients();
-                ingredients.set(0, new ItemStack(Material.EMERALD_BLOCK, ingredients.get(0).getAmount()));
-                MerchantRecipe newRecipe = new MerchantRecipe(recipe.getResult(), recipe.getUses(), recipe.getMaxUses(), recipe.hasExperienceReward(), recipe.getVillagerExperience(), recipe.getPriceMultiplier());
-                newRecipe.setIngredients(ingredients);
-                newRecipes.add(newRecipe);
-            } else {
-                newRecipes.add(recipe);
+            List<ItemStack> listIngredients = recipe.getIngredients();
+            for (int i = 0; i < listIngredients.size(); i++) {
+                if (listIngredients.get(i).getType() == Material.EMERALD){
+                    List<ItemStack> ingredients = recipe.getIngredients();
+                    ingredients.set(i, new ItemStack(Material.EMERALD_BLOCK, ingredients.get(i).getAmount()));
+                    MerchantRecipe newRecipe = new MerchantRecipe(recipe.getResult(), recipe.getUses(), recipe.getMaxUses(), recipe.hasExperienceReward(), recipe.getVillagerExperience(), recipe.getPriceMultiplier());
+                    newRecipe.setIngredients(ingredients);
+                    newRecipes.add(newRecipe);
+                } else {
+                    newRecipes.add(recipe);
+                }
             }
         }
 

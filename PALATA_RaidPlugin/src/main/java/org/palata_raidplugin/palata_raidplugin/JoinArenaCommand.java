@@ -36,11 +36,13 @@ public class JoinArenaCommand implements CommandExecutor {
             return true;
         }
 
+        // Если игрок не состоит в команде, то он не может участвовать
         if (plugin.getGame().getPlayerTeam(player.getName()) == null) {
             player.sendMessage(ChatColor.RED + "Участвовать в арене могут только игроки команд!");
             return true;
         }
 
+        // Может быть человек уже присоединился ранее
         if (arenaManager.isPlayerAlreadyInArena(player)) {
             player.sendMessage(ChatColor.GOLD + "Вы уже присоединились к арене! Ждите начала!");
             return true;

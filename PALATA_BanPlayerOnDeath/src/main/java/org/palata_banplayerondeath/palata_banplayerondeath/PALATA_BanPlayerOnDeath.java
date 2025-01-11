@@ -113,7 +113,9 @@ public class PALATA_BanPlayerOnDeath extends JavaPlugin implements Listener {
         long timeRemaining = config.getLong(player.getUniqueId().toString(), -1L);
 
         if (timeRemaining != -1L && System.currentTimeMillis() < timeRemaining) {
-            player.kickPlayer(ChatColor.RED + "Вы заблокированы ещё на " + ((timeRemaining - System.currentTimeMillis()) / 1000 / 60) + " минут.");
+            double timeRemained = ((timeRemaining - System.currentTimeMillis()) / 1000.0 / 60.0);
+            String timeStringRounded = String.format("%.1f", timeRemained);
+            player.kickPlayer(ChatColor.RED + "Вы заблокированы ещё на " + timeStringRounded + " минут(-ы).");
         } else {
             config.set(player.getUniqueId().toString(), null);
              saveConfigPlayers();

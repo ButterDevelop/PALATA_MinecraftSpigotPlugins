@@ -22,26 +22,31 @@ public class CancelRaidCommand implements CommandExecutor {
 
         Player player = (Player) sender;
 
+        // Если рейд ещё не открыт
         if (!game.isRaidOpen()) {
             player.sendMessage(ChatColor.RED + "Рейд ещё не открыт!");
             return true;
         }
 
+        // Если человек не капитан
         if (!game.isCaptain(game.getPlayerTeam(player.getName()), player)) {
             player.sendMessage(ChatColor.RED + "Только капитан команды может отменить рейд.");
             return true;
         }
 
+        // Если рейд уже начат
         if (game.isRaidStarted()) {
             player.sendMessage(ChatColor.RED + "Рейд скоро начнётся, невозможно его отменить!");
             return true;
         }
 
+        // Если рейд уже активен
         if (game.isRaidActive()) {
             player.sendMessage(ChatColor.RED + "Рейд уже начался, невозможно его отменить!");
             return true;
         }
 
+        // Отменяем рейд
         game.cancelRaid(game.getPlayerTeam(player.getName()), true);
         player.sendMessage(ChatColor.GREEN + "Рейд был успешно отменён.");
         return true;
