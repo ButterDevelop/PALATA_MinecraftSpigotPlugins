@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "butterdevelopcavaanticheat",
+	"version": "${version}",
+	"name": "PALATA AntiCheat Mod",
+	"description": "This is a anticheat mod which checks checksums of mods and resourcepacks.",
+	"authors": [
+		"ButterDevelop"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/modid/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.example.ExampleMod"
+		],
+		"client": [
+			"com.example.CavaAntiCheatFabricClient"
+		]
+	},
+	"mixins": [
+		"modid.mixins.json",
+		{
+			"config": "modid.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.9",
+		"minecraft": "~1.21.4",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

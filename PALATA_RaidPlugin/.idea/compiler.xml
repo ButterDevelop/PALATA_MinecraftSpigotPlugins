@@ -9,8 +9,5 @@
         <module name="PALATA_RaidPlugin" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="PALATA_RaidPlugin" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

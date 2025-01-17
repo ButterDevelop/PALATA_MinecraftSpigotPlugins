@@ -334,7 +334,7 @@ public class ArenaManager implements Listener {
             return;
         }
 
-        // Сохраняем местоположения и телепортируем игроков на арену
+        // Сохраняем местоположения и телепортируем игроков на арену, а так же проигрываем им звук начала арены
         final Iterator<Player> iterator = arenaPlayers.iterator();
         while (iterator.hasNext()) {
             final Player player = iterator.next();
@@ -349,6 +349,7 @@ public class ArenaManager implements Listener {
                 } else {
                     player.teleport(currentArena.getSpawnBlue());
                 }
+                player.playSound(player.getLocation(), "dota.match_ready", 1.0F, 1.0F);
             }
         }
 

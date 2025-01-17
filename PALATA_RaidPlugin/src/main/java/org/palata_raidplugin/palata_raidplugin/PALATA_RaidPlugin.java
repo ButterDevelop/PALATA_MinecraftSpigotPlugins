@@ -24,7 +24,7 @@ public final class PALATA_RaidPlugin extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new PrivateListener(this), this);
         getServer().getPluginManager().registerEvents(new DragonManager(this), this);
-        getServer().getPluginManager().registerEvents(new SoundKillManager(this), this);
+        getServer().getPluginManager().registerEvents(new SoundManager(this), this);
 
         ArenaManager arenaManager = new ArenaManager(this);
         getServer().getPluginManager().registerEvents(arenaManager, this);

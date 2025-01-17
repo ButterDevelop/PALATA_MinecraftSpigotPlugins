@@ -1,0 +1,8 @@
+name: ButterDevelopCavaAntiCheat
+version: 1.0.0
+main: org.butterdevelop.server.ServerAntiCheat
+api-version: '1.19'
+prefix: ButterDevelopCavaAntiCheat
+load: STARTUP
+authors: [butterdevelop]
+description: Server side component of CavaAntiCheat (ButterDevelop Edition)

@@ -1,0 +1,41 @@
+{
+	"schemaVersion": 1,
+	"id": "dota-chat-wheel",
+	"version": "${version}",
+	"name": "Dota Chat Wheel",
+	"description": "This is a mod which provides a Dota chat wheel to Minecraft.",
+	"authors": [
+		"ButterDevelop"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/dota-chat-wheel/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"com.butterdevelop.dotachatwheel.Dotachatwheel"
+		],
+		"client": [
+			"com.butterdevelop.dotachatwheel.DotachatwheelClient"
+		]
+	},
+	"mixins": [
+		"dota-chat-wheel.mixins.json",
+		{
+			"config": "dota-chat-wheel.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.10",
+		"minecraft": "~1.21.4",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}

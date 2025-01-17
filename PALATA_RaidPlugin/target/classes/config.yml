@@ -29,9 +29,9 @@ plugin:
     # Перезарядка команды /sethomebase
     setHomeBaseCooldown: 1
     # Радиус региона привата базы для рейда
-    privateRadiusRaid: 80
+    privateRadiusRaid: 60
     # Радиус региона привата дома
-    privateRadiusHome: 80
+    privateRadiusHome: 60
     # Радиус главного острова в Энде
     endWorldMainIslandRadius: 150
     # После рейда разрешено PvP и взаимодействия ещё N минут

@@ -24,7 +24,7 @@ public class Game {
     private final Map<String, ArrayList<String>> teamMembers = new HashMap<>();
     private final Map<String, Integer> teamScores = new HashMap<>();
     private final Map<String, MyTeam> teams = new HashMap<>();
-    private final List<Player> raidPlayers = new ArrayList<>(); // Игроки, присоединившиеся к рейду
+    public  final List<Player> raidPlayers = new ArrayList<>(); // Игроки, присоединившиеся к рейду
 
     private final Plugin plugin;
     private final Scoreboard scoreboard;
