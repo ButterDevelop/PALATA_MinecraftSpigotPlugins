@@ -7,5 +7,6 @@ public enum InspectionResult implements Serializable {
     FILE_NOT_FOUND,
     HASH_FUNCTION_NOT_FOUND,
     INVALID_TEXTURE_FORMAT,
+    INVALID_SHADER_FORMAT,
     NORMAL;
 }

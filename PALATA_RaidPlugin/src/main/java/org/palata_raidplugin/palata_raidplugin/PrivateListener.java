@@ -1,16 +1,13 @@
 package org.palata_raidplugin.palata_raidplugin;
 
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class PrivateListener implements Listener {
@@ -26,11 +23,21 @@ public class PrivateListener implements Listener {
         final Player player = event.getPlayer();
         final Block block = event.getClickedBlock();
         if (block == null) return;
+        final Location blockLoc = block.getLocation();
 
         final String playerTeam = plugin.getGame().getPlayerTeam(player.getName());
-        if (playerTeam == null) return;
+        // Аборигены не могут взаимодействовать
+        if (playerTeam == null) {
+            if (plugin.getGame().isWithinNexusRadius(blockLoc,     "RED") ||
+                    plugin.getGame().isWithinHomeRadius(blockLoc,  "RED") ||
+                    plugin.getGame().isWithinNexusRadius(blockLoc, "BLUE") ||
+                    plugin.getGame().isWithinHomeRadius(blockLoc,  "BLUE")) {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.RED + "Вы абориген, вы не можете взаимодействовать рядом с Нексусом любой команды в принципе, или же около их дома!");
+            }
+            return;
+        }
 
-        final Location blockLoc = block.getLocation();
         final String defendingTeam = plugin.getGame().getDefendingTeam(playerTeam);
 
         if (plugin.getGame().isWithinNexusRadius(blockLoc, defendingTeam)) {
@@ -51,9 +58,20 @@ public class PrivateListener implements Listener {
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
         final String playerTeam = plugin.getGame().getPlayerTeam(player.getName());
-        if (playerTeam == null) return;
-
         final Location blockLoc = block.getLocation();
+
+        // Аборигены не могут взаимодействовать
+        if (playerTeam == null) {
+            if (plugin.getGame().isWithinNexusRadius(blockLoc,     "RED") ||
+                    plugin.getGame().isWithinHomeRadius(blockLoc,  "RED") ||
+                    plugin.getGame().isWithinNexusRadius(blockLoc, "BLUE") ||
+                    plugin.getGame().isWithinHomeRadius(blockLoc,  "BLUE")) {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.RED + "Вы абориген, вы не можете разрушать блоки рядом с Нексусом любой команды в принципе, или же около их дома!");
+            }
+            return;
+        }
+
         final String defendingTeam = plugin.getGame().getDefendingTeam(playerTeam);
 
         if (plugin.getGame().isWithinNexusRadius(blockLoc, defendingTeam)) {
@@ -74,9 +92,19 @@ public class PrivateListener implements Listener {
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
         final String playerTeam = plugin.getGame().getPlayerTeam(player.getName());
-        if (playerTeam == null) return;
-
         final Location blockLoc = block.getLocation();
+        // Аборигены не могут взаимодействовать
+        if (playerTeam == null) {
+            if (plugin.getGame().isWithinNexusRadius(blockLoc,     "RED") ||
+                    plugin.getGame().isWithinHomeRadius(blockLoc,  "RED") ||
+                    plugin.getGame().isWithinNexusRadius(blockLoc, "BLUE") ||
+                    plugin.getGame().isWithinHomeRadius(blockLoc,  "BLUE")) {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.RED + "Вы абориген, вы не можете ставить блоки рядом с Нексусом любой команды в принципе, или же около их дома!");
+            }
+            return;
+        }
+
         final String defendingTeam = plugin.getGame().getDefendingTeam(playerTeam);
 
         if (plugin.getGame().isWithinNexusRadius(blockLoc, defendingTeam)) {
@@ -145,9 +173,10 @@ public class PrivateListener implements Listener {
                 return;
             }
 
-            boolean homeRadiusFlag = plugin.getGame().isWithinHomeRadius(damaged.getLocation(), damagerTeam);
+            boolean homeEnemyRadiusFlag  = plugin.getGame().isWithinHomeRadius(damaged.getLocation(), damagerTeam);
+            boolean nexusEnemyRadiusFlag = plugin.getGame().isWithinNexusRadius(damaged.getLocation(), damagerTeam);
 
-            if (plugin.getGame().isWithinNexusRadius(damaged.getLocation(), damagerTeam) || homeRadiusFlag) {
+            if (nexusEnemyRadiusFlag || homeEnemyRadiusFlag) {
                 return;
             }
 
@@ -158,13 +187,14 @@ public class PrivateListener implements Listener {
                 return;
             }
 
-            if (plugin.getGame().isThePvPIsAlwaysOnInThisWorld(damaged.getLocation().getWorld().getName())) {
+            World damagedWorld = damaged.getLocation().getWorld();
+            if (damagedWorld == null || plugin.getGame().isThePvPIsAlwaysOnInThisWorld(damagedWorld.getName())) {
                 return;
             }
 
-            final String damagedWorld = damaged.getLocation().getWorld().getName();
-            if (damagedWorld.equals("world_the_end")
-                    && !plugin.getGame().isThePvPIsAlwaysOnInThisWorld(damagedWorld)
+            final String damagedWorldName = damagedWorld.getName();
+            if (damagedWorldName.equals("world_the_end")
+                    && !plugin.getGame().isThePvPIsAlwaysOnInThisWorld(damagedWorldName)
                     && plugin.getGame().isDragonAlive()
                     && plugin.getGame().isWithin2DRadius(damaged.getLocation(), new Location(damaged.getWorld(), 0, 0, 0), plugin.getGame().getEndWorldMainIslandRadius())) {
                 return;
@@ -173,56 +203,5 @@ public class PrivateListener implements Listener {
             event.setCancelled(true);
             damager.sendMessage(ChatColor.RED + "PvP разрешено только рядом с территорией вражеской команды или с членами своей команды.");
         }
-    }
-
-    @EventHandler
-    public void onEntityExplode(final EntityExplodeEvent event) {
-        event.blockList().removeIf(block -> {
-            Location loc = block.getLocation();
-            boolean inRedNexus  = plugin.getGame().isWithinNexusRadius(loc, "RED");
-            boolean inBlueNexus = plugin.getGame().isWithinNexusRadius(loc, "BLUE");
-            boolean inRedHome   = plugin.getGame().isWithinHomeRadius(loc, "RED");
-            boolean inBlueHome  = plugin.getGame().isWithinHomeRadius(loc, "BLUE");
-
-            // Получаем команду, которая вызвала взрыв (псевдокод)
-            String explosionSourceTeam  = getExplosionSourceTeam(event.getEntity());
-            boolean blueCausesExplosion = "BLUE".equals(explosionSourceTeam);
-            boolean redCausesExplosion  = "RED".equals(explosionSourceTeam);
-
-            // Аборигены не могут влиять на процесс
-            if (explosionSourceTeam.equals("neutral") && (inRedNexus || inBlueNexus || inRedHome || inBlueHome)) {
-                return true;
-            }
-
-            // Проверяем, находимся ли мы где-то дома
-            if ((inRedHome && blueCausesExplosion) || (inBlueHome && redCausesExplosion)) {
-                return true;
-            }
-
-            // Проверяем, находимся ли мы где-то в рейде
-            if (((inRedNexus && blueCausesExplosion) || (inBlueNexus && redCausesExplosion))
-                    && !plugin.getGame().isRaidActive()) {
-                return true;
-            }
-
-            // Блок должен взорваться
-            return false;
-        });
-    }
-
-    private String getExplosionSourceTeam(Entity entity) {
-        if (entity instanceof Player) {
-            Player player = (Player) entity;
-            String team = plugin.getGame().getPlayerTeam(player.getName());
-
-            if (team == null) {
-                return "neutral";
-            } else {
-                return team;
-            }
-        }
-
-        // Это вообще не игрок, может, крипер, поэтому нужно разделить обычное null и "neutral"
-        return null;
     }
 }

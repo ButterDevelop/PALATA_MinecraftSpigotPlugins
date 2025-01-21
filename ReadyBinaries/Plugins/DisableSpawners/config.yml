@@ -1,0 +1,5 @@
+# DisableSpawners Config
+# For help with the configuration file, please see the plugin BukkitDev page
+
+Disable Spawners On:
+  - world

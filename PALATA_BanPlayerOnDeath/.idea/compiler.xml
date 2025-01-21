@@ -9,8 +9,5 @@
         <module name="PALATA_BanPlayerOnDeath" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="PALATA_BanPlayerOnDeath" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

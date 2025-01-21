@@ -1,0 +1,206 @@
+# Настройки плагина
+plugin:
+  pvpIsAlwaysAllowedInTheseWorlds:
+  - world
+  - world_nether
+  - world_the_end
+  - world_arena_1
+  - world_arena_2
+  - world_arena_3
+  raid:
+    winScore: 10
+    # Задержка перед началом рейда (в минутах)
+    delay: 30
+    # Требуемое количество сломанных блоков обсидиана в Нексусе
+    requiredDestroyCount: 10
+    # Длительность рейда
+    durationMinutes: 60
+    # Длительность ожидания игроков для присоединения к рейду
+    openDurationMinutes: 5
+    # Разница в количестве игроков для начала рейдов
+    differencePlayersCount: 2
+    # Минимальное количество игроков в команде для начала
+    minPlayers: 2
+    # Количество минут щита после рейда
+    shieldMinutes: 360
+    # Количество минут щита атакующей команды после рейда
+    shieldMinutesDefending: 1
+    # Включена ли система рейдов или нет
+    isEnabled: false
+    # Перезарядка команды /setraidbase
+    setRaidBaseCooldown: 1
+    # Перезарядка команды /sethomebase
+    setHomeBaseCooldown: 1
+    # Радиус региона привата базы для рейда
+    privateRadiusRaid: 60
+    # Радиус региона привата дома
+    privateRadiusHome: 60
+    # Радиус главного острова в Энде
+    endWorldMainIslandRadius: 150
+    # После рейда разрешено PvP и взаимодействия ещё N минут
+    minutesPrivateDelayAfterRaid: 10
+
+players:
+- MaXiMAA:Мой Создатель
+- rqhappy:Отец
+- kawaii_killer:дагон на антимага
+- SaloManiac:Димон
+- poziloy_zhmykh:mersi
+- Vikchankch4:Вика
+- Watermelonchyo:Антончик
+- COJIOTA:Антонио
+- TERESH_PSIH:Тереш
+- joker91169:мой раб
+- gal.ksu:Ксюша
+- romariodemon777:убийца биоса
+- dashkka:Даша
+- vanopog:Pogon
+- cucoldman:Артём
+- vladqw:Владос
+- MGYR1X323:строитель по имени Тимур
+- JellyVoka:Вячеслав
+
+dragon:
+  respawnIntervalHours: 4
+  deathTime: 1739021598519
+
+arena:
+  currentArenaIndex: 2
+  intervalHours: 24
+  durationSeconds: 1200
+  winScore: 5
+  killScore: 1
+  arenasAmount: 3
+  nextStartTime: 1739284245591
+
+arena_1:
+  world: world_arena_1
+  copyWorld: world_arena_copy_1
+  copyStart:
+    x: 85
+    y: 20
+    z: 101
+  copyEnd:
+    x: -15
+    y: 73
+    z: 1
+  spawnRed:
+    x: 72
+    y: 51
+    z: 9
+  spawnBlue:
+    x: -1
+    y: 46
+    z: 88
+
+arena_2:
+  world: world_arena_2
+  copyWorld: world_arena_copy_2
+  copyStart:
+    x: 100
+    y: 1
+    z: 101
+  copyEnd:
+    x: 0
+    y: 52
+    z: 0
+  spawnRed:
+    x: 59
+    y: 2
+    z: 3
+  spawnBlue:
+    x: 56
+    y: 2
+    z: 94
+
+arena_3:
+  world: world_arena_3
+  copyWorld: world_arena_copy_3
+  copyStart:
+    x: 0
+    y: 1
+    z: 0
+  copyEnd:
+    x: 159
+    y: 60
+    z: 74
+  spawnRed:
+    x: 39
+    y: 20
+    z: 30
+  spawnBlue:
+    x: 131
+    y: 16
+    z: 35
+
+# Настройки команд и командных блоков
+teams:
+  # Команда "red"
+  RED:
+    # Капитан команды
+    captain: MaXiMAA
+    # Члены команды
+    members:
+    - MaXiMAA
+    - Teresh_psih
+    - rqhappy
+    - cucoldman
+    - MGYR1X323
+    - Sasalalka
+    - SaloManiac
+    score: 3
+  
+  # Команда "blue"
+  BLUE:
+    # Капитан команды
+    captain: COJIOTA
+    # Члены команды
+    members:
+    - joker91169
+    - JellyVoka
+    - COJIOTA
+    - kawaii_killer
+    - vanopog
+    - romariodemon777
+    - poziloy_zhmykh
+    score: 14
+BLUE:
+  world_the_end:
+    home:
+      x: 892
+      y: 61
+      z: 689
+      world: world_the_end
+  sethomebase: 1738532793503
+  world:
+    home:
+      x: 392
+      y: 64
+      z: -2690
+      world: world
+  world_nether:
+    home:
+      x: 72
+      y: 67
+      z: -339
+      world: world_nether
+RED:
+  world:
+    home:
+      x: -2507
+      y: 68
+      z: 295
+      world: world
+  sethomebase: 1738534888981
+  world_nether:
+    home:
+      x: -333
+      y: 65
+      z: 22
+      world: world_nether
+  world_the_end:
+    home:
+      x: 240
+      y: 16
+      z: 5
+      world: world_the_end

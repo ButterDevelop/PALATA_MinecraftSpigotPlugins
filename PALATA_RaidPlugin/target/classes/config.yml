@@ -4,6 +4,9 @@ plugin:
     - world
     - world_nether
     - world_the_end
+    - world_arena_1
+    - world_arena_2
+    - world_arena_3
   raid:
     winScore: 10
     # Задержка перед началом рейда (в минутах)
@@ -42,22 +45,19 @@ players:
   - rqhappy:Отец
   - kawaii_killer:дагон на антимага
   - SaloManiac:Димон
-  - monithaha:Пахан
-  - Os1ass:Сладкопар-жижеХуй Виктор Корнеплод
+  - poziloy_zhmykh:mersi
   - Vikchankch4:Вика
-  - SDESAH:Антончик
+  - Watermelonchyo:Антончик
   - COJIOTA:Антонио
   - TERESH_PSIH:Тереш
   - joker91169:мой раб
   - gal.ksu:Ксюша
-  - padliva666:убийца биоса
-  - didori10:Даша
-  - aa1dre:Доминик Туррета
-  - vanopog:Вано
-  - Totoka1337:Романчик
-  - cucoldman:Артём сданная сессия
+  - romariodemon777:убийца биоса
+  - dashkka:Даша
+  - vanopog:Pogon
+  - cucoldman:Артём
   - vladqw:Владос
-  - TuscaidJFD:рабочая сила
+  - MGYR1X323:строитель по имени Тимур
 
 dragon:
   respawnIntervalHours: 4
@@ -68,116 +68,95 @@ arena:
   durationSeconds: 1200
   winScore: 5
   killScore: 1
+  arenasAmount: 3
 
 arena_1:
-  world: "world_arena_1"
-  copyWorld: "world_arena_copy_1"
+  world: world_arena_1
+  copyWorld: world_arena_copy_1
   copyStart:
-    x: 0
-    y: 30
-    z: 0
+    x: 85
+    y: 20
+    z: 101
   copyEnd:
-    x: 158
-    y: 89
-    z: 73
+    x: -15
+    y: 73
+    z: 1
   spawnRed:
-    x: 38
-    y: 50
-    z: 29
+    x: 72
+    y: 51
+    z: 9
   spawnBlue:
-    x: 130
+    x: -1
     y: 46
-    z: 34
+    z: 88
 
 arena_2:
-  world: "world_arena_2"
-  copyWorld: "world_arena_copy_2"
+  world: world_arena_2
+  copyWorld: world_arena_copy_2
   copyStart:
-    x: 0
-    y: 30
-    z: 0
+    x: 100
+    y: 1
+    z: 101
   copyEnd:
-    x: 180
-    y: 93
-    z: 74
+    x: 0
+    y: 52
+    z: 0
   spawnRed:
-    x: 121
-    y: 43
-    z: 37
+    x: 59
+    y: 2
+    z: 3
   spawnBlue:
-    x: 5
-    y: 43
-    z: 41
+    x: 56
+    y: 2
+    z: 94
 
 arena_3:
-  world: "world_arena_3"
-  copyWorld: "world_arena_copy_3"
+  world: world_arena_3
+  copyWorld: world_arena_copy_3
   copyStart:
     x: 0
-    y: 30
+    y: 1
     z: 0
   copyEnd:
-    x: 180
-    y: 93
+    x: 159
+    y: 60
     z: 74
   spawnRed:
-    x: 5
-    y: 43
-    z: 41
+    x: 39
+    y: 20
+    z: 30
   spawnBlue:
-    x: 121
-    y: 43
-    z: 37
-
-arena_4:
-  world: "world_arena_4"
-  copyWorld: "world_arena_copy_4"
-  copyStart:
-    x: 0
-    y: 30
-    z: 0
-  copyEnd:
-    x: 56
-    y: 57
-    z: 56
-  spawnRed:
-    x: 28
-    y: 42
-    z: 52
-  spawnBlue:
-    x: 28
-    y: 42
-    z: 4
+    x: 131
+    y: 16
+    z: 35
 
 # Настройки команд и командных блоков
 teams:
   # Команда "red"
   RED:
     # Капитан команды
-    captain: "MaXiMAA"
+    captain: MaXiMAA
     # Члены команды
     members:
-      - "MaXiMAA"
-      - "joker91169"
-      - "TERESH_PSIH"
-      - "monithaha"
-      - "aa1dre"
-      - "padliva666"
-      - "vladqw"
-      - "TuscaidJFD"
+      - MaXiMAA
+      - joker91169
+      - Teresh_psih
+      - FantamaZ
+      - romariodemon777
+      - dashkka
+      - MGYR1X323
+      - vladqw
 
   # Команда "blue"
   BLUE:
     # Капитан команды
-    captain: "COJIOTA"
+    captain: COJIOTA
     # Члены команды
     members:
-      - "COJIOTA"
-      - "kawaii_killer"
-      - "Os1ass"
-      - "SaloManiac"
-      - "rqhappy"
-      - "vanopog"
-      - "HEROBRINE"
-      - "cucoldman"
-      - "Totoka1337"
+      - COJIOTA
+      - kawaii_killer
+      - poziloy_zhmykh
+      - SaloManiac
+      - rqhappy
+      - vanopog
+      - cucoldman

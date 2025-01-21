@@ -1,0 +1,307 @@
+[2025-01-26 23:46:53.438] MaXiMAA kicked for reason:
+Texture not allowed: ComplementaryShaders_v4.7.2.zip
+Texture not allowed: MakeUp-UltraFast-9.1.zip
+
+[2025-01-26 23:48:10.712] vanopog kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-26 23:48:14.249] MaXiMAA kicked for reason:
+Texture not allowed: ComplementaryShaders_v4.7.2.zip
+Texture not allowed: MakeUp-UltraFast-9.1.zip
+
+[2025-01-26 23:48:23.534] vanopog kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-26 23:48:46.466] vanopog kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-26 23:49:06.214] vanopog kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-26 23:49:39.159] vanopog kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-26 23:50:01.529] vanopog kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-26 23:50:31.801] vanopog kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-26 23:51:47.586] vanopog kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-26 23:58:12.775] Message: [B@1ecaeb1e
+[2025-01-26 23:58:12.84] MaXiMAA kicked for reason:
+Texture not allowed: ComplementaryShaders_v4.7.2.zip
+Texture not allowed: MakeUp-UltraFast-9.1.zip
+
+[2025-01-27 00:02:20.915] Message: ã{"modsChecksumMap":{"minecraft":"0f9dbd66feb2714ad4af77da0c8332650dd4eda13521f9e83821a9ab4bff4aa8","entityculling":"7af6b08121174391049547cebb9b87dc672518f181238a4e11d5b0bc0c5a9846","plasmovoice":"a56c3964f6e187f7683da7ed09dc33fb256c510d86b197fb88308c8abb2ba411","iris":"edf89bc6cace965f867200b821f216c3d601327cb40e2fbd78bcc1e54f64b093","noisium":"26649b7c5dc80da0b50627d1f1668a142a5a9ba9c7941590cd5af20d1e96beda","malilib":"7552379cab6c191ce03d146096f18db37e8999442cfd85de1a24e94fb88b1df5","modmenu":"3f554e58ef580ca625d49a188a635c48a65f9d2143d380eb89e296df3e45e2cb","wi_zoom":"5cf262672de0159afec5ade4433d1cbe5efba2a1944cc10399a7c30efbde73a5","fabricloader":"23557a7d6da3db971a6f9620cb62e7b6e6d1509f5138ebb87529877d2400e568","c2me":"79e28e28957228c21b775dbfbd122d58d325b82c2ceffdd38a41a65307dddbf0","tcdcommons":"5ef1f76e95a4d15b881bebb769dd88477d735dc6fcee4c2afed556df743c8168","appleskin":"f8f611746df88f1737b62a76615a366f42a331730ea16db97c52d6f5540c58ab","butterdevelopcavaanticheat":"32d9c93e3b6fc4563e76dc9b4169390481002d659f379eda82dc06068fe52927","litematica":"fd639f834c5eeb578982626a994ff4c93ea8076e9d9696f216c428a506840dea","betterf3":"a49a66f0e6947e4c2810ca161e622ee64ad4f3356245133f27b8f57ce922e798","lithium":"2c9155870ff7327b0f9d84c75596ccdf126d9ded65579b70b987aa652319127e","sodium":"2edd03c3563094543d3f3d6b94107e0f5845b682f841728ee7f8cd5d5c0f8e83","fabric-api":"9cbd5b70068c5b4b510a97d6d29addde671ed7864d725ee901469b5570107d6b","chunksfadein":"a3a8d9ed00f4483850517a7c1ef299f11a2ced242c97a41b3cd08aa2742df9c4","betterstats":"b9b1a2048026d50689f8fddb4796f1c28031bca141ac7e5c227727e09ca83508","xaerominimap":"d3f032de10316c1368e687e57edfca57b98f9cc63ed153cc134e7d18b967d07f","lightweight-inventory-sorting":"469056ff417b87eaa87fe654975525e9516398b18aef3fed56507cb0d12965d5","replaymod":"e6b5e862ebf45ce9f1192740c07b407e96d5c0551b0b3374378691040840b130","betteradvancements":"8c622ac5fd7651bc8dfde808c7191b908dd443c1846f91bc7c82381fd3e59c23"},"textureChecksumMap":{"ComplementaryShaders_v4.7.2.zip":"33781e830b5ae1ebee2156f7d5011ef1697de5661c3e8b9a118ec78ac1797b57","MakeUp-UltraFast-9.1.zip":"0cce753488233bbc1f7045150000d14f984d6e287e94b45df5871ae2e7d2270f","PALATA_MC_RP_24-25.zip":"75b2dc7a894cafe7edaa11900633a93fb806802ae1f8667043cc2ff3ef262b03"},"shadersChecksumMap":{},"modsInspectionResult":"NORMAL","modsInspectionMessage":"Every mod has been successfully hashed","textureInspectionResult":"NORMAL","textureInspectionMessage":"Every shader has been successfully hashed","shadersInspectionResult":"NORMAL"}
+[2025-01-27 00:02:20.945] MaXiMAA kicked for reason:
+Texture not allowed: ComplementaryShaders_v4.7.2.zip
+Texture not allowed: MakeUp-UltraFast-9.1.zip
+
+[2025-01-27 00:09:06.787] Message: ª{"modsChecksumMap":{"minecraft":"0f9dbd66feb2714ad4af77da0c8332650dd4eda13521f9e83821a9ab4bff4aa8","entityculling":"7af6b08121174391049547cebb9b87dc672518f181238a4e11d5b0bc0c5a9846","plasmovoice":"a56c3964f6e187f7683da7ed09dc33fb256c510d86b197fb88308c8abb2ba411","iris":"edf89bc6cace965f867200b821f216c3d601327cb40e2fbd78bcc1e54f64b093","noisium":"26649b7c5dc80da0b50627d1f1668a142a5a9ba9c7941590cd5af20d1e96beda","malilib":"7552379cab6c191ce03d146096f18db37e8999442cfd85de1a24e94fb88b1df5","modmenu":"3f554e58ef580ca625d49a188a635c48a65f9d2143d380eb89e296df3e45e2cb","wi_zoom":"5cf262672de0159afec5ade4433d1cbe5efba2a1944cc10399a7c30efbde73a5","fabricloader":"23557a7d6da3db971a6f9620cb62e7b6e6d1509f5138ebb87529877d2400e568","c2me":"79e28e28957228c21b775dbfbd122d58d325b82c2ceffdd38a41a65307dddbf0","tcdcommons":"5ef1f76e95a4d15b881bebb769dd88477d735dc6fcee4c2afed556df743c8168","appleskin":"f8f611746df88f1737b62a76615a366f42a331730ea16db97c52d6f5540c58ab","butterdevelopcavaanticheat":"68feb348a6ae1341bcc1a1e1dc8006ade04825eb08464439e985e2a21e54fbf2","litematica":"fd639f834c5eeb578982626a994ff4c93ea8076e9d9696f216c428a506840dea","betterf3":"a49a66f0e6947e4c2810ca161e622ee64ad4f3356245133f27b8f57ce922e798","lithium":"2c9155870ff7327b0f9d84c75596ccdf126d9ded65579b70b987aa652319127e","sodium":"2edd03c3563094543d3f3d6b94107e0f5845b682f841728ee7f8cd5d5c0f8e83","fabric-api":"9cbd5b70068c5b4b510a97d6d29addde671ed7864d725ee901469b5570107d6b","chunksfadein":"a3a8d9ed00f4483850517a7c1ef299f11a2ced242c97a41b3cd08aa2742df9c4","betterstats":"b9b1a2048026d50689f8fddb4796f1c28031bca141ac7e5c227727e09ca83508","xaerominimap":"d3f032de10316c1368e687e57edfca57b98f9cc63ed153cc134e7d18b967d07f","lightweight-inventory-sorting":"469056ff417b87eaa87fe654975525e9516398b18aef3fed56507cb0d12965d5","replaymod":"e6b5e862ebf45ce9f1192740c07b407e96d5c0551b0b3374378691040840b130","betteradvancements":"8c622ac5fd7651bc8dfde808c7191b908dd443c1846f91bc7c82381fd3e59c23"},"textureChecksumMap":{"PALATA_MC_RP_24-25.zip":"75b2dc7a894cafe7edaa11900633a93fb806802ae1f8667043cc2ff3ef262b03"},"shadersChecksumMap":{"ComplementaryShaders_v4.7.2.zip":"33781e830b5ae1ebee2156f7d5011ef1697de5661c3e8b9a118ec78ac1797b57","MakeUp-UltraFast-9.1.zip":"0cce753488233bbc1f7045150000d14f984d6e287e94b45df5871ae2e7d2270f"},"modsInspectionResult":"NORMAL","modsInspectionMessage":"Every mod has been successfully hashed","textureInspectionResult":"NORMAL","textureInspectionMessage":"Every texture has been successfully hashed","shadersInspectionResult":"NORMAL","shadersInspectionMessage":"Every shader has been successfully hashed"}
+[2025-01-27 00:09:06.834] MaXiMAA kicked for reason:
+Shader not allowed: ComplementaryShaders_v4.7.2.zip
+Shader not allowed: MakeUp-UltraFast-9.1.zip
+
+[2025-01-27 00:09:54.648] Message: æ{"modsChecksumMap":{"minecraft":"b64f70993649a63046c64b02c8af99c0731377b85e796788fcedf955016ad2b5","entityculling":"7af6b08121174391049547cebb9b87dc672518f181238a4e11d5b0bc0c5a9846","plasmovoice":"a56c3964f6e187f7683da7ed09dc33fb256c510d86b197fb88308c8abb2ba411","iris":"edf89bc6cace965f867200b821f216c3d601327cb40e2fbd78bcc1e54f64b093","noisium":"26649b7c5dc80da0b50627d1f1668a142a5a9ba9c7941590cd5af20d1e96beda","malilib":"7552379cab6c191ce03d146096f18db37e8999442cfd85de1a24e94fb88b1df5","modmenu":"3f554e58ef580ca625d49a188a635c48a65f9d2143d380eb89e296df3e45e2cb","wi_zoom":"5cf262672de0159afec5ade4433d1cbe5efba2a1944cc10399a7c30efbde73a5","fabricloader":"23557a7d6da3db971a6f9620cb62e7b6e6d1509f5138ebb87529877d2400e568","c2me":"79e28e28957228c21b775dbfbd122d58d325b82c2ceffdd38a41a65307dddbf0","tcdcommons":"5ef1f76e95a4d15b881bebb769dd88477d735dc6fcee4c2afed556df743c8168","appleskin":"f8f611746df88f1737b62a76615a366f42a331730ea16db97c52d6f5540c58ab","butterdevelopcavaanticheat":"37c18a6bfeec11c4d975f1c891bd53cc06ed2eece67b5617c0b25e3c2ad35a4a","litematica":"fd639f834c5eeb578982626a994ff4c93ea8076e9d9696f216c428a506840dea","betterf3":"a49a66f0e6947e4c2810ca161e622ee64ad4f3356245133f27b8f57ce922e798","lithium":"2c9155870ff7327b0f9d84c75596ccdf126d9ded65579b70b987aa652319127e","sodium":"2edd03c3563094543d3f3d6b94107e0f5845b682f841728ee7f8cd5d5c0f8e83","fabric-api":"9cbd5b70068c5b4b510a97d6d29addde671ed7864d725ee901469b5570107d6b","chunksfadein":"a3a8d9ed00f4483850517a7c1ef299f11a2ced242c97a41b3cd08aa2742df9c4","betterstats":"b9b1a2048026d50689f8fddb4796f1c28031bca141ac7e5c227727e09ca83508","xaerominimap":"d3f032de10316c1368e687e57edfca57b98f9cc63ed153cc134e7d18b967d07f","lightweight-inventory-sorting":"469056ff417b87eaa87fe654975525e9516398b18aef3fed56507cb0d12965d5","replaymod":"e6b5e862ebf45ce9f1192740c07b407e96d5c0551b0b3374378691040840b130","betteradvancements":"8c622ac5fd7651bc8dfde808c7191b908dd443c1846f91bc7c82381fd3e59c23"},"textureChecksumMap":{"PALATA_MC_RP_24-25.zip":"75b2dc7a894cafe7edaa11900633a93fb806802ae1f8667043cc2ff3ef262b03"},"modsInspectionResult":"NORMAL","modsInspectionMessage":"Every mod has been successfully hashed","textureInspectionResult":"NORMAL","textureInspectionMessage":"Every texture has been successfully hashed"}
+[2025-01-27 00:09:54.682] cucoldman kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-27 00:10:14.224] Message: Å{"modsChecksumMap":{"minecraft":"0f9dbd66feb2714ad4af77da0c8332650dd4eda13521f9e83821a9ab4bff4aa8","entityculling":"7af6b08121174391049547cebb9b87dc672518f181238a4e11d5b0bc0c5a9846","plasmovoice":"a56c3964f6e187f7683da7ed09dc33fb256c510d86b197fb88308c8abb2ba411","iris":"edf89bc6cace965f867200b821f216c3d601327cb40e2fbd78bcc1e54f64b093","noisium":"26649b7c5dc80da0b50627d1f1668a142a5a9ba9c7941590cd5af20d1e96beda","malilib":"7552379cab6c191ce03d146096f18db37e8999442cfd85de1a24e94fb88b1df5","modmenu":"3f554e58ef580ca625d49a188a635c48a65f9d2143d380eb89e296df3e45e2cb","wi_zoom":"5cf262672de0159afec5ade4433d1cbe5efba2a1944cc10399a7c30efbde73a5","fabricloader":"23557a7d6da3db971a6f9620cb62e7b6e6d1509f5138ebb87529877d2400e568","c2me":"79e28e28957228c21b775dbfbd122d58d325b82c2ceffdd38a41a65307dddbf0","tcdcommons":"5ef1f76e95a4d15b881bebb769dd88477d735dc6fcee4c2afed556df743c8168","appleskin":"f8f611746df88f1737b62a76615a366f42a331730ea16db97c52d6f5540c58ab","butterdevelopcavaanticheat":"68feb348a6ae1341bcc1a1e1dc8006ade04825eb08464439e985e2a21e54fbf2","litematica":"fd639f834c5eeb578982626a994ff4c93ea8076e9d9696f216c428a506840dea","betterf3":"a49a66f0e6947e4c2810ca161e622ee64ad4f3356245133f27b8f57ce922e798","lithium":"2c9155870ff7327b0f9d84c75596ccdf126d9ded65579b70b987aa652319127e","sodium":"2edd03c3563094543d3f3d6b94107e0f5845b682f841728ee7f8cd5d5c0f8e83","fabric-api":"9cbd5b70068c5b4b510a97d6d29addde671ed7864d725ee901469b5570107d6b","chunksfadein":"a3a8d9ed00f4483850517a7c1ef299f11a2ced242c97a41b3cd08aa2742df9c4","betterstats":"b9b1a2048026d50689f8fddb4796f1c28031bca141ac7e5c227727e09ca83508","xaerominimap":"d3f032de10316c1368e687e57edfca57b98f9cc63ed153cc134e7d18b967d07f","lightweight-inventory-sorting":"469056ff417b87eaa87fe654975525e9516398b18aef3fed56507cb0d12965d5","replaymod":"e6b5e862ebf45ce9f1192740c07b407e96d5c0551b0b3374378691040840b130","betteradvancements":"8c622ac5fd7651bc8dfde808c7191b908dd443c1846f91bc7c82381fd3e59c23"},"textureChecksumMap":{"PALATA_MC_RP_24-25.zip":"75b2dc7a894cafe7edaa11900633a93fb806802ae1f8667043cc2ff3ef262b03"},"shadersChecksumMap":{"MakeUp-UltraFast-9.1.zip":"0cce753488233bbc1f7045150000d14f984d6e287e94b45df5871ae2e7d2270f"},"modsInspectionResult":"NORMAL","modsInspectionMessage":"Every mod has been successfully hashed","textureInspectionResult":"NORMAL","textureInspectionMessage":"Every texture has been successfully hashed","shadersInspectionResult":"NORMAL","shadersInspectionMessage":"Every shader has been successfully hashed"}
+[2025-01-27 00:10:14.26] MaXiMAA kicked for reason:
+Shader not allowed: MakeUp-UltraFast-9.1.zip
+
+[2025-01-27 00:12:14.997] MaXiMAA kicked for reason:
+Shader not allowed: ComplementaryShaders_v4.7.2.zip
+
+[2025-01-27 00:12:41.703] cucoldman kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-27 00:12:47.324] MaXiMAA kicked for reason:
+Shader not allowed: ComplementaryShaders_v4.7.2.zip
+
+[2025-01-27 00:13:48.988] MaXiMAA kicked for reason:
+Shader not allowed: ComplementaryShaders_v4.7.2.zip
+
+[2025-01-27 01:01:55.708] MaXiMAA kicked for reason:
+Shader not allowed: ComplementaryReimagined_r5.3.zip
+Shader not allowed: ComplementaryReimagined_r5.3.zip.txt
+Shader not allowed: MakeUp-UltraFast-9.1.zip.txt
+Shader not allowed: BSL_v8.4.01.2.zip
+
+[2025-01-27 01:03:56.566] cucoldman kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-27 01:04:07.308] cucoldman kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-27 01:04:34.604] cucoldman kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-27 01:04:47.013] cucoldman kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-27 01:11:50.081] cucoldman kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-27 01:11:53.662] joker91169 kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-27 01:12:02.503] joker91169 kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-27 01:12:11.84] cucoldman kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-27 01:13:31.401] cucoldman kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+
+[2025-01-27 01:25:20.663] MaXiMAA kicked for reason:
+Shader not allowed: MakeUp-UltraFast-9.1.zip.txt
+
+[2025-01-27 01:26:28.978] joker91169 kicked for reason:
+Shader not allowed: BSL_v8.4.01.zip
+Shader not allowed: MakeUp-UltraFast-9.1.zip.txt
+Shader not allowed: ComplementaryUnbound_r5.3.zip
+
+[2025-01-27 01:27:18.336] cucoldman kicked for reason:
+Shader not allowed: superDuperVanilla.zip
+Shader not allowed: superDuperVanilla.zip.txt
+Shader not allowed: rethinking-voxels_r0.1-beta5.zip
+Shader not allowed: ComplementaryReimagined_r5.3.zip.txt
+Shader not allowed: BSL_v8.4.01.2.zip.txt
+Shader not allowed: rethinking-voxels_r0.1-beta5.zip.txt
+
+[2025-01-27 01:27:20.606] joker91169 kicked for reason:
+Shader not allowed: BSL_v8.4.01.zip
+Shader not allowed: MakeUp-UltraFast-9.1.zip.txt
+Shader not allowed: ComplementaryUnbound_r5.3.zip
+
+[2025-01-27 01:28:25.294] cucoldman kicked for reason:
+Shader not allowed: superDuperVanilla.zip
+Shader not allowed: rethinking-voxels_r0.1-beta5.zip
+
+[2025-01-27 01:29:16.273] cucoldman kicked for reason:
+Shader not allowed: BSL_v8.4.01.2.zip.txt
+
+[2025-01-27 01:31:45.237] joker91169 kicked for reason:
+Shader not allowed: BSL_v8.4.01.zip
+Shader not allowed: MakeUp-UltraFast-9.1.zip.txt
+Shader not allowed: ComplementaryUnbound_r5.3.zip
+
+[2025-01-27 01:34:49.868] joker91169 kicked for reason:
+Shader not allowed: MakeUp-UltraFast-9.1.zip.txt
+
+[2025-01-28 19:29:42.205] vanopog kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+Mod tampered: xaerominimap
+
+[2025-01-29 23:58:49.871] Teresh_psih kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+Mod tampered: xaerominimap
+
+[2025-01-30 00:06:09.659] Teresh_psih kicked for reason: Every mod has been successfully hashed
+[2025-01-30 00:08:50.578] Teresh_psih kicked for reason:
+Shader not allowed: DrDestens MinecraftShaders v2.0.4.zip.txt
+Shader not allowed: DrDestens MinecraftShaders v2.0.4.zip
+
+[2025-01-30 02:22:25.691] COJIOTAZ kicked for reason:
+Mod not allowed: seedcrackerx
+Mod tampered: butterdevelopcavaanticheat
+Mod tampered: xaerominimap
+
+[2025-01-30 02:23:36.69] COJIOTAZ kicked for reason:
+Mod not allowed: seedcrackerx
+Mod tampered: butterdevelopcavaanticheat
+Mod tampered: xaerominimap
+
+[2025-01-30 02:26:48.95] COJIOTAZ kicked for: Unable to verify the presence of the client anti cheat
+[2025-01-30 02:27:48.814] MaXiMAA kicked for: Unable to verify the presence of the client anti cheat
+[2025-01-30 02:28:25.912] COJIOTAZ kicked for: Unable to verify the presence of the client anti cheat
+[2025-01-30 02:28:40.953] COJIOTAZ kicked for: Unable to verify the presence of the client anti cheat
+[2025-01-30 02:28:49.353] COJIOTAZ kicked for: Unable to verify the presence of the client anti cheat
+[2025-01-30 02:29:36.365] COJIOTAZ kicked for: Unable to verify the presence of the client anti cheat
+[2025-01-30 02:30:02.112] COJIOTAZ kicked for: Unable to verify the presence of the client anti cheat
+[2025-01-30 02:30:11.013] COJIOTAZ kicked for: Unable to verify the presence of the client anti cheat
+[2025-01-30 03:03:49.708] COJIOTAZ kicked for: Unable to verify the presence of the client anti cheat
+[2025-01-30 03:04:39.498] COJIOTAZ kicked for: Unable to verify the presence of the client anti cheat
+[2025-01-30 03:05:20.745] COJIOTAZ kicked for: Unable to verify the presence of the client anti cheat
+[2025-01-30 03:06:06.195] COJIOTAZ kicked for: Unable to verify the presence of the client anti cheat
+[2025-01-30 03:06:47.352] COJIOTAZ kicked for: Unable to verify the presence of the client anti cheat
+[2025-01-30 03:07:21.353] COJIOTAZ kicked for: Unable to verify the presence of the client anti cheat
+[2025-01-30 03:08:35.791] COJIOTAZ kicked for reason:
+Shader not allowed: ComplementaryUnbound_r5.3.zip
+
+[2025-01-30 03:08:58.085] COJIOTAZ kicked for reason:
+Shader not allowed: ComplementaryUnbound_r5.3.zip
+
+[2025-01-30 03:09:40.811] COJIOTAZ kicked for reason:
+Shader not allowed: ComplementaryReimagined_r5.3.zip.txt
+
+[2025-01-30 03:18:46.284] cucoldman kicked for reason:
+Shader tampered: MakeUp-UltraFast-9.1.zip
+
+[2025-01-31 03:48:13.555] gal.ksu kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-01 04:20:07.323] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 01:26:34.219] Teresh_psih kicked for reason:
+Shader not allowed: DrDestens MinecraftShaders v2.0.4.zip.txt
+Shader not allowed: DrDestens MinecraftShaders v2.0.4.zip
+
+[2025-02-02 01:28:16.014] Teresh_psih kicked for reason:
+Shader not allowed: DrDestens MinecraftShaders v2.0.4.zip.txt
+Shader not allowed: DrDestens MinecraftShaders v2.0.4.zip
+
+[2025-02-02 01:29:35.087] Teresh_psih kicked for reason:
+Shader not allowed: DrDestens MinecraftShaders v2.0.4.zip.txt
+Shader not allowed: DrDestens MinecraftShaders v2.0.4.zip
+
+[2025-02-02 16:39:53.401] vanopog kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+Mod tampered: xaerominimap
+
+[2025-02-02 16:41:04.306] vanopog kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+Mod tampered: xaerominimap
+
+[2025-02-02 17:17:30.235] vanopog kicked for reason:
+Mod tampered: butterdevelopcavaanticheat
+Mod tampered: xaerominimap
+
+[2025-02-02 17:19:12.074] vanopog kicked for reason:
+Shader not allowed: ComplementaryUnbound_r5.3.zip
+
+[2025-02-02 17:19:56.892] vanopog kicked for reason:
+Shader not allowed: ComplementaryUnbound_r5.3.zip
+
+[2025-02-02 18:56:33.46] Teresh_psih kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 19:04:00.11] rqhappy kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 19:11:01.759] Teresh_psih kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 19:13:26.909] Teresh_psih kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 19:15:39.66] Teresh_psih kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 19:17:44.011] Teresh_psih kicked for reason: Every mod has been successfully hashed
+[2025-02-02 19:41:00.51] Sasalalka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 19:49:31.472] Teresh_psih kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 19:49:40.46] Sasalalka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 20:25:44.61] Teresh_psih kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 20:35:25.659] JellyVoka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 20:38:20.215] JellyVoka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 20:40:30.459] JellyVoka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 20:44:37.259] JellyVoka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 20:46:54.259] JellyVoka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 20:49:13.129] JellyVoka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 20:52:49.509] JellyVoka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 20:54:12.544] JellyVoka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 20:56:04.109] JellyVoka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 20:56:35.559] JellyVoka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 21:41:48.159] rqhappy kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 21:49:10.309] rqhappy kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 23:13:40.759] rqhappy kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 23:17:20.509] rqhappy kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 23:23:07.759] Sasalalka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 23:23:31.909] Teresh_psih kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 23:32:55.659] Teresh_psih kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 23:36:01.609] Sasalalka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 23:37:17.909] kawaii_killer kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 23:39:19.059] Sasalalka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 23:40:21.059] Teresh_psih kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-02 23:53:20.993] gal.ksu kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-03 00:45:58.569] SaloManiac kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-03 02:23:08.865] MaXiMAA kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-03 03:32:50.674] JellyVoka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-03 03:41:17.374] JellyVoka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-03 03:44:39.124] joker91169 kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-03 03:45:30.824] joker91169 kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-03 06:10:18.474] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-03 12:33:42.624] MaXiMAA kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-03 17:33:36.624] gal.ksu kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-03 17:46:20.875] gal.ksu kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-03 18:18:38.174] joker91169 kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-03 18:24:09.324] joker91169 kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-03 18:25:20.724] joker91169 kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-03 18:26:28.725] joker91169 kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 04:37:48.447] joker91169 kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 04:39:14.147] joker91169 kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 15:31:26.548] joker91169 kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 15:55:24.698] joker91169 kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 15:56:44.748] Sasalalka kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:28:20.591] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:31:03.941] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:31:12.091] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:31:20.191] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:31:30.441] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:31:43.341] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:31:51.641] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:32:00.541] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:32:09.191] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:32:18.641] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:32:30.991] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:32:54.591] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:34:03.941] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:34:11.741] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:34:21.841] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:34:29.591] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:34:40.741] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:34:48.791] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:35:02.541] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:42:20.741] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 22:42:29.691] cucoldman kicked for: Unable to verify the presence of the client anti cheat
+[2025-02-04 23:51:22.119] vanopog kicked for reason:
+Shader not allowed: Iris-multiloader-new.zip
+
+[2025-02-04 23:51:39.575] vanopog kicked for reason:
+Shader not allowed: Iris-multiloader-new.zip
+
+[2025-02-04 23:52:13.694] vanopog kicked for reason:
+Shader not allowed: Iris-multiloader-new.zip
+
+[2025-02-10 03:03:51.94] COJIOTA kicked for reason:
+Shader not allowed: ComplementaryReimagined_r5.3.zip.txt
+
+[2025-02-10 03:08:49.762] COJIOTA kicked for reason:
+Shader not allowed: ComplementaryReimagined_r5.3.zip.txt
+
+[2025-02-10 03:09:18.734] COJIOTA kicked for reason:
+Shader not allowed: ComplementaryReimagined_r5.3.zip.txt
+

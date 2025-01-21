@@ -1,7 +1,12 @@
 package org.palata_raidplugin.palata_raidplugin;
 
 import org.bukkit.*;
+import org.bukkit.attribute.Attribute;
+import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.type.Bed;
+import org.bukkit.block.data.type.Door;
+import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -41,7 +46,9 @@ class ArenaConfig {
         final String worldName = section.getString("world");
         final String copyWorldName = section.getString("copyWorld");
 
+        assert worldName != null;
         this.world = Bukkit.getWorld(worldName);
+        assert copyWorldName != null;
         this.copyWorld = Bukkit.getWorld(copyWorldName);
 
         this.copyStart = new Location(
@@ -162,8 +169,10 @@ public class ArenaManager implements Listener {
     // Индекс текущей арены (номер из конфига)
     private int currentArenaIndex = 1;
 
+    private final int arenasAmount;
+
     // Список доступных арен
-    private final List<ArenaConfig> arenas = new ArrayList<>();
+    private List<ArenaConfig> arenas = new ArrayList<>();
 
     // -------------------- Конструктор --------------------
 
@@ -172,8 +181,9 @@ public class ArenaManager implements Listener {
 
         // Читаем базовые настройки из конфига
         this.currentArenaIndex = plugin.getConfig().getInt("arena.currentArenaIndex", 1);
-        this.killScore = plugin.getConfig().getInt("arena.killScore", 1);
-        this.winScore = plugin.getConfig().getInt("arena.winScore", 5);
+        this.killScore         = plugin.getConfig().getInt("arena.killScore", 1);
+        this.winScore          = plugin.getConfig().getInt("arena.winScore", 5);
+        this.arenasAmount      = plugin.getConfig().getInt("arena.arenasAmount", 3);
 
         // Заранее пытаемся запланировать арену
         checkAndScheduleArena();
@@ -186,7 +196,8 @@ public class ArenaManager implements Listener {
      */
     private void loadArenaConfigs() {
         // Пробегаем по "arena_1", "arena_2" и т.д.
-        for (int i = 1; plugin.getConfig().getConfigurationSection("arena_" + i) != null; i++) {
+        arenas = new ArrayList<>();
+        for (int i = 1; i <= arenasAmount; i++) {
             final ConfigurationSection section = plugin.getConfig().getConfigurationSection("arena_" + i);
             if (section != null) {
                 final ArenaConfig arenaConfig = new ArenaConfig(section);
@@ -201,8 +212,8 @@ public class ArenaManager implements Listener {
      * Проверяем, нужно ли запускать арену прямо сейчас, или планируем её.
      */
     public void checkAndScheduleArena() {
-        // Если ещё не загрузили сами конфиги арен — загружаем
         if (arenas.isEmpty()) {
+            // Перезагружаем конфиги
             loadArenaConfigs();
         }
 
@@ -318,39 +329,45 @@ public class ArenaManager implements Listener {
 
         // Если никто не зашёл или осталась одна команда, завершаем сразу
         if (isOneTeamRemaining() || arenaPlayers.isEmpty()) {
+            arenaPlayers.clear();
             finishArena();
             return;
         }
 
         // Получаем нужную арену из списка
         final int index = currentArenaIndex - 1;
-        if (index < 0 || index >= arenas.size()) {
-            finishArena();
-            return;
-        }
         final ArenaConfig currentArena = arenas.get(index);
         if (currentArena == null) {
+            --currentArenaIndex;
             finishArena();
             return;
         }
 
-        // Сохраняем местоположения и телепортируем игроков на арену, а так же проигрываем им звук начала арены
-        final Iterator<Player> iterator = arenaPlayers.iterator();
-        while (iterator.hasNext()) {
-            final Player player = iterator.next();
-            if (player.isDead()) {
-                player.sendMessage(ChatColor.RED + "Вы мертвы, поэтому не будете телепортированы на арену.");
-                iterator.remove();
-            } else {
-                playerLocations.put(player, player.getLocation());
-                final String team = plugin.getGame().getPlayerTeam(player.getName());
-                if ("RED".equals(team)) {
-                    player.teleport(currentArena.getSpawnRed());
+        try {
+            // Сохраняем местоположения и телепортируем игроков на арену, а так же проигрываем им звук начала арены
+            final Iterator<Player> iterator = arenaPlayers.iterator();
+            while (iterator.hasNext()) {
+                final Player player = iterator.next();
+                if (player.isDead()) {
+                    player.sendMessage(ChatColor.RED + "Вы мертвы, поэтому не будете телепортированы на арену.");
+                    iterator.remove();
                 } else {
-                    player.teleport(currentArena.getSpawnBlue());
+                    playerLocations.put(player, player.getLocation());
+                    final String team = plugin.getGame().getPlayerTeam(player.getName());
+                    if ("RED".equals(team)) {
+                        player.teleport(currentArena.getSpawnRed());
+                    } else {
+                        player.teleport(currentArena.getSpawnBlue());
+                    }
+                    player.playSound(player.getLocation(), "dota.match_ready", 1.0F, 1.0F);
                 }
-                player.playSound(player.getLocation(), "dota.match_ready", 1.0F, 1.0F);
             }
+        }
+        catch (Exception e) {
+            Bukkit.broadcastMessage(ChatColor.RED + "Не удаётся загрузить из памяти мир арены. Полетел плагин Multiverse-Core.");
+            --currentArenaIndex;
+            finishArena();
+            return;
         }
 
         final int arenaDurationSeconds = plugin.getConfig().getInt("arena.durationSeconds", 300);
@@ -370,9 +387,16 @@ public class ArenaManager implements Listener {
                 // Последние 59 секунд — дополнительный урон
                 if (countdown > 0 && countdown <= 59) {
                     for (Player p : arenaPlayers) {
-                        p.sendMessage(ChatColor.RED + "До конца арены осталось секунд: " + countdown
-                                + ". Всем живым наносится урон!");
-                        p.damage(2.0);
+                        try {
+                            p.sendMessage(ChatColor.RED + "До конца арены осталось секунд: " + countdown
+                                    + ". Всем живым наносится урон!");
+                            AttributeInstance maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+                            if (maxHealth != null) {
+                                double health = Math.max(p.getHealth() - maxHealth.getValue() * 0.1, 1);
+                                p.setHealth(health);
+                                p.damage(1);
+                            }
+                        } catch (Exception ignored) { }
                     }
                 }
 
@@ -457,17 +481,17 @@ public class ArenaManager implements Listener {
                 playerLocations.clear();
                 arenaPlayers.clear();
 
+                // Восстанавливаем арену (копируем из copyWorld)
+                copyArena();
+
                 // Переходим к следующей арене
                 currentArenaIndex++;
-                if (currentArenaIndex > arenas.size()) {
+                if (currentArenaIndex > arenasAmount) {
                     currentArenaIndex = 1;
                 }
                 plugin.getConfig().set("arena.currentArenaIndex", currentArenaIndex);
 
                 checkAndScheduleArena();
-
-                // Восстанавливаем арену (копируем из copyWorld)
-                copyArena();
             }
         };
         // Делаем задержку в 30 секунд (30*20 тиков)
@@ -487,9 +511,10 @@ public class ArenaManager implements Listener {
         final World arenaWorld = currentArena.getWorld();
         if (arenaWorld == null) return;
 
-        // Удаляем мобов (не игроков) перед копированием блоков
+        // Удаляем мобов (не игроков и не двери с люками и кроватями) перед копированием блоков
         for (Entity entity : arenaWorld.getEntities()) {
-            if (!(entity instanceof Player)) {
+            if (!(entity instanceof Player) && !(entity instanceof Bed) &&
+                    !(entity instanceof Door) && !(entity instanceof TrapDoor)) {
                 entity.remove();
             }
         }
@@ -530,8 +555,10 @@ public class ArenaManager implements Listener {
         }
 
         // Дополнительное удаление всех неигроковых сущностей после копирования арены
+        // Удаляем мобов (не игроков и не двери с люками и кроватями) перед копированием блоков
         for (Entity entity : arenaWorld.getEntities()) {
-            if (!(entity instanceof Player)) {
+            if (!(entity instanceof Player) && !(entity instanceof Bed) &&
+                    !(entity instanceof Door) && !(entity instanceof TrapDoor)) {
                 entity.remove();
             }
         }
@@ -586,14 +613,18 @@ public class ArenaManager implements Listener {
 
         final String worldName = loadedWorld.getName();
         // Пробегаем по "arena_1", "arena_2" и т.д.
-        for (int i = 1; plugin.getConfig().getConfigurationSection("arena_" + i) != null; i++) {
+        for (int i = 1; i <= arenasAmount; i++) {
             final ConfigurationSection section = plugin.getConfig().getConfigurationSection("arena_" + i);
             if (section == null) continue;
 
             final String arenaWorldName = section.getString("world");
             if (worldName.equals(arenaWorldName)) {
                 final ArenaConfig arenaConfig = new ArenaConfig(section);
-                arenas.add(arenaConfig);
+                if (arenas.stream()
+                        .map(ArenaConfig::getWorld)
+                        .noneMatch(world -> world != null && world.getName().equals(arenaConfig.getWorld().getName()))) {
+                    arenas.add(arenaConfig);
+                }
             }
         }
     }
@@ -628,7 +659,7 @@ public class ArenaManager implements Listener {
      */
     private void teleportPlayerFromArena(final Player player) {
         // Проходим по всем конфигурациям арен и проверяем, находится ли игрок в мире одной из арен
-        for (int i = 1; plugin.getConfig().getConfigurationSection("arena_" + i) != null; i++) {
+        for (int i = 1; i <= arenasAmount; i++) {
             final int index = i - 1;
             if (index < 0 || index >= arenas.size()) continue;
 
@@ -680,12 +711,6 @@ public class ArenaManager implements Listener {
     public void onPlayerDeath(final PlayerDeathEvent event) {
         final Player victim = event.getEntity();
 
-        final int index = currentArenaIndex - 1;
-        if (index < 0 || index >= arenas.size()) return;
-
-        final ArenaConfig currentArena = arenas.get(index);
-        if (currentArena == null) return;
-
         // Если есть убийца (PVP) и они из разных команд, даём очки
         final Player attacker = victim.getKiller();
         if (attacker != null && !attacker.equals(victim)) {
@@ -694,6 +719,12 @@ public class ArenaManager implements Listener {
                 plugin.getGame().addScore(attackerTeam, killScore);
             }
         }
+
+        final int index = currentArenaIndex - 1;
+        if (index < 0 || index >= arenas.size()) return;
+
+        final ArenaConfig currentArena = arenas.get(index);
+        if (currentArena == null) return;
 
         // Если игрок умер в мире арены
         if (victim.getWorld().equals(currentArena.getWorld())) {
@@ -738,9 +769,10 @@ public class ArenaManager implements Listener {
         if (currentArena == null) return;
 
         // Если это блок из оригинальной арены и он не воздух — запрещаем выпадение
-        if (loc.getWorld().getName().equals(currentArena.getWorld().getName())) {
+        if (currentArena.getWorld() != null && loc.getWorld().getName().equals(currentArena.getWorld().getName())) {
             final Map<Location, Material> originalBlocks = currentArena.getOriginalArenaBlocks();
-            if (originalBlocks.containsKey(loc) && originalBlocks.get(loc) != Material.AIR) {
+            if (originalBlocks.containsKey(loc) && originalBlocks.get(loc) != Material.AIR &&
+                    originalBlocks.get(loc) == block.getType()) {
                 event.setDropItems(false);
             }
         }
@@ -748,7 +780,7 @@ public class ArenaManager implements Listener {
 
     /**
      * Обработка взрыва, у которого неизвестен источник (BlockExplodeEvent).
-     * Нужно убрать выпадение предметов для блоков, принадлежащих арене.
+     * Нужно убрать ломание для блоков, принадлежащих арене.
      */
     @EventHandler
     public void onBlockExplode(final BlockExplodeEvent event) {
@@ -777,7 +809,7 @@ public class ArenaManager implements Listener {
 
     /**
      * Обработка взрыва, у которого известен источник (EntityExplodeEvent).
-     * Аналогично убираем выпадение предметов для блоков, принадлежащих арене.
+     * Аналогично убираем ломание для блоков, принадлежащих арене.
      */
     @EventHandler
     public void onEntityExplode(final EntityExplodeEvent event) {
@@ -791,7 +823,7 @@ public class ArenaManager implements Listener {
         if (arenaWorld == null) return;
 
         // Если взрыв происходит не в мире арены — выходим
-        if (!event.getLocation().getWorld().equals(arenaWorld)) {
+        if (event.getLocation().getWorld() == null || !event.getLocation().getWorld().equals(arenaWorld)) {
             return;
         }
 
@@ -842,7 +874,7 @@ public class ArenaManager implements Listener {
         final World thisWorld = event.getWorld();
         boolean inArenaWorld = arenas.stream()
                 .map(ArenaConfig::getWorld)
-                .anyMatch(world -> world.equals(thisWorld));
+                .anyMatch(world -> world != null && world.getName().equals(thisWorld.getName()));
 
         // Если это не мир арены, то не надо ничего делать
         if (!inArenaWorld) return;

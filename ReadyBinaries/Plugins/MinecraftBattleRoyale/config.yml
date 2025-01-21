@@ -1,0 +1,33 @@
+worlds:
+  lobby: "lobby"
+  arena: "battleroyale"
+  nether: "battleroyale_nether"
+  end: "battleroyale_the_end"
+
+border:
+  minimumSize: 10.0
+  maximumSize: 1000.0
+  shrinkSeconds: 60
+  shrinkToZeroSeconds: 30
+
+arena:
+  secondsBeforeArena: 40
+  secondsAfterArena: 60
+
+teams:
+  - name: "Красные"
+    color: "RED"
+  - name: "Синие"
+    color: "BLUE"
+  - name: "Зелёные"
+    color: "GREEN"
+  - name: "Жёлтые"
+    color: "YELLOW"
+  - name: "Голубые"
+    color: "AQUA"
+  - name: "Оранжевые"
+    color: "GOLD"
+  - name: "Фиолетовые"
+    color: "DARK_PURPLE"
+  - name: "Серые"
+    color: "GRAY"

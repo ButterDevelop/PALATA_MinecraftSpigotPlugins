@@ -49,7 +49,8 @@ public class PacketHandler implements PluginMessageListener {
             } else {
                 String checksumEvaluationResult = evaluateChecksums(
                         clientInfoPacket.getModsChecksumMap(),
-                        clientInfoPacket.getTextureChecksumMap()
+                        clientInfoPacket.getTextureChecksumMap(),
+                        clientInfoPacket.getShadersChecksumMap()
                 );
 
                 if (!checksumEvaluationResult.isEmpty()) {
@@ -70,10 +71,23 @@ public class PacketHandler implements PluginMessageListener {
             ByteArrayDataInput in = ByteStreams.newDataInput(message);
             String messageStringJson = in.readLine();
 
+            // Находим первую '{' и последнюю '}'
+            int startIndex = messageStringJson.indexOf('{');
+            int endIndex = messageStringJson.lastIndexOf('}') + 1;
+
+            // Проверяем, что индексы корректны
+            if (startIndex == -1 || endIndex == 0 || startIndex >= endIndex) {
+                throw new IOException("Неверный формат JSON: не найдены корректные скобки");
+            }
+
+            // Извлекаем корректный JSON
+            String jsonSubstring = messageStringJson.substring(startIndex, endIndex);
+
             // Преобразуем JSON обратно в объект ClientInfoPacket
             Gson gson = new Gson();
-            return gson.fromJson(messageStringJson.substring(messageStringJson.indexOf('{')), ClientInfoPacket.class); // Десериализация JSON в объект
-        } catch (JsonSyntaxException e) {
+            return gson.fromJson(jsonSubstring, ClientInfoPacket.class); // Десериализация JSON в объект
+        } catch (Exception e) {
+            instance.log(Level.SEVERE, "Ошибка десериализации JSON в parsePacket: " + e);
             throw new IOException("Ошибка десериализации JSON", e);
         }
     }
@@ -88,7 +102,7 @@ public class PacketHandler implements PluginMessageListener {
         };
     }
 
-    private String evaluateChecksums(Map<String, String> modsChecksum, Map<String, String> textureChecksum) {
+    private String evaluateChecksums(Map<String, String> modsChecksum, Map<String, String> textureChecksum, Map<String, String> shadersChecksum) {
         StringBuilder report = new StringBuilder();
 
         ConfigurationSection whitelistedMods =
@@ -99,6 +113,7 @@ public class PacketHandler implements PluginMessageListener {
 
         ConfigurationSection finalWhitelistedMods = whitelistedMods;
         modsChecksum.forEach((modName, checksum) -> {
+            if (modName.equals("fabricloader")) return;
             if (modName.equals("minecraft") && !config.getConfig().getBoolean("inspect-minecraft")) return;
             if (modName.equals("forge") && !config.getConfig().getBoolean("inspect-forge")) return;
 
@@ -125,6 +140,23 @@ public class PacketHandler implements PluginMessageListener {
                 }
             } else {
                 report.append("Texture not allowed: ").append(textureName).append("\n");
+            }
+        });
+
+        ConfigurationSection whitelistedShaders =
+                whitelistConfig.getConfig().getConfigurationSection("whitelisted-shaders");
+        if (whitelistedShaders == null) {
+            whitelistedShaders = whitelistConfig.getConfig().createSection("whitelisted-shaders");
+        }
+
+        ConfigurationSection finalWhitelistedShaders = whitelistedShaders;
+        shadersChecksum.forEach((shaderName, checksum) -> {
+            if (finalWhitelistedShaders.contains(shaderName)) {
+                if (!Objects.equals(finalWhitelistedShaders.getString(shaderName), checksum)) {
+                    report.append("Shader tampered: ").append(shaderName).append("\n");
+                }
+            } else {
+                report.append("Shader not allowed: ").append(shaderName).append("\n");
             }
         });
 

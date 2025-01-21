@@ -48,8 +48,10 @@ public class CavaAntiCheatFabricClient implements ClientModInitializer {
 		ClientInfoPacket clientInfoPacket  = new ClientInfoPacket();
 		clientInfoPacket.setModsInspectionResult(InspectionResult.NORMAL);
 		clientInfoPacket.setTextureInspectionResult(InspectionResult.NORMAL);
+		clientInfoPacket.setShadersInspectionResult(InspectionResult.NORMAL);
 		inspectMods(clientInfoPacket);
 		inspectResourcePacks(clientInfoPacket);
+		inspectShaderPacks(clientInfoPacket);
 		return clientInfoPacket;
 	}
 
@@ -123,6 +125,47 @@ public class CavaAntiCheatFabricClient implements ClientModInitializer {
 				} catch (IOException e) {
 					clientInfoPacket.setTextureInspectionResult(InspectionResult.IO_EXCEPTION);
 					clientInfoPacket.setTextureInspectionMessage(e.getMessage());
+					LOGGER.error(e);
+					break;
+				}
+			}
+		}
+	}
+
+	private void inspectShaderPacks(ClientInfoPacket clientInfoPacket) {
+		// Получаем путь к папке с ресурсами (resourcepacks)
+		File resourcePacksFolder = MinecraftClient.getInstance().getResourcePackDir().toFile();
+
+		// Папка shaderpacks расположена рядом с resourcepacks
+		File shaderPacksFolder = new File(resourcePacksFolder.getParentFile(), "shaderpacks");
+
+		// Получаем все файлы и папки в папке shaderpacks
+		File[] files = shaderPacksFolder.listFiles();
+
+		// Если папка пуста или не существует, выходим
+		if (files == null) return;
+
+		// Обрабатываем все файлы в папке
+		for (File file : files) {
+			if (file.isDirectory()) {
+				// Если это директория, ставим ошибку, так как текстуры не могут быть каталогами
+				clientInfoPacket.setShadersInspectionResult(InspectionResult.INVALID_SHADER_FORMAT);
+				clientInfoPacket.setShadersInspectionMessage("Shader called " + file.getName() + " as directory found");
+				break;
+			} else {
+				try {
+					// Для файлов, считаем их хеш
+					clientInfoPacket.addShadersChecksum(file.getName(), HashingFunction.getFileChecksum(file));
+					clientInfoPacket.setShadersInspectionResult(InspectionResult.NORMAL);
+					clientInfoPacket.setShadersInspectionMessage("Every shader has been successfully hashed");
+				} catch (NoSuchAlgorithmException e) {
+					clientInfoPacket.setShadersInspectionResult(InspectionResult.HASH_FUNCTION_NOT_FOUND);
+					clientInfoPacket.setShadersInspectionMessage(e.getMessage());
+					LOGGER.error(e);
+					break;
+				} catch (IOException e) {
+					clientInfoPacket.setShadersInspectionResult(InspectionResult.IO_EXCEPTION);
+					clientInfoPacket.setShadersInspectionMessage(e.getMessage());
 					LOGGER.error(e);
 					break;
 				}
