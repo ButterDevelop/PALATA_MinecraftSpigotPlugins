@@ -1,14 +1,14 @@
 package com.butterdevelop.dotachatwheel;
 
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
 import static com.butterdevelop.dotachatwheel.ChatWheelRenderer.WHEEL_RADIUS;
 
 public class ChatWheelHandler {
-    private static boolean wheelActive    = false;
-    private static int     selectedPhrase = -1;
+    private static boolean wheelActive = false;
+    private static int selectedPhrase = -1;
 
     public static void handleKeyPress() {
         if (ModKeyBindings.openChatWheel.isPressed()) {
@@ -49,9 +49,9 @@ public class ChatWheelHandler {
         return -1;
     }
 
-    public static void renderWheel(MatrixStack matrices, int mouseX, int mouseY) {
+    public static void renderWheel(DrawContext context, int mouseX, int mouseY) {
         if (wheelActive) {
-            ChatWheelRenderer.renderWheel(matrices, mouseX, mouseY);
+            ChatWheelRenderer.renderWheel(context, mouseX, mouseY);
         }
     }
 }

@@ -70,10 +70,23 @@ public class PacketHandler implements PluginMessageListener {
             ByteArrayDataInput in = ByteStreams.newDataInput(message);
             String messageStringJson = in.readLine();
 
+            // Находим первую '{' и последнюю '}'
+            int startIndex = messageStringJson.indexOf('{');
+            int endIndex = messageStringJson.lastIndexOf('}') + 1;
+
+            // Проверяем, что индексы корректны
+            if (startIndex == -1 || endIndex == 0 || startIndex >= endIndex) {
+                throw new IOException("Неверный формат JSON: не найдены корректные скобки");
+            }
+
+            // Извлекаем корректный JSON
+            String jsonSubstring = messageStringJson.substring(startIndex, endIndex);
+
             // Преобразуем JSON обратно в объект ClientInfoPacket
             Gson gson = new Gson();
-            return gson.fromJson(messageStringJson.substring(messageStringJson.indexOf('{')), ClientInfoPacket.class); // Десериализация JSON в объект
-        } catch (JsonSyntaxException e) {
+            return gson.fromJson(jsonSubstring, ClientInfoPacket.class); // Десериализация JSON в объект
+        } catch (Exception e) {
+            instance.log(Level.SEVERE, "Ошибка десериализации JSON в parsePacket: " + e);
             throw new IOException("Ошибка десериализации JSON", e);
         }
     }
@@ -99,6 +112,7 @@ public class PacketHandler implements PluginMessageListener {
 
         ConfigurationSection finalWhitelistedMods = whitelistedMods;
         modsChecksum.forEach((modName, checksum) -> {
+            if (modName.equals("fabricloader")) return;
             if (modName.equals("minecraft") && !config.getConfig().getBoolean("inspect-minecraft")) return;
             if (modName.equals("forge") && !config.getConfig().getBoolean("inspect-forge")) return;
 

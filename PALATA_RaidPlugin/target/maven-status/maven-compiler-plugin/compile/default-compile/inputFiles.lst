@@ -10,10 +10,11 @@ C:\MaXiMAA\Projects\Java\PALATA_MinecraftSpigotPlugins\PALATA_RaidPlugin\src\mai
 C:\MaXiMAA\Projects\Java\PALATA_MinecraftSpigotPlugins\PALATA_RaidPlugin\src\main\java\org\palata_raidplugin\palata_raidplugin\DragonManager.java
 C:\MaXiMAA\Projects\Java\PALATA_MinecraftSpigotPlugins\PALATA_RaidPlugin\src\main\java\org\palata_raidplugin\palata_raidplugin\SetHomeBaseCommand.java
 C:\MaXiMAA\Projects\Java\PALATA_MinecraftSpigotPlugins\PALATA_RaidPlugin\src\main\java\org\palata_raidplugin\palata_raidplugin\GetEnemyRaidBaseCoordsCommand.java
+C:\MaXiMAA\Projects\Java\PALATA_MinecraftSpigotPlugins\PALATA_RaidPlugin\src\main\java\org\palata_raidplugin\palata_raidplugin\ScheduleArenaInSecondsCommand.java
 C:\MaXiMAA\Projects\Java\PALATA_MinecraftSpigotPlugins\PALATA_RaidPlugin\src\main\java\org\palata_raidplugin\palata_raidplugin\Game.java
 C:\MaXiMAA\Projects\Java\PALATA_MinecraftSpigotPlugins\PALATA_RaidPlugin\src\main\java\org\palata_raidplugin\palata_raidplugin\StartRaidCommand.java
+C:\MaXiMAA\Projects\Java\PALATA_MinecraftSpigotPlugins\PALATA_RaidPlugin\src\main\java\org\palata_raidplugin\palata_raidplugin\SoundManager.java
 C:\MaXiMAA\Projects\Java\PALATA_MinecraftSpigotPlugins\PALATA_RaidPlugin\src\main\java\org\palata_raidplugin\palata_raidplugin\RaidCommand.java
 C:\MaXiMAA\Projects\Java\PALATA_MinecraftSpigotPlugins\PALATA_RaidPlugin\src\main\java\org\palata_raidplugin\palata_raidplugin\SetRaidBaseCommand.java
 C:\MaXiMAA\Projects\Java\PALATA_MinecraftSpigotPlugins\PALATA_RaidPlugin\src\main\java\org\palata_raidplugin\palata_raidplugin\ArenaManager.java
 C:\MaXiMAA\Projects\Java\PALATA_MinecraftSpigotPlugins\PALATA_RaidPlugin\src\main\java\org\palata_raidplugin\palata_raidplugin\JoinRaidCommand.java
-C:\MaXiMAA\Projects\Java\PALATA_MinecraftSpigotPlugins\PALATA_RaidPlugin\src\main\java\org\palata_raidplugin\palata_raidplugin\SoundKillManager.java
