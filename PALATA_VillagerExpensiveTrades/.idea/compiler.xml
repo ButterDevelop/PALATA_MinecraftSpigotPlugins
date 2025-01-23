@@ -9,8 +9,5 @@
         <module name="PALATA_VillagerExpensiveTrades" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="PALATA_VillagerExpensiveTrades" target="1.8" />
-    </bytecodeTargetLevel>
   </component>
 </project>

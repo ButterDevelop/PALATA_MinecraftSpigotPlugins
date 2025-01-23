@@ -23,11 +23,21 @@ public class PrivateListener implements Listener {
         final Player player = event.getPlayer();
         final Block block = event.getClickedBlock();
         if (block == null) return;
+        final Location blockLoc = block.getLocation();
 
         final String playerTeam = plugin.getGame().getPlayerTeam(player.getName());
-        if (playerTeam == null) return;
+        // Аборигены не могут взаимодействовать
+        if (playerTeam == null) {
+            if (plugin.getGame().isWithinNexusRadius(blockLoc,     "RED") ||
+                    plugin.getGame().isWithinHomeRadius(blockLoc,  "RED") ||
+                    plugin.getGame().isWithinNexusRadius(blockLoc, "BLUE") ||
+                    plugin.getGame().isWithinHomeRadius(blockLoc,  "BLUE")) {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.RED + "Вы абориген, вы не можете взаимодействовать рядом с Нексусом любой команды в принципе, или же около их дома!");
+            }
+            return;
+        }
 
-        final Location blockLoc = block.getLocation();
         final String defendingTeam = plugin.getGame().getDefendingTeam(playerTeam);
 
         if (plugin.getGame().isWithinNexusRadius(blockLoc, defendingTeam)) {
@@ -48,9 +58,20 @@ public class PrivateListener implements Listener {
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
         final String playerTeam = plugin.getGame().getPlayerTeam(player.getName());
-        if (playerTeam == null) return;
-
         final Location blockLoc = block.getLocation();
+
+        // Аборигены не могут взаимодействовать
+        if (playerTeam == null) {
+            if (plugin.getGame().isWithinNexusRadius(blockLoc,     "RED") ||
+                    plugin.getGame().isWithinHomeRadius(blockLoc,  "RED") ||
+                    plugin.getGame().isWithinNexusRadius(blockLoc, "BLUE") ||
+                    plugin.getGame().isWithinHomeRadius(blockLoc,  "BLUE")) {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.RED + "Вы абориген, вы не можете разрушать блоки рядом с Нексусом любой команды в принципе, или же около их дома!");
+            }
+            return;
+        }
+
         final String defendingTeam = plugin.getGame().getDefendingTeam(playerTeam);
 
         if (plugin.getGame().isWithinNexusRadius(blockLoc, defendingTeam)) {
@@ -71,9 +92,19 @@ public class PrivateListener implements Listener {
         final Player player = event.getPlayer();
         final Block block = event.getBlock();
         final String playerTeam = plugin.getGame().getPlayerTeam(player.getName());
-        if (playerTeam == null) return;
-
         final Location blockLoc = block.getLocation();
+        // Аборигены не могут взаимодействовать
+        if (playerTeam == null) {
+            if (plugin.getGame().isWithinNexusRadius(blockLoc,     "RED") ||
+                    plugin.getGame().isWithinHomeRadius(blockLoc,  "RED") ||
+                    plugin.getGame().isWithinNexusRadius(blockLoc, "BLUE") ||
+                    plugin.getGame().isWithinHomeRadius(blockLoc,  "BLUE")) {
+                event.setCancelled(true);
+                player.sendMessage(ChatColor.RED + "Вы абориген, вы не можете ставить блоки рядом с Нексусом любой команды в принципе, или же около их дома!");
+            }
+            return;
+        }
+
         final String defendingTeam = plugin.getGame().getDefendingTeam(playerTeam);
 
         if (plugin.getGame().isWithinNexusRadius(blockLoc, defendingTeam)) {
