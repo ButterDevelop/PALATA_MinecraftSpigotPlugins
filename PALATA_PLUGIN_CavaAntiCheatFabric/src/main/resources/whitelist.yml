@@ -1,5 +1,5 @@
-#List of the enabled mod on the server with their checksums. Don't forget to add both minecraft and forge.
-#To calculate the checksums use: https://emn178.github.io/online-tools/sha256_checksum.html
+# List of the enabled mod on the server with their checksums. Don't forget to add both minecraft and forge.
+# To calculate the checksums use: https://emn178.github.io/online-tools/sha256_checksum.html
 whitelisted-mods:
   appleskin: f8f611746df88f1737b62a76615a366f42a331730ea16db97c52d6f5540c58ab
   fabricloader: b1b1d05e9ee52c6bb968fecf4f7e0e4ead8ec890ba9503c213df0daa8431f1fa
@@ -22,8 +22,13 @@ whitelisted-mods:
   sodium: 2edd03c3563094543d3f3d6b94107e0f5845b682f841728ee7f8cd5d5c0f8e83
   tcdcommons: 5ef1f76e95a4d15b881bebb769dd88477d735dc6fcee4c2afed556df743c8168
   wi_zoom: 5cf262672de0159afec5ade4433d1cbe5efba2a1944cc10399a7c30efbde73a5
-  xaerominimap: d3f032de10316c1368e687e57edfca57b98f9cc63ed153cc134e7d18b967d07f
-  butterdevelopcavaanticheat: 37c18a6bfeec11c4d975f1c891bd53cc06ed2eece67b5617c0b25e3c2ad35a4a
-#List of the enabled resource packs on the server with their checksums.
+  xaerominimap: 5469f70be61635c011d13eb011d2b9fb0778886f4375d4ec6faa7da5e88d0d13
+  butterdevelopcavaanticheat: 68feb348a6ae1341bcc1a1e1dc8006ade04825eb08464439e985e2a21e54fbf2
+# List of the enabled resource packs on the server with their checksums.
 whitelisted-textures:
   PALATA_MC_RP_24-25.zip: 75b2dc7a894cafe7edaa11900633a93fb806802ae1f8667043cc2ff3ef262b03
+# List of the enabled shader packs on the server with their checksums.
+whitelisted-shaders:
+  MakeUp-UltraFast-9.1.zip: 0cce753488233bbc1f7045150000d14f984d6e287e94b45df5871ae2e7d2270f
+  ComplementaryReimagined_r5.3.zip: 6e8234a2213c5a35238582d15dcc286584a029fbf42a993c1220188054799224
+  BSL_v8.4.01.2.zip: f06508abf8a290b8bb7e5be36553e1a7cbd81adddfdfeeca30f9bff114107e93

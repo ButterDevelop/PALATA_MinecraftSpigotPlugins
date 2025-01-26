@@ -1,0 +1,58 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\MaXiMAA\\Projects\\Java\\PALATA_MinecraftSpigotPlugins\\PALATA_C#_DoTeamBalance\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{FEA22AC2-CB87-47C2-BF63-EB578775A86A}|PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance.csproj|c:\\maximaa\\projects\\java\\palata_minecraftspigotplugins\\palata_c#_doteambalance\\palata_c#_doteambalance\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FEA22AC2-CB87-47C2-BF63-EB578775A86A}|PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance.csproj|solutionrelative:palata_c#_doteambalance\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{FEA22AC2-CB87-47C2-BF63-EB578775A86A}|PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance.csproj|c:\\maximaa\\projects\\java\\palata_minecraftspigotplugins\\palata_c#_doteambalance\\palata_c#_doteambalance\\teambalancer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{FEA22AC2-CB87-47C2-BF63-EB578775A86A}|PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance.csproj|solutionrelative:palata_c#_doteambalance\\teambalancer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TeamBalancer.cs",
+              "DocumentMoniker": "C:\\MaXiMAA\\Projects\\Java\\PALATA_MinecraftSpigotPlugins\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance\\TeamBalancer.cs",
+              "RelativeDocumentMoniker": "PALATA_C#_DoTeamBalance\\TeamBalancer.cs",
+              "ToolTip": "C:\\MaXiMAA\\Projects\\Java\\PALATA_MinecraftSpigotPlugins\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance\\TeamBalancer.cs",
+              "RelativeToolTip": "PALATA_C#_DoTeamBalance\\TeamBalancer.cs",
+              "ViewState": "AQIAAEgAAAAAAAAAAAAAAGgAAAAJAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-06-16T12:52:13.944Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\MaXiMAA\\Projects\\Java\\PALATA_MinecraftSpigotPlugins\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance\\Program.cs",
+              "RelativeDocumentMoniker": "PALATA_C#_DoTeamBalance\\Program.cs",
+              "ToolTip": "C:\\MaXiMAA\\Projects\\Java\\PALATA_MinecraftSpigotPlugins\\PALATA_C#_DoTeamBalance\\PALATA_C#_DoTeamBalance\\Program.cs",
+              "RelativeToolTip": "PALATA_C#_DoTeamBalance\\Program.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAIQAAABFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2023-06-16T12:52:14.187Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

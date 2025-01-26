@@ -49,7 +49,8 @@ public class PacketHandler implements PluginMessageListener {
             } else {
                 String checksumEvaluationResult = evaluateChecksums(
                         clientInfoPacket.getModsChecksumMap(),
-                        clientInfoPacket.getTextureChecksumMap()
+                        clientInfoPacket.getTextureChecksumMap(),
+                        clientInfoPacket.getShadersChecksumMap()
                 );
 
                 if (!checksumEvaluationResult.isEmpty()) {
@@ -101,7 +102,7 @@ public class PacketHandler implements PluginMessageListener {
         };
     }
 
-    private String evaluateChecksums(Map<String, String> modsChecksum, Map<String, String> textureChecksum) {
+    private String evaluateChecksums(Map<String, String> modsChecksum, Map<String, String> textureChecksum, Map<String, String> shadersChecksum) {
         StringBuilder report = new StringBuilder();
 
         ConfigurationSection whitelistedMods =
@@ -139,6 +140,23 @@ public class PacketHandler implements PluginMessageListener {
                 }
             } else {
                 report.append("Texture not allowed: ").append(textureName).append("\n");
+            }
+        });
+
+        ConfigurationSection whitelistedShaders =
+                whitelistConfig.getConfig().getConfigurationSection("whitelisted-shaders");
+        if (whitelistedShaders == null) {
+            whitelistedShaders = whitelistConfig.getConfig().createSection("whitelisted-shaders");
+        }
+
+        ConfigurationSection finalWhitelistedShaders = whitelistedShaders;
+        shadersChecksum.forEach((shaderName, checksum) -> {
+            if (finalWhitelistedShaders.contains(shaderName)) {
+                if (!Objects.equals(finalWhitelistedShaders.getString(shaderName), checksum)) {
+                    report.append("Shader tampered: ").append(shaderName).append("\n");
+                }
+            } else {
+                report.append("Shader not allowed: ").append(shaderName).append("\n");
             }
         });
 

@@ -1,0 +1,4 @@
+# config.yml
+auto-settings:
+  auto-disable: true
+  auto-fair: true

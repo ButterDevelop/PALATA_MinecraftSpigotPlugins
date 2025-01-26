@@ -1,0 +1,34 @@
+# List of the enabled mod on the server with their checksums. Don't forget to add both minecraft and forge.
+# To calculate the checksums use: https://emn178.github.io/online-tools/sha256_checksum.html
+whitelisted-mods:
+  appleskin: f8f611746df88f1737b62a76615a366f42a331730ea16db97c52d6f5540c58ab
+  fabricloader: b1b1d05e9ee52c6bb968fecf4f7e0e4ead8ec890ba9503c213df0daa8431f1fa
+  betteradvancements: 8c622ac5fd7651bc8dfde808c7191b908dd443c1846f91bc7c82381fd3e59c23
+  betterf3: a49a66f0e6947e4c2810ca161e622ee64ad4f3356245133f27b8f57ce922e798
+  betterstats: b9b1a2048026d50689f8fddb4796f1c28031bca141ac7e5c227727e09ca83508
+  c2me: 79e28e28957228c21b775dbfbd122d58d325b82c2ceffdd38a41a65307dddbf0
+  chunksfadein: a3a8d9ed00f4483850517a7c1ef299f11a2ced242c97a41b3cd08aa2742df9c4
+  entityculling: 7af6b08121174391049547cebb9b87dc672518f181238a4e11d5b0bc0c5a9846
+  fabric-api: 9cbd5b70068c5b4b510a97d6d29addde671ed7864d725ee901469b5570107d6b
+  iris: edf89bc6cace965f867200b821f216c3d601327cb40e2fbd78bcc1e54f64b093
+  lightweight-inventory-sorting: 469056ff417b87eaa87fe654975525e9516398b18aef3fed56507cb0d12965d5
+  litematica: fd639f834c5eeb578982626a994ff4c93ea8076e9d9696f216c428a506840dea
+  lithium: 2c9155870ff7327b0f9d84c75596ccdf126d9ded65579b70b987aa652319127e
+  malilib: 7552379cab6c191ce03d146096f18db37e8999442cfd85de1a24e94fb88b1df5
+  modmenu: 3f554e58ef580ca625d49a188a635c48a65f9d2143d380eb89e296df3e45e2cb
+  noisium: 26649b7c5dc80da0b50627d1f1668a142a5a9ba9c7941590cd5af20d1e96beda
+  plasmovoice: a56c3964f6e187f7683da7ed09dc33fb256c510d86b197fb88308c8abb2ba411
+  replaymod: e6b5e862ebf45ce9f1192740c07b407e96d5c0551b0b3374378691040840b130
+  sodium: 2edd03c3563094543d3f3d6b94107e0f5845b682f841728ee7f8cd5d5c0f8e83
+  tcdcommons: 5ef1f76e95a4d15b881bebb769dd88477d735dc6fcee4c2afed556df743c8168
+  wi_zoom: 5cf262672de0159afec5ade4433d1cbe5efba2a1944cc10399a7c30efbde73a5
+  xaerominimap: d3f032de10316c1368e687e57edfca57b98f9cc63ed153cc134e7d18b967d07f
+  butterdevelopcavaanticheat: 68feb348a6ae1341bcc1a1e1dc8006ade04825eb08464439e985e2a21e54fbf2
+# List of the enabled resource packs on the server with their checksums.
+whitelisted-textures:
+  PALATA_MC_RP_24-25.zip: 75b2dc7a894cafe7edaa11900633a93fb806802ae1f8667043cc2ff3ef262b03
+# List of the enabled shader packs on the server with their checksums.
+whitelisted-shaders:
+  MakeUp-UltraFast-9.1.zip: 0cce753488233bbc1f7045150000d14f984d6e287e94b45df5871ae2e7d2270f
+  ComplementaryReimagined_r5.3.zip: 6e8234a2213c5a35238582d15dcc286584a029fbf42a993c1220188054799224
+  BSL_v8.4.01.2.zip: f06508abf8a290b8bb7e5be36553e1a7cbd81adddfdfeeca30f9bff114107e93
