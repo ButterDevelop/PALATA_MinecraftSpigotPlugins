@@ -1,12 +1,15 @@
 package org.palata_villagerexpensivetrades.palata_villagerexpensivetrades;
 
 import org.bukkit.Material;
+import org.bukkit.entity.EntityType;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityTransformEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Merchant;
 import org.bukkit.inventory.MerchantRecipe;
+import org.bukkit.potion.PotionEffectType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,8 +79,23 @@ public class VillagerTradeListener implements Listener {
             return;
         }
 
+        // Убираем эффект Hero of the Village
+        event.getPlayer().getActivePotionEffects().forEach(effect -> {
+            if (effect.getType() == PotionEffectType.HERO_OF_THE_VILLAGE) {
+                event.getPlayer().removePotionEffect(effect.getType());
+            }
+        });
+
         Merchant merchant = (Merchant) event.getRightClicked();
         modifyMerchantRecipes(merchant);
+    }
+
+    @EventHandler
+    public void onEntityTransform(EntityTransformEvent event) {
+        // Не даём лечить жителей, чтобы получать крутые скидки
+        if (event.getTransformReason() == EntityTransformEvent.TransformReason.CURED) {
+            event.setCancelled(true);
+        }
     }
 }
 
