@@ -84,7 +84,7 @@ public class PALATA_BanPlayerOnDeath extends JavaPlugin implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent event) throws InterruptedException {
+    public void onPlayerDeath(PlayerDeathEvent event) {
         if (isEnabled) {
             Player player = event.getEntity();
             config.set(player.getUniqueId().toString(), System.currentTimeMillis() + ((long) _minutesToBan * 60 * 1000));
