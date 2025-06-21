@@ -38,6 +38,12 @@ public class PrivateCheck implements CommandExecutor {
             return true;
         }
 
+        // Если человек на территории своего дома
+        if (plugin.getGame().isWithinFarmRadius(playerLocation, team)) {
+            player.sendMessage(ChatColor.BLUE + "Вы сейчас на территории своей фермы.");
+            return true;
+        }
+
         // Если игрок сейчас на территории чужой базы для рейда
         if (plugin.getGame().isWithinNexusRadius(playerLocation, plugin.getGame().getDefendingTeam(team))) {
             player.sendMessage(ChatColor.YELLOW + "Вы сейчас на территории чужой базы для рейда.");
@@ -47,6 +53,12 @@ public class PrivateCheck implements CommandExecutor {
         // Если игрок на территории чужого дома
         if (plugin.getGame().isWithinHomeRadius(playerLocation, plugin.getGame().getDefendingTeam(team))) {
             player.sendMessage(ChatColor.YELLOW + "Вы сейчас на территории чужого дома.");
+            return true;
+        }
+
+        // Если игрок на территории чужой фермы
+        if (plugin.getGame().isWithinFarmRadius(playerLocation, plugin.getGame().getDefendingTeam(team))) {
+            player.sendMessage(ChatColor.YELLOW + "Вы сейчас на территории чужой фермы.");
             return true;
         }
 

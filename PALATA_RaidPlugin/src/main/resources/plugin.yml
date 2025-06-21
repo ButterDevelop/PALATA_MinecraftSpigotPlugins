@@ -9,9 +9,15 @@ commands:
   sethomebase:
     description: Ставим центр дома.
     usage: /<command>
+  setfarmbase:
+    description: Ставим центр фермы.
+    usage: /<command>
   privatecheck:
     description: Проверка на то, в каком регионе вы находитесь.
     usage: /<command>
+  dimensionalcontrol:
+    description: Управление открытием измерений.
+    usage: /<command> start
   openraid:
     description: Открывает возможность рейда.
     usage: /<command>

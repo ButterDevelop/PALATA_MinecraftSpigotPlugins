@@ -8,24 +8,32 @@ import org.bukkit.block.data.type.Bed;
 import org.bukkit.block.data.type.Door;
 import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Damageable;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockExplodeEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerItemDamageEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.world.PortalCreateEvent;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Класс для хранения информации об арене.
@@ -171,8 +179,15 @@ public class ArenaManager implements Listener {
 
     private final int arenasAmount;
 
+    private final int arenaSpawnProtectionRadius;
+
     // Список доступных арен
     private List<ArenaConfig> arenas = new ArrayList<>();
+
+    // Счётчик фрагов команд
+    private final Map<String, Integer> teamKills = new HashMap<>();
+
+    private final Set<Material> breakableInArena;
 
     // -------------------- Конструктор --------------------
 
@@ -180,10 +195,16 @@ public class ArenaManager implements Listener {
         this.plugin = plugin;
 
         // Читаем базовые настройки из конфига
-        this.currentArenaIndex = plugin.getConfig().getInt("arena.currentArenaIndex", 1);
-        this.killScore         = plugin.getConfig().getInt("arena.killScore", 1);
-        this.winScore          = plugin.getConfig().getInt("arena.winScore", 5);
-        this.arenasAmount      = plugin.getConfig().getInt("arena.arenasAmount", 3);
+        this.currentArenaIndex          = plugin.getConfig().getInt("arena.currentArenaIndex", 1);
+        this.killScore                  = plugin.getConfig().getInt("arena.killScore", 1);
+        this.winScore                   = plugin.getConfig().getInt("arena.winScore", 5);
+        this.arenasAmount               = plugin.getConfig().getInt("arena.arenasAmount", 3);
+        this.arenaSpawnProtectionRadius = plugin.getConfig().getInt("arena.arenaSpawnProtectionRadius", 5);
+
+        List<String> cfgList = plugin.getConfig().getStringList("arena.breakable-items");
+        breakableInArena = cfgList.stream()
+                .map(Material::valueOf)
+                .collect(Collectors.toCollection(() -> EnumSet.noneOf(Material.class)));
 
         // Заранее пытаемся запланировать арену
         checkAndScheduleArena();
@@ -343,6 +364,14 @@ public class ArenaManager implements Listener {
             return;
         }
 
+        World arenaWorld = currentArena.getWorld();
+        // не терять инвентарь и возрождаться моментально
+        arenaWorld.setGameRule(GameRule.KEEP_INVENTORY,       true);
+        arenaWorld.setGameRule(GameRule.DO_IMMEDIATE_RESPAWN, true);
+
+        teamKills.put("RED",  0);
+        teamKills.put("BLUE", 0);
+
         try {
             // Сохраняем местоположения и телепортируем игроков на арену, а так же проигрываем им звук начала арены
             final Iterator<Player> iterator = arenaPlayers.iterator();
@@ -387,16 +416,7 @@ public class ArenaManager implements Listener {
                 // Последние 59 секунд — дополнительный урон
                 if (countdown > 0 && countdown <= 59) {
                     for (Player p : arenaPlayers) {
-                        try {
-                            p.sendMessage(ChatColor.RED + "До конца арены осталось секунд: " + countdown
-                                    + ". Всем живым наносится урон!");
-                            AttributeInstance maxHealth = p.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-                            if (maxHealth != null) {
-                                double health = Math.max(p.getHealth() - maxHealth.getValue() * 0.1, 1);
-                                p.setHealth(health);
-                                p.damage(1);
-                            }
-                        } catch (Exception ignored) { }
+                        p.sendMessage(ChatColor.RED + "До конца арены осталось секунд: " + countdown);
                     }
                 }
 
@@ -441,15 +461,16 @@ public class ArenaManager implements Listener {
         isArenaActive = false;
 
         String winningTeam = null;
-        if (isOneTeamRemaining()) {
-            // Если осталась хоть одна команда
-            winningTeam = arenaPlayers.stream()
-                    .map(player -> plugin.getGame().getPlayerTeam(player.getName()))
-                    .findFirst()
-                    .orElse(null);
-        }
+
+        int redKills  = teamKills.getOrDefault("RED", 0);
+        int blueKills = teamKills.getOrDefault("BLUE", 0);
+
+        if (redKills > blueKills)      winningTeam = "RED";
+        else
+            if (blueKills > redKills)  winningTeam = "BLUE";
 
         if (winningTeam != null) {
+            Bukkit.broadcastMessage(ChatColor.GOLD + "Арена закончилась! Итоговый счёт — RED: " + redKills + ", BLUE: " + blueKills);
             for (Player player : arenaPlayers) {
                 final String team = plugin.getGame().getPlayerTeam(player.getName());
                 if (winningTeam.equals(team)) {
@@ -494,8 +515,8 @@ public class ArenaManager implements Listener {
                 checkAndScheduleArena();
             }
         };
-        // Делаем задержку в 30 секунд (30*20 тиков)
-        task.runTaskLater(plugin, 30 * 20L);
+        // Делаем задержку в 3 секунд (3*20 тиков)
+        task.runTaskLater(plugin, 3 * 20L);
     }
 
     /**
@@ -699,9 +720,29 @@ public class ArenaManager implements Listener {
      */
     @EventHandler
     public void onPlayerRespawn(PlayerRespawnEvent event) {
-        final Player player = event.getPlayer();
-        // Если игрок пытается возродиться на арене, перемещаем его в обычный мир
-        teleportPlayerFromArena(player);
+        Player player = event.getPlayer();
+        // Если арена активна и игрок в списке — ставим точку респауна на спавн его команды
+        if (isArenaActive && arenaPlayers.contains(player)) {
+            ArenaConfig cfg = arenas.get(currentArenaIndex - 1);
+            String team = plugin.getGame().getPlayerTeam(player.getName());
+            Location spawn = "RED".equals(team) ? cfg.getSpawnRed() : cfg.getSpawnBlue();
+            event.setRespawnLocation(spawn);
+
+            final BukkitRunnable task = new BukkitRunnable() {
+                @Override
+                public void run() {
+                    // дадим бафф (например, регенерация II на 10 сек)
+                    player.addPotionEffect(new PotionEffect(
+                            PotionEffectType.REGENERATION, 20 * 10, 1, false, true)
+                    );
+                }
+            };
+            task.runTaskLater(plugin, 20L);
+        }
+        else {
+            // обычное поведение — вызывать существующий teleportPlayerFromArena
+            teleportPlayerFromArena(player);
+        }
     }
 
     /**
@@ -713,10 +754,18 @@ public class ArenaManager implements Listener {
 
         // Если есть убийца (PVP) и они из разных команд, даём очки
         final Player attacker = victim.getKiller();
-        if (attacker != null && !attacker.equals(victim)) {
+        if (attacker != null && !attacker.equals(victim) && isArenaActive) {
             if (!plugin.getGame().areTwoPlayersInTheSameTeam(attacker.getName(), victim.getName())) {
                 final String attackerTeam = plugin.getGame().getPlayerTeam(attacker.getName());
-                plugin.getGame().addScore(attackerTeam, killScore);
+                teamKills.merge(attackerTeam, 1, Integer::sum);
+
+                int redKills  = teamKills.getOrDefault("RED",  0);
+                int blueKills = teamKills.getOrDefault("BLUE", 0);
+
+                for (Player player : arenaPlayers) {
+                    player.sendMessage(ChatColor.GOLD + "Счёт арены! RED: " + ChatColor.BOLD + redKills +
+                            ChatColor.GOLD + ", BLUE: " + ChatColor.BOLD + blueKills);
+                }
             }
         }
 
@@ -728,28 +777,13 @@ public class ArenaManager implements Listener {
 
         // Если игрок умер в мире арены
         if (victim.getWorld().equals(currentArena.getWorld())) {
-            arenaPlayers.remove(victim);
-
             if (isArenaActive) {
-                victim.sendMessage(ChatColor.RED + "Вы погибли и были исключены из арены.");
+                victim.sendMessage(ChatColor.RED + "Вы погибли, но можете продолжать драться.");
             }
 
-            // Телепортируем назад
-            final Location originalLocation = playerLocations.get(victim);
-            if (originalLocation != null) {
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        victim.sendMessage(ChatColor.GREEN + "Вы были телепортированы обратно.");
-                        Bukkit.getScheduler().runTask(plugin, () -> victim.teleport(originalLocation));
-                    }
-                }.runTaskLater(plugin, 20L);
-            }
-
-            // Если осталась только одна команда — завершаем арену
-            if (isArenaActive && isOneTeamRemaining()) {
-                finishArena();
-            }
+            event.setKeepInventory(true);
+            event.setKeepLevel(true);
+            event.getDrops().clear();
         }
     }
 
@@ -758,23 +792,56 @@ public class ArenaManager implements Listener {
      */
     @EventHandler
     public void onBlockBreak(final BlockBreakEvent event) {
-        final Block block = event.getBlock();
-        final Location loc = block.getLocation();
+        final Player player = event.getPlayer();
+        final Block block     = event.getBlock();
+        final Location loc    = block.getLocation();
         if (loc.getWorld() == null) return;
 
+        // получаем текущую арену
         final int index = currentArenaIndex - 1;
         if (index < 0 || index >= arenas.size()) return;
+        final ArenaConfig cfg = arenas.get(index);
+        if (cfg == null) return;
 
-        final ArenaConfig currentArena = arenas.get(index);
-        if (currentArena == null) return;
+        // проверяем, что это именно мир арены
+        if (!loc.getWorld().equals(cfg.getWorld())) return;
 
-        // Если это блок из оригинальной арены и он не воздух — запрещаем выпадение
-        if (currentArena.getWorld() != null && loc.getWorld().getName().equals(currentArena.getWorld().getName())) {
-            final Map<Location, Material> originalBlocks = currentArena.getOriginalArenaBlocks();
-            if (originalBlocks.containsKey(loc) && originalBlocks.get(loc) != Material.AIR &&
-                    originalBlocks.get(loc) == block.getType()) {
-                event.setDropItems(false);
-            }
+        // 1) Защита зоны спавна от ломки
+        if (loc.distance(cfg.getSpawnRed()) <= arenaSpawnProtectionRadius
+                || loc.distance(cfg.getSpawnBlue()) <= arenaSpawnProtectionRadius) {
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "Нельзя ломать блоки в зоне спавна команды на арене!");
+            return;  // дальше не проверяем оригинальные блоки
+        }
+
+        // 2) Старая логика для оригинальных блоков арены: ломаем, но не дропаем
+        Map<Location, Material> originalBlocks = cfg.getOriginalArenaBlocks();
+        if (originalBlocks.containsKey(loc)
+                && originalBlocks.get(loc) != Material.AIR
+                && originalBlocks.get(loc) == block.getType()) {
+            // блок разбивается, но не даёт дроп
+            event.setDropItems(false);
+        }
+    }
+
+    /**
+     * Игрок ставит блок
+     */
+    @EventHandler
+    public void onBlockPlace(BlockPlaceEvent event) {
+        Player player = event.getPlayer();
+        Location loc  = event.getBlock().getLocation();
+
+        // получаем текущую арену
+        ArenaConfig cfg = arenas.get(currentArenaIndex - 1);
+        World arenaW = cfg.getWorld();
+        if (!Objects.equals(loc.getWorld(), arenaW)) return;
+
+        // если в радиусе красного или синего спавна - отменяем
+        if (loc.distance(cfg.getSpawnRed()) <= arenaSpawnProtectionRadius
+                || loc.distance(cfg.getSpawnBlue()) <= arenaSpawnProtectionRadius) {
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "Нельзя строить в зоне спавна команды на арене!");
         }
     }
 
@@ -881,5 +948,39 @@ public class ArenaManager implements Listener {
 
         // Отменяем создание портала, если это сделано на арене
         event.setCancelled(true);
+    }
+
+    /**
+     * Убираем трату прочности на броне
+     */
+    @EventHandler(ignoreCancelled = true)
+    public void onItemDamage(PlayerItemDamageEvent event) {
+        Player player = event.getPlayer();
+        // 1) Проверяем, что это именно мир активной арены
+        ArenaConfig cfg = arenas.get(currentArenaIndex - 1);
+        if (cfg == null || !player.getWorld().equals(cfg.getWorld())) {
+            return;
+        }
+
+        ItemStack item = event.getItem();
+        Material  type = item.getType();
+
+        // 2) Если это предмет, который мы разрешили ломать — выходим
+        if (breakableInArena.contains(type)) {
+            return;
+        }
+
+        // 3) legacy-способ получить текущий урон и макс. прочность
+        int currentDamage = item.getDurability();
+        int damageToAdd   = event.getDamage();
+        int maxDurability = type.getMaxDurability();
+
+        // 4) Если после этого урона предмет должен бы сломаться —
+        //    рубим урон так, чтобы итоговый currentDamage = maxDurability-1
+        if (currentDamage + damageToAdd >= maxDurability) {
+            int allowed = (maxDurability - 1) - currentDamage;
+            event.setDamage(Math.max(0, allowed));
+        }
+        // иначе damage остаётся без изменений
     }
 }

@@ -31,14 +31,35 @@ plugin:
     setRaidBaseCooldown: 1
     # Перезарядка команды /sethomebase
     setHomeBaseCooldown: 1
+    # Перезарядка команды /sethomefarm
+    setFarmBaseCooldown: 1
     # Радиус региона привата базы для рейда
     privateRadiusRaid: 60
     # Радиус региона привата дома
     privateRadiusHome: 60
+    # Радиус региона привата фермы
+    privateRadiusFarm: 60
     # Радиус главного острова в Энде
     endWorldMainIslandRadius: 150
     # После рейда разрешено PvP и взаимодействия ещё N минут
     minutesPrivateDelayAfterRaid: 10
+
+dimensions:
+  nether:
+    openAfterSeconds: 7200
+  end:
+    openAfterSeconds: 14400
+    spawn:
+      RED:
+        world: world_the_end
+        x: 100.5
+        y: 49
+        z: 0.5
+      BLUE:
+        world: world_the_end
+        x: -100.5
+        y: 49
+        z: -0.5
 
 players:
   - MaXiMAA:Мой Создатель
@@ -69,6 +90,9 @@ arena:
   winScore: 5
   killScore: 1
   arenasAmount: 3
+  arenaSpawnProtectionRadius: 10
+  breakable-items:
+    - ELYTRA
 
 arena_1:
   world: world_arena_1

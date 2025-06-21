@@ -417,6 +417,29 @@ public class Game {
     }
 
     /**
+     * Построить полную ферму (по аналогии с домом).
+     */
+    public void buildFullFarm(String team, String worldName) {
+        final Location farmLocation = getFarmLocation(team, worldName);
+        if (farmLocation == null) return;
+
+        final World world = farmLocation.getWorld();
+        final int baseRadius = 1;
+        for (int x = -baseRadius; x <= baseRadius; x++) {
+            for (int y = -baseRadius; y <= baseRadius; y++) {
+                for (int z = -baseRadius; z <= baseRadius; z++) {
+                    final Block block = world.getBlockAt(
+                            farmLocation.getBlockX() + x,
+                            farmLocation.getBlockY() + y,
+                            farmLocation.getBlockZ() + z
+                    );
+                    block.setType(Material.BEDROCK);
+                }
+            }
+        }
+    }
+
+    /**
      * Удалить полностью (убрать) дом.
      */
     public void removeFullHome(Location homeLocation) {
@@ -473,6 +496,23 @@ public class Game {
         final double x = plugin.getConfig().getDouble(team + "." + worldName + ".home.x");
         final double y = plugin.getConfig().getDouble(team + "." + worldName + ".home.y");
         final double z = plugin.getConfig().getDouble(team + "." + worldName + ".home.z");
+
+        return new Location(world, x, y, z);
+    }
+
+    public Location getFarmLocation(String team, String worldName) {
+        if (team == null || worldName == null) return null;
+
+        final World world = Bukkit.getWorld(worldName);
+        if (world == null) return null;
+
+        if (!plugin.getConfig().isSet(team + "." + worldName + ".farm.x")) {
+            return null;
+        }
+
+        final double x = plugin.getConfig().getDouble(team + "." + worldName + ".farm.x");
+        final double y = plugin.getConfig().getDouble(team + "." + worldName + ".farm.y");
+        final double z = plugin.getConfig().getDouble(team + "." + worldName + ".farm.z");
 
         return new Location(world, x, y, z);
     }
@@ -798,6 +838,16 @@ public class Game {
         if (!actionLocation.getWorld().equals(homeLocation.getWorld())) return false;
 
         return isWithin2DRadius(actionLocation, homeLocation, privateRadiusHome);
+    }
+
+    /**
+     * Проверяем, находится ли локация в радиусе фермы.
+     */
+    public boolean isWithinFarmRadius(Location loc, String team) {
+        Location farm = getFarmLocation(team, loc.getWorld().getName());
+        if (farm == null) return false;
+        double radius = plugin.getConfig().getDouble("plugin.raid.privateRadiusFarm");
+        return farm.distance(loc) <= radius;
     }
 
     /**

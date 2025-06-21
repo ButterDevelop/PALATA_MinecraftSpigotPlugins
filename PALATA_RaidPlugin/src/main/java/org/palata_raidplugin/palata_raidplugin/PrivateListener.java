@@ -14,8 +14,14 @@ public class PrivateListener implements Listener {
 
     private final PALATA_RaidPlugin plugin;
 
+    private final double privateRadiusHome;
+    private final double privateRadiusFarm;
+
     public PrivateListener(final PALATA_RaidPlugin plugin) {
         this.plugin = plugin;
+
+        privateRadiusHome = plugin.getConfig().getDouble("plugin.raid.privateRadiusHome");
+        privateRadiusFarm = plugin.getConfig().getDouble("plugin.raid.privateRadiusFarm");
     }
 
     @EventHandler
@@ -51,6 +57,11 @@ public class PrivateListener implements Listener {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "Вы не можете взаимодействовать с блоками рядом с домом другой команды!");
         }
+
+        if (plugin.getGame().isWithinFarmRadius(blockLoc, defendingTeam)) {
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "Вы не можете взаимодействовать с блоками рядом с фермой другой команды!");
+        }
     }
 
     @EventHandler
@@ -85,6 +96,11 @@ public class PrivateListener implements Listener {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "Вы не можете разрушать блоки рядом с домом другой команды!");
         }
+
+        if (plugin.getGame().isWithinFarmRadius(blockLoc, defendingTeam)) {
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "Вы не можете разрушать блоки рядом с фермой другой команды!");
+        }
     }
 
     @EventHandler
@@ -118,6 +134,11 @@ public class PrivateListener implements Listener {
             event.setCancelled(true);
             player.sendMessage(ChatColor.RED + "Вы не можете ставить блоки рядом с домом другой команды!");
         }
+
+        if (plugin.getGame().isWithinFarmRadius(blockLoc, defendingTeam)) {
+            event.setCancelled(true);
+            player.sendMessage(ChatColor.RED + "Вы не можете ставить блоки рядом с фермой другой команды!");
+        }
     }
 
     @EventHandler
@@ -133,8 +154,10 @@ public class PrivateListener implements Listener {
             if (damagerTeam == null) {
                 if (plugin.getGame().isWithinNexusRadius(event.getEntity().getLocation(), "RED")
                         || plugin.getGame().isWithinHomeRadius(event.getEntity().getLocation(), "RED")
+                        || plugin.getGame().isWithinFarmRadius(event.getEntity().getLocation(), "RED")
                         || plugin.getGame().isWithinNexusRadius(event.getEntity().getLocation(), "BLUE")
-                        || plugin.getGame().isWithinHomeRadius(event.getEntity().getLocation(), "BLUE")) {
+                        || plugin.getGame().isWithinHomeRadius(event.getEntity().getLocation(), "BLUE")
+                        || plugin.getGame().isWithinFarmRadius(event.getEntity().getLocation(), "BLUE")) {
                     event.setCancelled(true);
                     damager.sendMessage(ChatColor.RED + "Аборигены не могут влиять на другие команды!");
                 }
@@ -145,7 +168,8 @@ public class PrivateListener implements Listener {
                 return;
             }
             if (!plugin.getGame().isWithinNexusRadius(event.getEntity().getLocation(), plugin.getGame().getDefendingTeam(damagerTeam))
-                    && !plugin.getGame().isWithinHomeRadius(event.getEntity().getLocation(), plugin.getGame().getDefendingTeam(damagerTeam))) {
+                    && !plugin.getGame().isWithinHomeRadius(event.getEntity().getLocation(), plugin.getGame().getDefendingTeam(damagerTeam))
+                    && !plugin.getGame().isWithinFarmRadius(event.getEntity().getLocation(), plugin.getGame().getDefendingTeam(damagerTeam))) {
                 return;
             }
             event.setCancelled(true);

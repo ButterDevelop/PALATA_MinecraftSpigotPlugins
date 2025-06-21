@@ -20,7 +20,7 @@ public class SoundManager implements Listener {
         Player attacker = victim.getKiller();
 
         // 1) При смерти любого игрока проигрываем ему звук "dota.death"
-        victim.playSound(victim.getLocation(), "dota.death", 0.7F, 1.0F);
+        victim.playSound(victim.getLocation(), "dota.death", 0.5F, 1.0F);
 
         // Получаем команду жертвы
         String victimTeam = plugin.getGame().getPlayerTeam(victim.getName());
@@ -28,7 +28,7 @@ public class SoundManager implements Listener {
         if (victimTeam != null) {
             for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                 if (plugin.getGame().areTwoPlayersInTheSameTeam(player.getName(), victim.getName())) {
-                    player.playSound(player.getLocation(), "dota.enemy_kills_player", 0.7F, 1.0F);
+                    player.playSound(player.getLocation(), "dota.enemy_kills_player", 0.6F, 1.0F);
                 }
             }
         }
@@ -40,7 +40,7 @@ public class SoundManager implements Listener {
                 // 3) Команда убийцы слышит звук "dota.team_kills_player"
                 for (Player player : Bukkit.getServer().getOnlinePlayers()) {
                     if (plugin.getGame().areTwoPlayersInTheSameTeam(player.getName(), attacker.getName())) {
-                        player.playSound(player.getLocation(), "dota.team_kills_player", 0.7F, 1.0F);
+                        player.playSound(player.getLocation(), "dota.team_kills_player", 0.6F, 1.0F);
                     }
                 }
             }
@@ -51,6 +51,6 @@ public class SoundManager implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
         Player player = event.getPlayer();
         // 2) При возрождении любого игрока проигрываем звук "dota.respawn"
-        player.playSound(player.getLocation(), "dota.respawn", 0.7F, 1.0F);
+        player.playSound(player.getLocation(), "dota.respawn", 0.5F, 1.0F);
     }
 }

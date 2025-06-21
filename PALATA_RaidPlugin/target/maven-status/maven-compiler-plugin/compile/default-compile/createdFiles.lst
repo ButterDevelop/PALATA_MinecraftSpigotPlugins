@@ -5,6 +5,7 @@ org\palata_raidplugin\palata_raidplugin\ArenaManager$1.class
 org\palata_raidplugin\palata_raidplugin\SetRaidBaseCommand.class
 org\palata_raidplugin\palata_raidplugin\StartRaidCommand.class
 org\palata_raidplugin\palata_raidplugin\DragonManager$1.class
+org\palata_raidplugin\palata_raidplugin\DimensionsControl.class
 org\palata_raidplugin\palata_raidplugin\PlayerJoinListener.class
 org\palata_raidplugin\palata_raidplugin\BlockBreakListener.class
 org\palata_raidplugin\palata_raidplugin\SetHomeBaseCommand.class
@@ -23,6 +24,7 @@ org\palata_raidplugin\palata_raidplugin\DragonManager.class
 org\palata_raidplugin\palata_raidplugin\ArenaManager$5.class
 org\palata_raidplugin\palata_raidplugin\RaidCommand.class
 org\palata_raidplugin\palata_raidplugin\PALATA_RaidPlugin.class
+org\palata_raidplugin\palata_raidplugin\SetFarmBaseCommand.class
 org\palata_raidplugin\palata_raidplugin\GetEnemyRaidBaseCoordsCommand.class
 org\palata_raidplugin\palata_raidplugin\ArenaManager$3.class
 org\palata_raidplugin\palata_raidplugin\SoundManager.class

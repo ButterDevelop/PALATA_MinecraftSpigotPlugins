@@ -12,6 +12,7 @@ public final class PALATA_RaidPlugin extends JavaPlugin {
         game = new Game(this);
         this.getCommand("setraidbase").setExecutor(new SetRaidBaseCommand(this));
         this.getCommand("sethomebase").setExecutor(new SetHomeBaseCommand(this));
+        this.getCommand("setfarmbase").setExecutor(new SetFarmBaseCommand(this));
         this.getCommand("privatecheck").setExecutor(new PrivateCheck(this));
         this.getCommand("openraid").setExecutor(new OpenRaidCommand(this));
         this.getCommand("cancelraid").setExecutor(new CancelRaidCommand(game));
@@ -19,6 +20,10 @@ public final class PALATA_RaidPlugin extends JavaPlugin {
         this.getCommand("startraid").setExecutor(new StartRaidCommand(game));
         this.getCommand("raid").setExecutor(new RaidCommand(game));
         this.getCommand("getenemyraidbasecoords").setExecutor(new GetEnemyRaidBaseCoordsCommand(game));
+
+        DimensionsControl dims = new DimensionsControl(this);
+        this.getCommand("dimensionalcontrol").setExecutor(dims);
+        getServer().getPluginManager().registerEvents(dims, this);
 
         getServer().getPluginManager().registerEvents(new BlockBreakListener(game), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
