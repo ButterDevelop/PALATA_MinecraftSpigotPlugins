@@ -1,2 +1,5 @@
+isEnabled: false
 minutesToBan: 30
-isEnabled: true
+schedule:
+  enableAt: 0   # timestamp в мс; плагин очистит это поле автоматически
+bannedPlayers: {}

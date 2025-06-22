@@ -25,6 +25,8 @@ public final class PALATA_RaidPlugin extends JavaPlugin {
         this.getCommand("dimensionalcontrol").setExecutor(dims);
         getServer().getPluginManager().registerEvents(dims, this);
 
+        CustomRecipesManager.init(this);
+
         getServer().getPluginManager().registerEvents(new BlockBreakListener(game), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(this), this);
         getServer().getPluginManager().registerEvents(new PrivateListener(this), this);
