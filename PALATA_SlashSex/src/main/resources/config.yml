@@ -1,0 +1,3 @@
+personal-cooldown-seconds: 60
+damage-cooldown-seconds: 30
+spam-threshold-ms: 1000

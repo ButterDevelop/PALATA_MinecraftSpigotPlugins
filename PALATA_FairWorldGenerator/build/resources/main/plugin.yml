@@ -1,0 +1,10 @@
+name: FairWorldGenerator
+version: '1.0-SNAPSHOT'
+main: org.butterdevelop.fairWorldGenerator.FairWorldGenerator
+api-version: '1.21'
+authors: [butterdevelop]
+description: This mod allows to find 2 different points in the world with fair structure distance.
+commands:
+  fairworld:
+    description: Генерировать справедливый мир и спавн-точки
+    usage: /fairworld generate [maxError] [maxAttempts]

@@ -1,0 +1,10 @@
+name: SlashSex
+version: '1.0-SNAPSHOT'
+main: org.butterdevelop.slashSex.SlashSex
+api-version: '1.21'
+authors: [butterdevelop]
+description: Allows you to make some sex
+commands:
+  sex:
+    description: Получает статистике о половой жизни сервера.
+    usage: /<command>
