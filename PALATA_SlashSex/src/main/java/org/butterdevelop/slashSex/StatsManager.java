@@ -51,6 +51,9 @@ public class StatsManager {
     }
 
     public List<Map.Entry<String, Integer>> topActive(int limit) {
+        if (cfg.getConfigurationSection("active") == null) {
+            return new ArrayList<>();
+        }
         return Objects.requireNonNull(cfg.getConfigurationSection("active")).getKeys(false).stream()
                 .map(k -> Map.entry(k, cfg.getInt("active." + k)))
                 .sorted(Map.Entry.<String,Integer>comparingByValue().reversed())
@@ -59,6 +62,9 @@ public class StatsManager {
     }
 
     public List<Map.Entry<String, Integer>> topPassive(int limit) {
+        if (cfg.getConfigurationSection("passive") == null) {
+            return new ArrayList<>();
+        }
         return Objects.requireNonNull(cfg.getConfigurationSection("passive")).getKeys(false).stream()
                 .map(k -> Map.entry(k, cfg.getInt("passive." + k)))
                 .sorted(Map.Entry.<String,Integer>comparingByValue().reversed())

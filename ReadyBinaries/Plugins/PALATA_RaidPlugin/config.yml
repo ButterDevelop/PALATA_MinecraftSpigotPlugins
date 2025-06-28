@@ -40,12 +40,29 @@ plugin:
     # После рейда разрешено PvP и взаимодействия ещё N минут
     minutesPrivateDelayAfterRaid: 10
 
+dimensions:
+  nether:
+    openAfterSeconds: 3600
+  end:
+    openAfterSeconds: 7200
+    spawn:
+      RED:
+        world: world_the_end
+        x: 100.5
+        y: 49
+        z: 0.5
+      BLUE:
+        world: world_the_end
+        x: -100.5
+        y: 49
+        z: -0.5
+  gameStartTime: 1750681531481
+
 players:
 - MaXiMAA:Мой Создатель
 - rqhappy:Отец
 - kawaii_killer:дагон на антимага
 - SaloManiac:Димон
-- poziloy_zhmykh:mersi
 - Vikchankch4:Вика
 - Watermelonchyo:Антончик
 - COJIOTA:Антонио
@@ -53,85 +70,88 @@ players:
 - joker91169:мой раб
 - gal.ksu:Ксюша
 - romariodemon777:убийца биоса
-- dashkka:Даша
-- vanopog:Pogon
+- vanopog:Вано
 - cucoldman:Артём
 - vladqw:Владос
 - MGYR1X323:строитель по имени Тимур
 - JellyVoka:Вячеслав
+- MonitHAHA:Ильюха
+- Sasalalka:Киану Ривз
 
 dragon:
   respawnIntervalHours: 4
-  deathTime: 1739021598519
 
 arena:
-  currentArenaIndex: 2
+  currentArenaIndex: 1
   intervalHours: 24
-  durationSeconds: 1200
+  durationSeconds: 1800
   winScore: 5
   killScore: 1
   arenasAmount: 3
-  nextStartTime: 1739284245591
+  arenaSpawnProtectionRadius: 10
+  breakable-items:
+  - ELYTRA
+  nextStartTime: 1751107588273
 
 arena_1:
   world: world_arena_1
   copyWorld: world_arena_copy_1
   copyStart:
-    x: 85
-    y: 20
-    z: 101
+    x: -59
+    y: 50
+    z: 26
   copyEnd:
-    x: -15
-    y: 73
-    z: 1
+    x: 99
+    y: 109
+    z: -47
   spawnRed:
-    x: 72
-    y: 51
-    z: 9
+    x: -20
+    y: 69
+    z: -17
   spawnBlue:
-    x: -1
-    y: 46
-    z: 88
+    x: 71
+    y: 65
+    z: -12
 
 arena_2:
   world: world_arena_2
   copyWorld: world_arena_copy_2
   copyStart:
-    x: 100
-    y: 1
-    z: 101
+    x: 110
+    y: 18
+    z: 70
   copyEnd:
-    x: 0
-    y: 52
-    z: 0
+    x: -70
+    y: 81
+    z: -4
   spawnRed:
-    x: 59
-    y: 2
-    z: 3
+    x: 50
+    y: 30
+    z: 33
   spawnBlue:
-    x: 56
-    y: 2
-    z: 94
+    x: -64
+    y: 30
+    z: 37
 
 arena_3:
   world: world_arena_3
   copyWorld: world_arena_copy_3
   copyStart:
-    x: 0
-    y: 1
-    z: 0
-  copyEnd:
-    x: 159
-    y: 60
-    z: 74
-  spawnRed:
-    x: 39
+    x: -31
     y: 20
-    z: 30
+    z: -31
+  copyEnd:
+    x: 71
+    y: 102
+    z: 71
+  spawnRed:
+    x: 60
+    y: 52
+    z: -19
   spawnBlue:
-    x: 131
-    y: 16
-    z: 35
+    x: -14
+    y: 47
+    z: 59
 
 # Настройки команд и командных блоков
 teams:
@@ -143,12 +163,11 @@ teams:
     members:
     - MaXiMAA
     - Teresh_psih
-    - rqhappy
-    - cucoldman
+    - JellyVoka
+    - vladqw
     - MGYR1X323
-    - Sasalalka
-    - SaloManiac
-    score: 3
+    - MonitHAHA
+    score: 0
   
   # Команда "blue"
   BLUE:
@@ -157,50 +176,10 @@ teams:
     # Члены команды
     members:
     - joker91169
-    - JellyVoka
     - COJIOTA
-    - kawaii_killer
+    - cucoldman
+    - Sasalalka
     - vanopog
-    - romariodemon777
-    - poziloy_zhmykh
-    score: 14
-BLUE:
-  world_the_end:
-    home:
-      x: 892
-      y: 61
-      z: 689
-      world: world_the_end
-  sethomebase: 1738532793503
-  world:
-    home:
-      x: 392
-      y: 64
-      z: -2690
-      world: world
-  world_nether:
-    home:
-      x: 72
-      y: 67
-      z: -339
-      world: world_nether
-RED:
-  world:
-    home:
-      x: -2507
-      y: 68
-      z: 295
-      world: world
-  sethomebase: 1738534888981
-  world_nether:
-    home:
-      x: -333
-      y: 65
-      z: 22
-      world: world_nether
-  world_the_end:
-    home:
-      x: 240
-      y: 16
-      z: 5
-      world: world_the_end
+    - rqhappy
+    score: 0
+

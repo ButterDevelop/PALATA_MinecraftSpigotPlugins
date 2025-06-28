@@ -4,6 +4,7 @@ import com.google.common.io.ByteArrayDataInput;
 import com.google.common.io.ByteStreams;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
+import org.bukkit.Bukkit;
 import org.butterdevelop.common.ClientInfoPacket;
 import org.butterdevelop.common.InspectionResult;
 import org.bukkit.configuration.ConfigurationSection;
@@ -44,7 +45,7 @@ public class PacketHandler implements PluginMessageListener {
                 String kickReason = evaluateInspectionResult(clientInfoPacket.getModsInspectionResult()) + "\n" +
                         evaluateInspectionResult(clientInfoPacket.getTextureInspectionResult());
 
-                player.kickPlayer(kickReason);
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kick " + player.getName() + " " + kickReason);
                 instance.log(Level.WARNING, player.getName() + " kicked for reason: " + clientInfoPacket.getModsInspectionMessage());
             } else {
                 String checksumEvaluationResult = evaluateChecksums(
@@ -54,13 +55,14 @@ public class PacketHandler implements PluginMessageListener {
                 );
 
                 if (!checksumEvaluationResult.isEmpty()) {
-                    player.kickPlayer(checksumEvaluationResult);
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kick " + player.getName() + " " + checksumEvaluationResult);
                     instance.log(Level.WARNING, player.getName() + " kicked for reason:\n" + checksumEvaluationResult);
                 }
             }
         } catch (IOException e) {
             e.printStackTrace();
-            player.kickPlayer("Unable to verify the presence of the client anti cheat");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kick " + player.getName() +
+                    " Unable to verify the presence of the client anti cheat");
             instance.log(Level.SEVERE, player.getName() + " kicked for: " + e.getMessage());
         }
     }

@@ -1,5 +1,6 @@
 package org.butterdevelop.server.listener;
 
+import org.bukkit.ChatColor;
 import org.butterdevelop.server.Config;
 import org.butterdevelop.server.ServerAntiCheat;
 import org.bukkit.Bukkit;
@@ -33,11 +34,11 @@ public class PlayerListener implements Listener {
         Bukkit.getScheduler().runTaskLater(instance, () -> {
             try {
                 if (instance.getPlayerSet().remove(player)) {
-                    player.kickPlayer(kickMessage);
+                    Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kick " + player.getName() + " " + kickMessage);
                     instance.log(Level.WARNING, player.getName() + " kicked for: " + kickMessage);
                 }
             } catch (ConcurrentModificationException e) {
-                player.kickPlayer(kickMessage);
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "kick " + player.getName() + " " + kickMessage);
                 instance.log(Level.WARNING, player.getName() + " kicked for: " + kickMessage);
             }
         }, delayTicks);

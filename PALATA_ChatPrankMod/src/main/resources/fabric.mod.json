@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "id": "chatprankmod",
+  "version": "${version}",
+  "name": "ChatPrankMod",
+  "description": "This mod allows you to edit user's chat messages to make some jokes.",
+  "authors": [],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/chatprankmod/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "org.butterdevelop.chatprankmod.client.ChatPrankModClient"
+    ],
+    "main": [
+      "org.butterdevelop.chatprankmod.ChatPrankMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}

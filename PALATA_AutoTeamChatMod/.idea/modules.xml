@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PALATA_AutoTeamChatMod.main.iml" filepath="$PROJECT_DIR$/.idea/modules/PALATA_AutoTeamChatMod.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/PALATA_AutoTeamChatMod.test.iml" filepath="$PROJECT_DIR$/.idea/modules/PALATA_AutoTeamChatMod.test.iml" />
+    </modules>
+  </component>
+</project>

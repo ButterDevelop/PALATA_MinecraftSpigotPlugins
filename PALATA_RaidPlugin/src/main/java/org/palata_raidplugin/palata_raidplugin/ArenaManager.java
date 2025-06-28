@@ -754,18 +754,25 @@ public class ArenaManager implements Listener {
 
         // Если есть убийца (PVP) и они из разных команд, даём очки
         final Player attacker = victim.getKiller();
-        if (attacker != null && !attacker.equals(victim) && isArenaActive) {
-            if (!plugin.getGame().areTwoPlayersInTheSameTeam(attacker.getName(), victim.getName())) {
-                final String attackerTeam = plugin.getGame().getPlayerTeam(attacker.getName());
-                teamKills.merge(attackerTeam, 1, Integer::sum);
+        if (attacker != null && !attacker.equals(victim)) {
+            if (isArenaActive) {
+                // Если арена активна
+                if (!plugin.getGame().areTwoPlayersInTheSameTeam(attacker.getName(), victim.getName())) {
+                    final String attackerTeam = plugin.getGame().getPlayerTeam(attacker.getName());
+                    teamKills.merge(attackerTeam, 1, Integer::sum);
 
-                int redKills  = teamKills.getOrDefault("RED",  0);
-                int blueKills = teamKills.getOrDefault("BLUE", 0);
+                    int redKills = teamKills.getOrDefault("RED", 0);
+                    int blueKills = teamKills.getOrDefault("BLUE", 0);
 
-                for (Player player : arenaPlayers) {
-                    player.sendMessage(ChatColor.GOLD + "Счёт арены! RED: " + ChatColor.BOLD + redKills +
-                            ChatColor.GOLD + ", BLUE: " + ChatColor.BOLD + blueKills);
+                    for (Player player : arenaPlayers) {
+                        player.sendMessage(ChatColor.GOLD + "Счёт арены! RED: " + ChatColor.BOLD + redKills +
+                                ChatColor.GOLD + ", BLUE: " + ChatColor.BOLD + blueKills);
+                    }
                 }
+            } else {
+                // Если арена неактивна
+                final String attackerTeam = plugin.getGame().getPlayerTeam(attacker.getName());
+                plugin.getGame().addScore(attackerTeam, killScore);
             }
         }
 

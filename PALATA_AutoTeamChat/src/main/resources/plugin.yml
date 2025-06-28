@@ -1,6 +1,0 @@
-name: AutoTeamChat
-version: '1.0-SNAPSHOT'
-main: org.butterdevelop.autoTeamChat.AutoTeamChat
-api-version: '1.21'
-authors: [butterdevelop]
-description: Allows you to send /teammsg by default, and also send global messages with !message

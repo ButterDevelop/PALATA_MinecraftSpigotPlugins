@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "autoteamchatmod",
+  "version": "1.0-SNAPSHOT",
+  "name": "PALATA_AutoTeamChatMod",
+  "description": "This mod allows you to send messages to team chat by default and global chat with !",
+  "authors": ["ButterDevelop"],
+  "contact": {},
+  "license": "All-Rights-Reserved",
+  "icon": "assets/autoteamchatmod/icon.png",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "org.butterdevelop.autoteamchatmod.client.AutoTeamChatModClient"
+    ],
+    "main": [
+      "org.butterdevelop.autoteamchatmod.AutoTeamChatMod"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.16.14",
+    "fabric": "*",
+    "minecraft": "1.21.4",
+    "chatprankmod": "*"
+  }
+}

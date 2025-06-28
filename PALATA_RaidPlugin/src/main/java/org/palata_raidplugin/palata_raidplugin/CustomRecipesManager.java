@@ -84,46 +84,53 @@ public class CustomRecipesManager implements Listener {
         ItemStack base = inv.getItem(0);
         ItemStack star = inv.getItem(1);
 
-        if (base == null || star == null) {
-            ev.setResult(null);
-            return;
-        }
-        Material t = base.getType();
-        if ((t == Material.POTION || t == Material.SPLASH_POTION || t == Material.LINGERING_POTION)
+        // Только для нашего случая: когда base + nether_star
+        if (base != null && star != null
+                && (base.getType() == Material.POTION
+                || base.getType() == Material.SPLASH_POTION
+                || base.getType() == Material.LINGERING_POTION)
                 && star.getType() == Material.NETHER_STAR) {
 
-            // 1) Создаём результат того же типа бутылки
-            ItemStack result = new ItemStack(t);
-            PotionMeta pm = (PotionMeta) base.getItemMeta();
-            assert pm != null;
-            PotionData pd = pm.getBasePotionData();
-
-            // 2) Делаем extended (≈2× длительнее) невидимость
-            pm.setBasePotionData(new PotionData(pd.getType(), true, pd.isUpgraded()));
-            // 3) Скрываем пузырьки
-            pm.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
-
-            // 4) Делаем «звёздное» имя и описание
-            pm.setDisplayName(ChatColor.LIGHT_PURPLE + "Зелье Звёздной Невидимости");
-            pm.setLore(List.of(
-                    ChatColor.GRAY + "• Длительность: " +
-                            (pd.isExtended() ? "32:00" : "12:00") + " мин",
-                    ChatColor.GRAY + "• Без пузырьков",
-                    ChatColor.DARK_PURPLE + "Используй наковальню для создания"
-            ));
-
-            // 5) Добавляем фейковое зачарование для «переливающегося» вида
-            pm.addEnchant(Enchantment.LUCK, 1, true);
-            pm.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-
-            result.setItemMeta(pm);
-
-            // разблокировать слот (low repair cost)
+            // создаём и кладём кастомный результат
+            ItemStack result = createStarInvisibilityPotion(base);
             inv.setRepairCost(1);
             ev.setResult(result);
-        } else {
-            ev.setResult(null);
         }
+        // И всё - больше ничего не трогаем, ваниль сама покажет обычный результат
+    }
+
+    /**
+     * Создаёт "Зелье Звёздной Невидимости" на основе исходного зелья.
+     * @param base Исходное зелье (Potion, Splash или Lingering)
+     * @return Новый ItemStack с невидимостью, extended, без пузырьков и с магическим эффектом
+     */
+    public static ItemStack createStarInvisibilityPotion(ItemStack base) {
+        // 1) Создаём результат того же типа бутылки
+        ItemStack result = new ItemStack(base.getType());
+        PotionMeta pm = (PotionMeta) base.getItemMeta();
+        if (pm == null) return result;
+        PotionData pd = pm.getBasePotionData();
+
+        // 2) Делаем extended (≈2× длительнее) невидимость
+        pm.setBasePotionData(new PotionData(PotionType.INVISIBILITY, true, pd.isUpgraded()));
+
+        // 3) Скрываем пузырьки
+        pm.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS);
+
+        // 4) Делаем "звёздное" имя и описание
+        pm.setDisplayName(ChatColor.LIGHT_PURPLE + "Зелье Звёздной Невидимости");
+        pm.setLore(java.util.List.of(
+                ChatColor.GRAY + "• Длительность: " + (pd.isExtended() ? "32:00" : "12:00") + " мин",
+                ChatColor.GRAY + "• Без пузырьков",
+                ChatColor.DARK_PURPLE + "Используй наковальню для создания"
+        ));
+
+        // 5) Добавляем фейковое зачарование для «переливающегося» вида
+        pm.addEnchant(Enchantment.LUCK, 1, true);
+        pm.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+        result.setItemMeta(pm);
+        return result;
     }
 
     // Шаг 2: ловим клик по "результату" и вручную списываем ингредиенты + выдаём предмет
